@@ -1,0 +1,232 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container-fluid">
+
+
+    <!-- Top Nav -->
+    <!-- Header -->
+    <div class="col-12 bg-white py-4">
+        <div class="row">
+            <div class="col-lg-auto">
+                <div class="site-logo text-center text-lg-left">
+                    <a asp-controller="Home" asp-action="Index">Marketplace</a>
+                </div>
+            </div>
+            <div class="col-lg-5 mx-auto mt-4 mt-lg-0">
+                <form action="@Url.Action("Search", "Product")">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <input type="search" class="form-control border-dark" placeholder="Search..." required>
+                            <button class="btn btn-outline-dark"><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-auto text-center text-lg-left header-item-holder">
+
+                <a asp-controller="Auth" asp-action="Dashboard" class="header-item">
+                    <i class="fas fa-columns me-2"></i><span id="header-qty" class="me-3">Dashboard</span>
+                    <i class="fas fa-money-bill-wave me-2"></i><span id="header-price">4,000</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <!-- Header -->
+
+
+    <div class="row min-vh-100">
+
+        <div class="row">
+            <div class="col-12 bg-white mt-3 text-center text-uppercase">
+                <br>
+                <br>
+
+            </div>
+        </div>
+        <div class="col-12">
+            <!-- Main Content -->
+            <main class="row">
+
+
+
+                <!-- Latest Product -->
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-12 py-3">
+                            <div class="row">
+                                <div class="col-12 text-center text-uppercase">
+                                    <h2>Latest Products</h2>
+                                </div>
+                            </div>
+                            <div class="row">
+
+                                <!-- Product -->
+                                <div class="col-lg-3 col-sm-6 my-3">
+                                    <div class="col-12 bg-white text-center h-100 product-item">
+                                        <span class="new">New</span>
+                                        <div class="row h-100">
+                                            <div class="col-12 p-0 mb-3">
+                                                <a asp-controller="Product" asp-action="Product">
+                                                    <img src="~/images/image-1.jpg" class="img-fluid">
+                                                </a>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <a asp-controller="Product" asp-action="Product" class="product-name">Sony Alpha DSLR Camera</a>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <span class="product-price">
+                                                    $500
+                                                </span>
+                                            </div>
+                                            <div class="col-12 mb-3 align-self-end">
+                                                <button class="btn btn-outline-success me-2 mb-2" type="button">Buy Now</button>
+                                                <button class="btn btn-outline-dark me-2 mb-2" type="button"><i class="fas fa-cart-plus me-2"></i>Add to your store</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Product -->
+                                <!-- Product -->
+                                <div class="col-lg-3 col-sm-6 my-3">
+                                    <div class="col-12 bg-white text-center h-100 product-item">
+                                        <span class="new">New</span>
+                                        <div class="row h-100">
+                                            <div class="col-12 p-0 mb-3">
+                                                <a asp-controller="Product" asp-action="Product">
+                                                    <img src="~/images/image-2.jpg" class="img-fluid">
+                                                </a>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <a asp-controller="Product" asp-action="Product" class="product-name">Optoma 4K HDR Projector</a>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <span class="product-price">
+                                                    $1,500
+                                                </span>
+                                            </div>
+                                            <div class="col-12 mb-3 align-self-end">
+                                                <button class="btn btn-outline-success me-2 mb-2" type="button">Buy Now</button>
+                                                <button class="btn btn-outline-dark me-2 mb-2" type="button"><i class="fas fa-cart-plus me-2"></i>Add to your store</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Product -->
+                                <!-- Product -->
+                                <div class="col-lg-3 col-sm-6 my-3">
+                                    <div class="col-12 bg-white text-center h-100 product-item">
+                                        <span class="new">New</span>
+                                        <div class="row h-100">
+                                            <div class="col-12 p-0 mb-3">
+                                                <a asp-controller="Product" asp-action="Product">
+                                                    <img src="~/images/image-3.jpg" class="img-fluid">
+                                                </a>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <a asp-controller="Product" asp-action="Product" class="product-name">HP Envy Specter 360</a>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <span class="product-price">
+                                                    $2,500
+                                                </span>
+                                            </div>
+                                            <div class="col-12 mb-3 align-self-end">
+                                                <button class="btn btn-outline-success me-2 mb-2" type="button">Buy Now</button>
+                                                <button class="btn btn-outline-dark me-2 mb-2" type="button"><i class="fas fa-cart-plus me-2"></i>Add to your store</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Product -->
+                                <!-- Product -->
+                                <div class="col-lg-3 col-sm-6 my-3">
+                                    <div class="col-12 bg-white text-center h-100 product-item">
+                                        <span class="new">New</span>
+                                        <div class="row h-100">
+                                            <div class="col-12 p-0 mb-3">
+                                                <a asp-controller="Product" asp-action="Product">
+                                                    <img src="~/images/image-4.jpg" class="img-fluid">
+                                                </a>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <a asp-controller="Product" asp-action="Product" class="product-name">Dell Alienware Area 51</a>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <span class="product-price">
+                                                    $4,500
+                                                </span>
+                                            </div>
+                                            <div class="col-12 mb-3 align-self-end">
+                                                <button class="btn btn-outline-success me-2 mb-2" type="button">Buy Now</button>
+                                                <button class="btn btn-outline-dark me-2 mb-2" type="button"><i class="fas fa-cart-plus me-2"></i>Add to your store</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Product -->
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Latest Products -->
+
+                <div class="row">
+                    <div class="col-12 bg-white mt-3 text-center text-uppercase">
+                        <br>
+                        <br>
+
+                    </div>
+                </div>
+
+                <div class="col-12 py-3 bg-light d-sm-block d-none">
+                    <div class="row">
+                        <div class="col-lg-4 col ms-auto large-holder">
+                            <div class="row">
+                                <div class="col-auto ms-auto large-icon">
+                                    <i class="fas fa-money-bill"></i>
+                                </div>
+                                <div class="col-auto me-auto large-text">
+                                    Best Price
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col large-holder">
+                            <div class="row">
+                                <div class="col-auto ms-auto large-icon">
+                                    <i class="fas fa-truck-moving"></i>
+                                </div>
+                                <div class="col-auto me-auto large-text">
+                                    Fast Delivery
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col me-auto large-holder">
+                            <div class="row">
+                                <div class="col-auto ms-auto large-icon">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                                <div class="col-auto me-auto large-text">
+                                    Genuine Products
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            <div class="row">
+                <div class="col-12 bg-white mt-3 text-center text-uppercase">
+                    <br>
+                    <br>
+
+                </div>
+            </div>
+            <!-- Main Content -->
+        </div>
+
+
+    </div>
+
+</div>
