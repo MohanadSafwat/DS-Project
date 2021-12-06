@@ -195,6 +195,10 @@ a.product-name:hover, a.product-name:focus {
     font-weight: 600;
 }
 
+footer {
+    position: fixed;
+    bottom: 0;
+}
 .footer-logo {
     font-size: 1.65rem;
     font-family: 'Righteous', cursive;
