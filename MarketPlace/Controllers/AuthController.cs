@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MarketPlace.Areas.Identity.Data;
+using MarketPlace.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +11,16 @@ namespace MarketPlace.Controllers
 {
     public class AuthController : Controller
     {
+        private readonly UserManager<User> _userManager; 
+        private readonly AppDBContext _db;
+
+ 
+
+        public AuthController(UserManager<User> userManager, AppDBContext db)
+        {
+            _userManager = userManager;
+            _db = db;
+        }
         public IActionResult Login()
         {
             return View();
@@ -16,8 +29,10 @@ namespace MarketPlace.Controllers
         {
             return View();
         }
-        public IActionResult Dashboard()
+        public async Task<IActionResult> Dashboard()
         {
+
+            ViewBag.user = await _userManager.FindByIdAsync(_userManager.GetUserId(HttpContext.User));
             return View();
         }
     }

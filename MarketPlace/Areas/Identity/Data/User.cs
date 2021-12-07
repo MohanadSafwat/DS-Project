@@ -32,5 +32,10 @@ namespace MarketPlace.Areas.Identity.Data
         [Column(TypeName = "nvarchar(100)")]
         public string Card { get; set; }
 
+
+        public string getName()
+        {
+            return FirstName + LastName; 
+        }
     }
 }

@@ -20,7 +20,14 @@ namespace MarketPlace.Areas.Identity
                     options.UseSqlServer(
                         context.Configuration.GetConnectionString("SqlCon")));
 
-                services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
+                services.AddDefaultIdentity<User>(options => {
+                    options.SignIn.RequireConfirmedAccount = true;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequireLowercase = false;
+                    options.Password.RequireNonAlphanumeric = false;
+
+
+                })
                     .AddEntityFrameworkStores<AppDBContext>();
             });
         }

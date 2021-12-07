@@ -1,9 +1,9 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿
+@using Microsoft.AspNetCore.Identity
+@using MarketPlace.Areas.Identity.Data
 
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
 <!-- Top Nav -->
 <!-- Header -->
 <div class="col-12 bg-white py-4">
@@ -23,13 +23,14 @@
                 </div>
             </form>
         </div>
-        <div class="col-lg-auto text-center text-lg-left header-item-holder">
+        @if (SignInManager.IsSignedIn(User))
+        {<div class="col-lg-auto text-center text-lg-left header-item-holder">
 
-            <a asp-controller="Auth" asp-action="Dashboard" class="header-item">
-                <i class="fas fa-columns me-2"></i><span id="header-qty" class="me-3">Dashboard</span>
-                <i class="fas fa-money-bill-wave me-2"></i><span id="header-price">4,000</span>
-            </a>
-        </div>
+                <a asp-controller="Auth" asp-action="Dashboard" class="header-item">
+                    <i class="fas fa-columns me-2"></i><span id="header-qty" class="me-3">  Dashboard  </span>
+                    <i class="fas fa-money-bill-wave me-2"></i><span id="header-price"> @ViewBag.user.Amount</span>
+                </a>
+            </div>}
     </div>
 </div>
 <!-- Header -->
@@ -462,5 +463,5 @@
         <!-- Main Content -->
     </div>
 
-    
+
 </div>
