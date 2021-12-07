@@ -7,9 +7,9 @@ namespace MarketPlace.Models.Repository
 {
     public class OrderItemDbRepository
     {
-        AppDBContext db;
+        MarketPlaceDbContext db;
 
-        public OrderItemDbRepository(AppDBContext _db)
+        public OrderItemDbRepository(MarketPlaceDbContext _db)
         {
             db = _db;
         }

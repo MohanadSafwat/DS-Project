@@ -1,15 +1,15 @@
 ﻿using MarketPlace.Models;
 using MarketPlace.Areas.Identity.Data;
+using MarketPlace.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace MarketPlace.Models
 {
-    public class AppDBContext :IdentityDbContext<User>
+    public class AppDBContext :DbContext
     {
         public AppDBContext(DbContextOptions<AppDBContext> options) : base(options)
         {

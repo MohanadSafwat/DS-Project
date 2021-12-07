@@ -1,6 +1,6 @@
 ﻿using System;
 using MarketPlace.Areas.Identity.Data;
-using MarketPlace.Models;
+using MarketPlace.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
@@ -16,12 +16,12 @@ namespace MarketPlace.Areas.Identity
         public void Configure(IWebHostBuilder builder)
         {
             builder.ConfigureServices((context, services) => {
-                services.AddDbContext<AppDBContext>(options =>
+                services.AddDbContext<AuthDbContext>(options =>
                     options.UseSqlServer(
-                        context.Configuration.GetConnectionString("SqlCon")));
+                        context.Configuration.GetConnectionString("AuthDbContextConnection")));
 
                 services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
-                    .AddEntityFrameworkStores<AppDBContext>();
+                    .AddEntityFrameworkStores<AuthDbContext>();
             });
         }
     }

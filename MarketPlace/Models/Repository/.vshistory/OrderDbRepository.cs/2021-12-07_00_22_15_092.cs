@@ -1,5 +1,4 @@
-﻿using MarketPlace.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,9 +7,9 @@ namespace MarketPlace.Models.Repository
 {
     public class OrderDbRepository
     {
-        AppDBContext db;
+        MarketPlaceDbContext db;
 
-        public OrderDbRepository(AppDBContext _db)
+        public OrderDbRepository(MarketPlaceDbContext _db)
         {
             db = _db;
         }

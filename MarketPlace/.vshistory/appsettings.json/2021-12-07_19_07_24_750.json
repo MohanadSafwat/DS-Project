@@ -1,5 +1,6 @@
 {
   "ConnectionStrings": {
+    "DefaultConnection": "Server=AHMED-PC;Database=MarketPlaceDB;Trusted_Connection=True;MultipleActiveResultSets=True",
     "SqlCon": "Server=DESKTOP-T3FR38R;Database=MarketPlaceDB;Trusted_Connection=True;MultipleActiveResultSets=true"
   },
   "Logging": {

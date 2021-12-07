@@ -1,15 +1,14 @@
-﻿using MarketPlace.Models;
-using MarketPlace.Areas.Identity.Data;
+﻿using BookListMVC.Models;
+using MarketPlace.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
-namespace MarketPlace.Models
+namespace BookListMVC.Models
 {
-    public class AppDBContext :IdentityDbContext<User>
+    public class AppDBContext :DbContext
     {
         public AppDBContext(DbContextOptions<AppDBContext> options) : base(options)
         {
@@ -22,7 +21,7 @@ namespace MarketPlace.Models
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
         }
-        public DbSet<User> User { get; set; }
+        public DbSet<Auth> Auth { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
     }
