@@ -1,0 +1,46 @@
+﻿@model MarketPlace.ViewModels.ProductViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+<br />
+<br />
+
+<div class="container">
+<div class="row">
+   <div class="col-12">
+        <div class="row">
+            <div class="col-12 mt-3 text-center text-uppercase">
+                <h2>Add New Item</h2>
+            </div>
+        </div>
+
+        <main class="row">
+            <div class="col-12 bg-white py-3 mb-3">
+                <div class="row">
+                    <div class="col-lg-6 col-md-8 col-sm-10 mx-auto table-responsive">
+                        <form class="row" asp-action="Create">
+
+                            <div class="col-12 text-right">
+                               <input type="text" asp-for="ProductName" class="form-control  my-2" placeholder="Name...">
+                               <input type="text" asp-for="ProductBrand" class="form-control  my-2" placeholder="Brand...">
+                               <textarea class="form-control" asp-for="ProductDescription"  my-2" placeholder="Description..."></textarea>
+                                <input type="number" asp-for="ProductPrice" class="form-control  my-2" placeholder="Price...">
+
+                                <input type="file" asp-for="Files" multiple="multiple" class="form-control my-2" accept="image/*" style="padding:3px">
+
+                                <button type="submit"  class="btn btn-outline-primary my-2 form-control">
+                                    Add
+                                </button>
+                            </div>
+                       </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+    </div>
+</div>
+
+</div>
+

@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ju\\source\\repos\\MarketPlace\\MarketPlace\\MarketPlace.csproj": {}
+    "C:\\Users\\Mohan\\OneDrive\\Documents\\GitHub\\DS-Project\\MarketPlace\\MarketPlace.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ju\\source\\repos\\MarketPlace\\MarketPlace\\MarketPlace.csproj": {
+    "C:\\Users\\Mohan\\OneDrive\\Documents\\GitHub\\DS-Project\\MarketPlace\\MarketPlace.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ju\\source\\repos\\MarketPlace\\MarketPlace\\MarketPlace.csproj",
+        "projectUniqueName": "C:\\Users\\Mohan\\OneDrive\\Documents\\GitHub\\DS-Project\\MarketPlace\\MarketPlace.csproj",
         "projectName": "MarketPlace",
-        "projectPath": "C:\\Users\\ju\\source\\repos\\MarketPlace\\MarketPlace\\MarketPlace.csproj",
-        "packagesPath": "C:\\Users\\ju\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ju\\source\\repos\\MarketPlace\\MarketPlace\\obj\\",
+        "projectPath": "C:\\Users\\Mohan\\OneDrive\\Documents\\GitHub\\DS-Project\\MarketPlace\\MarketPlace.csproj",
+        "packagesPath": "C:\\Users\\Mohan\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Mohan\\OneDrive\\Documents\\GitHub\\DS-Project\\MarketPlace\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\ju\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Mohan\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -57,6 +57,10 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[3.1.21, )"
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[3.1.5, )"
             }
           },
           "imports": [
@@ -69,6 +73,24 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[3.1.10, 3.1.10]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[3.1.21, 3.1.21]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[3.1.0, 3.1.0]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[3.1.0, 3.1.0]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -77,7 +99,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.301\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100\\RuntimeIdentifierGraph.json"
         }
       }
     }
