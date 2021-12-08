@@ -12,6 +12,15 @@ namespace MarketPlace.Models.Repositories
         {
             db = _db;  
         }
+        public List<AssociatedShared> FindProducts(string sellerId)
+        {
+            
+           var result= db.AssociatedShared.Include(p => p.productId).Include(s => s.SharedId).Where(s => s.SharedId.Id == sellerId).ToList();
+            if (result != null)
+                return result;
+            else
+                return new List<AssociatedShared>();
+        }
         public void Add(AssociatedShared entity)
         {
             db.AssociatedShared.Add(entity);
@@ -21,9 +30,9 @@ namespace MarketPlace.Models.Repositories
         {
             return 0;
         }
-        public void Delete(int ProductId, string SellerId)
+        public void Delete(int ProductId)
         {
-            var associatedShared = Find(ProductId,SellerId);
+            var associatedShared = Find(ProductId);
             db.AssociatedShared.Remove(associatedShared);
             db.SaveChanges();
         }
@@ -35,9 +44,9 @@ namespace MarketPlace.Models.Repositories
             db.SaveChanges();
         }
 
-        public AssociatedShared Find(int ProductId, string SellerId)
+        public AssociatedShared Find(int ProductId)
         {
-            return db.AssociatedShared.SingleOrDefault(p => p.productId.ProductId == ProductId && p.SharedId.Id == SellerId);
+            return db.AssociatedShared.Include(p => p.productId).Include(s => s.SharedId).SingleOrDefault(p => p.productId.ProductId == ProductId);
         }
 
         public IList<AssociatedShared> List()

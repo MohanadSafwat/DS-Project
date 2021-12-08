@@ -29,7 +29,7 @@ namespace MarketPlace.Controllers
             UserManager<User> userManager,
             IAssociatedRepository<AssociatedSell> associatedSellRepository,
             IAssociatedRepository<AssociatedShared> associatedSharedRepository,
-            IAssociatedRepository<AssociatedBought> associatedBoughtRepository
+            IAssociatedRepository<AssociatedBought> associatedBoughtRepositor
             )
         {
             this.productRepository = productRepository;
@@ -39,16 +39,22 @@ namespace MarketPlace.Controllers
             this.associatedSharedRepository = associatedSharedRepository;
             this.associatedBoughtRepository = associatedBoughtRepository;
         }
+        public async Task<User> UserReturn(string id)
+        {
+            return await userManager.FindByIdAsync(id);
+
+        }
         public IActionResult Create()
         {
-            ViewBag.user = userManager.GetUserId(HttpContext.User);
+            ViewBag.id = userManager.GetUserId(HttpContext.User);
+
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Obsolete]
-        public IActionResult Create(ProductViewModel model)
+        public async Task<IActionResult> Create(ProductViewModel model)
         {
             try {
                 string fileNames = string.Empty;
@@ -70,13 +76,17 @@ namespace MarketPlace.Controllers
                 ProductPrice = model.ProductPrice,
                 ProductImageUrls =fileNames,
                 };
+
                 productRepository.Add(product);
 
                 int id = product.ProductId;
 
+                Task<User> Seller  = UserReturn(model.SellerId);
+                User userData = await Seller;
+
                 AssociatedSell associatedSell = new AssociatedSell { 
                 productId=product,
-                SellerId= model.SellerId,
+                SellerId= userData,
                 Sold=false
                 };
 
@@ -110,7 +120,7 @@ namespace MarketPlace.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Obsolete]
-        public IActionResult Edit(ProductViewModel model)
+        public async Task<IActionResult> Edit(ProductViewModel model)
         {
             try
             {
@@ -127,8 +137,10 @@ namespace MarketPlace.Controllers
                     }
                 }
 
+
                 Product product = new Product
                 {
+                    ProductId = model.ProductId,
                     ProductBrand = model.ProductBrand,
                     ProductDescription = model.ProductDescription,
                     ProductName = model.ProductName,
@@ -149,9 +161,13 @@ namespace MarketPlace.Controllers
         public IActionResult Delete(int id)
         {
             var product = productRepository.Find(id);
+            var associatedProduct = associatedSellRepository.Find(id);
+
             var model = new ProductViewModel
             {
+                
                 ProductBrand = product.ProductBrand,
+                SellerId=associatedProduct.SellerId.ToString(),
                 ProductDescription = product.ProductDescription,
                 ProductName = product.ProductName,
                 ProductId = product.ProductId,
@@ -161,19 +177,23 @@ namespace MarketPlace.Controllers
             };
             return View(model);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Obsolete]
-        public IActionResult ConfirmDelete(int id)
+     
+        public IActionResult Delete(int id,ProductViewModel model)
         {
             try
             {
-                productRepository.Delete(id);
+                associatedSellRepository.Delete(model.ProductId);
+                productRepository.Delete(model.ProductId);
                 return Redirect("/Auth/Dashboard");
 
 
             }
-            catch { return View(); }
+            catch {
+                return View(); 
+            }
         }
     }
 }

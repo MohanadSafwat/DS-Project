@@ -21,9 +21,9 @@ namespace MarketPlace.Models.Repositories
         {
             return 0;
         }
-        public void Delete(int ProductId, string SellerId)
+        public void Delete(int ProductId)
         {
-            var associatedSell = Find(ProductId, SellerId);
+            var associatedSell = Find(ProductId);
             db.AssociatedSell.Remove(associatedSell);
             db.SaveChanges();
         }
@@ -35,9 +35,14 @@ namespace MarketPlace.Models.Repositories
             db.SaveChanges();
         }
 
-        public AssociatedSell Find(int ProductId, string SellerId)
+        public AssociatedSell Find(int ProductId)
         {
-            return db.AssociatedSell.SingleOrDefault(p => p.productId.ProductId == ProductId && p.SellerId.Id == SellerId);
+            return db.AssociatedSell.Include(p=>p.productId).Include(s=>s.SellerId).SingleOrDefault(p => p.productId.ProductId == ProductId );
+        }
+
+        public List<AssociatedSell> FindProducts(string sellerId)
+        {
+            return db.AssociatedSell.Include(p => p.productId).Include(s => s.SellerId).Where(s => s.SellerId.Id == sellerId).ToList();
         }
 
         public IList<AssociatedSell> List()

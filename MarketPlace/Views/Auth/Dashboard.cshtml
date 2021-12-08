@@ -1,7 +1,7 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-
+@model MarketPlace.ViewModels.ProductViewModel
 
 <!-- Top Nav -->
 <!-- Header -->
@@ -44,19 +44,13 @@
             <div class="col-12 bg-white py-3 mb-3">
                 <div class="row">
                     <div class="col-lg-6 col-md-8 col-sm-10 mx-auto table-responsive">
-                       @* <form class="row">*@
-
                             <div class="col-12 text-right">
-                             @*   <input type="text" class="form-control  my-2" placeholder="Name...">
-                                <input type="number" class="form-control  my-2" placeholder="Price...">
-
-                                <input type="file" class="form-control my-2" accept="image/*">*@
-
-                                <a asp-controller="Product" asp-action="Create" asp-route-sellerId=@ViewBag.fullUser class="btn btn-outline-primary my-2 form-control">
+                             
+                                <a asp-controller="Product" asp-action="Create" asp-route-user=@ViewBag.user class="btn btn-outline-primary my-2 form-control">
                                     Add
                                 </a>
                             </div>
-                      @*  </form>*@
+                    
                     </div>
                 </div>
             </div>
@@ -94,7 +88,7 @@
 
 
 
-
+    <div class="container">
 
     <main class="row">
         <div class="col-12  py-3 mb-3">
@@ -104,9 +98,12 @@
                 </div>
             </div>
             <div class="row">
-                <!-- Product -->
-                <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
-                    <div class="col-12 bg-white text-center h-100 product-item">
+                @foreach(var item in @Model.associatedSell){
+                    <!-- Product -->
+                    @if (!item.Sold)
+                    {
+                        <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
+                            <div class="col-12 bg-white text-center h-100 product-item">
                         <div class="row h-100">
                             <div class="col-12 p-0 mb-3">
                                 <a asp-controller="Product" asp-action="Product">
@@ -114,166 +111,30 @@
                                 </a>
                             </div>
                             <div class="col-12 mb-3">
-                                <a asp-controller="Product" asp-action="Product" class="product-name">Sony Alpha DSLR Camera</a>
+                                <a asp-controller="Product" asp-action="Product" class="product-name">@item.productId.ProductName</a>
                             </div>
                             <div class="col-12 mb-3">
-                                <span class="product-price"> $500 </span>
+                                <span class="product-price"> EGP @item.productId.ProductPrice </span>
                             </div>
                             <div class="col-12 mb-3 align-self-end">
                                 <a asp-route-id="1"  asp-action="Edit" asp-controller="Product" class="btn btn-outline-warning me-2 mb-2" type="button">
                                     Edit
                                 </a>
-                                <a class="btn btn-outline-danger me-2 mb-2" asp-action="Delete" asp-controller="Product" asp-route-id="1" type="button"> 
+                                <a class="btn btn-outline-danger me-2 mb-2" asp-action="Delete" asp-controller="Product" asp-route-id=2 type="button"> 
                                     Remove
                                 </a>
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>}
                 <!-- Product -->
-                <!-- Product -->
-                <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
-                    <div class="col-12 bg-white text-center h-100 product-item">
-                        <div class="row h-100">
-                            <div class="col-12 p-0 mb-3">
-                                <a asp-controller="Product" asp-action="Product">
-                                    <img src="~/images/image-2.jpg" class="img-fluid" />
-                                </a>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <a asp-controller="Product" asp-action="Product" class="product-name">Optoma 4K HDR Projector</a>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <span class="product-price"> $1,500 </span>
-                            </div>
-                            <div class="col-12 mb-3 align-self-end">
-                                <button class="btn btn-outline-warning me-2 mb-2" type="button">
-                                    Edit
-                                </button>
-                                <button class="btn btn-outline-danger me-2 mb-2" type="button">
-                                    Remove
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+               }
 
-                <!-- Product -->
-                <!-- Product -->
-                <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
-                    <div class="col-12 bg-white text-center h-100 product-item">
-                        <div class="row h-100">
-                            <div class="col-12 p-0 mb-3">
-                                <a asp-controller="Product" asp-action="Product">
-                                    <img src="~/images/image-1.jpg" class="img-fluid" />
-                                </a>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <a asp-controller="Product" asp-action="Product" class="product-name">Sony Alpha DSLR Camera</a>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <span class="product-price"> $500 </span>
-                            </div>
-                            <div class="col-12 mb-3 align-self-end">
-                                <button class="btn btn-outline-warning me-2 mb-2" type="button">
-                                    Edit
-                                </button>
-                                <button class="btn btn-outline-danger me-2 mb-2" type="button">
-                                    Remove
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Product -->
-                <!-- Product -->
-                <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
-                    <div class="col-12 bg-white text-center h-100 product-item">
-                        <div class="row h-100">
-                            <div class="col-12 p-0 mb-3">
-                                <a asp-controller="Product" asp-action="Product">
-                                    <img src="~/images/image-2.jpg" class="img-fluid" />
-                                </a>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <a asp-controller="Product" asp-action="Product" class="product-name">Optoma 4K HDR Projector</a>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <span class="product-price"> $1,500 </span>
-                            </div>
-                            <div class="col-12 mb-3 align-self-end">
-                                <button class="btn btn-outline-warning me-2 mb-2" type="button">
-                                    Edit
-                                </button>
-                                <button class="btn btn-outline-danger me-2 mb-2" type="button">
-                                    Remove
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Product -->
-                <!-- Product -->
-                <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
-                    <div class="col-12 bg-white text-center h-100 product-item">
-                        <div class="row h-100">
-                            <div class="col-12 p-0 mb-3">
-                                <a asp-controller="Product" asp-action="Product">
-                                    <img src="~/images/image-1.jpg" class="img-fluid" />
-                                </a>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <a asp-controller="Product" asp-action="Product" class="product-name">Sony Alpha DSLR Camera</a>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <span class="product-price"> $500 </span>
-                            </div>
-                            <div class="col-12 mb-3 align-self-end">
-                                <button class="btn btn-outline-warning me-2 mb-2" type="button">
-                                    Edit
-                                </button>
-                                <button class="btn btn-outline-danger me-2 mb-2" type="button">
-                                    Remove
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Product -->
-                <!-- Product -->
-                <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
-                    <div class="col-12 bg-white text-center h-100 product-item">
-                        <div class="row h-100">
-                            <div class="col-12 p-0 mb-3">
-                                <a asp-controller="Product" asp-action="Product">
-                                    <img src="~/~/images/image-2.jpg" class="img-fluid" />
-                                </a>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <a asp-controller="Product" asp-action="Product" class="product-name">Optoma 4K HDR Projector</a>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <span class="product-price"> $1,500 </span>
-                            </div>
-                            <div class="col-12 mb-3 align-self-end">
-                                <button class="btn btn-outline-warning me-2 mb-2" type="button">
-                                    Edit
-                                </button>
-                                <button class="btn btn-outline-danger me-2 mb-2" type="button">
-                                    Remove
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Product -->
             </div>
         </div>
     </main>
 
-
+    <br />
 
     <main class="row">
         <div class="col-12  py-3 mb-3">
@@ -283,9 +144,12 @@
                 </div>
             </div>
             <div class="row">
-                <!-- Product -->
-                <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
-                    <div class="col-12 bg-white text-center h-100 product-item">
+                 @foreach(var item in @Model.associatedSell){
+                    <!-- Product -->
+                    @if (item.Sold)
+                    {
+                        <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
+                            <div class="col-12 bg-white text-center h-100 product-item">
                         <div class="row h-100">
                             <div class="col-12 p-0 mb-3">
                                 <a asp-controller="Product" asp-action="Product">
@@ -293,164 +157,113 @@
                                 </a>
                             </div>
                             <div class="col-12 mb-3">
-                                <a asp-controller="Product" asp-action="Product" class="product-name">Sony Alpha DSLR Camera</a>
+                                <a asp-controller="Product" asp-action="Product" class="product-name">@item.productId.ProductName</a>
                             </div>
                             <div class="col-12 mb-3">
-                                <span class="product-price"> $500 </span>
+                                <span class="product-price"> EGP @item.productId.ProductPrice </span>
                             </div>
                             <div class="col-12 mb-3 align-self-end">
-                                <button class="btn btn-outline-warning me-2 mb-2" type="button">
+                                <a asp-route-id="1"  asp-action="Edit" asp-controller="Product" class="btn btn-outline-warning me-2 mb-2" type="button">
                                     Edit
-                                </button>
-                                <button class="btn btn-outline-danger me-2 mb-2" type="button">
+                                </a>
+                                <a class="btn btn-outline-danger me-2 mb-2" asp-action="Delete" asp-controller="Product" asp-route-id=2 type="button"> 
                                     Remove
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Product -->
-                <!-- Product -->
-                <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
-                    <div class="col-12 bg-white text-center h-100 product-item">
-                        <div class="row h-100">
-                            <div class="col-12 p-0 mb-3">
-                                <a asp-controller="Product" asp-action="Product">
-                                    <img src="~/images/image-2.jpg" class="img-fluid" />
                                 </a>
                             </div>
-                            <div class="col-12 mb-3">
-                                <a asp-controller="Product" asp-action="Product" class="product-name">Optoma 4K HDR Projector</a>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <span class="product-price"> $1,500 </span>
-                            </div>
-                            <div class="col-12 mb-3 align-self-end">
-                                <button class="btn btn-outline-warning me-2 mb-2" type="button">
-                                    Edit
-                                </button>
-                                <button class="btn btn-outline-danger me-2 mb-2" type="button">
-                                    Remove
-                                </button>
-                            </div>
                         </div>
                     </div>
-                </div>
-
+                </div>}
                 <!-- Product -->
-                <!-- Product -->
-                <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
-                    <div class="col-12 bg-white text-center h-100 product-item">
-                        <div class="row h-100">
-                            <div class="col-12 p-0 mb-3">
-                                <a asp-controller="Product" asp-action="Product">
-                                    <img src="~/images/image-1.jpg" class="img-fluid" />
-                                </a>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <a asp-controller="Product" asp-action="Product" class="product-name">Sony Alpha DSLR Camera</a>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <span class="product-price"> $500 </span>
-                            </div>
-                            <div class="col-12 mb-3 align-self-end">
-                                <button class="btn btn-outline-warning me-2 mb-2" type="button">
-                                    Edit
-                                </button>
-                                <button class="btn btn-outline-danger me-2 mb-2" type="button">
-                                    Remove
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Product -->
-                <!-- Product -->
-                <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
-                    <div class="col-12 bg-white text-center h-100 product-item">
-                        <div class="row h-100">
-                            <div class="col-12 p-0 mb-3">
-                                <a asp-controller="Product" asp-action="Product">
-                                    <img src="~/images/image-2.jpg" class="img-fluid" />
-                                </a>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <a asp-controller="Product" asp-action="Product" class="product-name">Optoma 4K HDR Projector</a>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <span class="product-price"> $1,500 </span>
-                            </div>
-                            <div class="col-12 mb-3 align-self-end">
-                                <button class="btn btn-outline-warning me-2 mb-2" type="button">
-                                    Edit
-                                </button>
-                                <button class="btn btn-outline-danger me-2 mb-2" type="button">
-                                    Remove
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Product -->
-                <!-- Product -->
-                <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
-                    <div class="col-12 bg-white text-center h-100 product-item">
-                        <div class="row h-100">
-                            <div class="col-12 p-0 mb-3">
-                                <a asp-controller="Product" asp-action="Product">
-                                    <img src="~/images/image-1.jpg" class="img-fluid" />
-                                </a>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <a asp-controller="Product" asp-action="Product" class="product-name">Sony Alpha DSLR Camera</a>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <span class="product-price"> $500 </span>
-                            </div>
-                            <div class="col-12 mb-3 align-self-end">
-                                <button class="btn btn-outline-warning me-2 mb-2" type="button">
-                                    Edit
-                                </button>
-                                <button class="btn btn-outline-danger me-2 mb-2" type="button">
-                                    Remove
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Product -->
-                <!-- Product -->
-                <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
-                    <div class="col-12 bg-white text-center h-100 product-item">
-                        <div class="row h-100">
-                            <div class="col-12 p-0 mb-3">
-                                <a asp-controller="Product" asp-action="Product">
-                                    <img src="~/images/image-2.jpg" class="img-fluid" />
-                                </a>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <a asp-controller="Product" asp-action="Product" class="product-name">Optoma 4K HDR Projector</a>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <span class="product-price"> $1,500 </span>
-                            </div>
-                            <div class="col-12 mb-3 align-self-end">
-                                <button class="btn btn-outline-warning me-2 mb-2" type="button">
-                                    Edit
-                                </button>
-                                <button class="btn btn-outline-danger me-2 mb-2" type="button">
-                                    Remove
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Product -->
+               }
             </div>
         </div>
     </main>
+    <br />
 
+@*    <main class="row">
+        <div class="col-12  py-3 mb-3">
+            <div class="row">
+                <div class="col-12 mt-3 text-center text-uppercase">
+                    <h2>Bought Items</h2>
+                </div>
+            </div>
+            <div class="row">
+                 @foreach(var item in @Model.associatedBought){
+                    <!-- Product -->
+                    
+                        <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
+                            <div class="col-12 bg-white text-center h-100 product-item">
+                        <div class="row h-100">
+                            <div class="col-12 p-0 mb-3">
+                                <a asp-controller="Product" asp-action="Product">
+                                    <img src="~/images/image-1.jpg" class="img-fluid" />
+                                </a>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <a asp-controller="Product" asp-action="Product" class="product-name">@item.product.ProductName</a>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <span class="product-price"> EGP @item.product.ProductPrice </span>
+                            </div>
+                            <div class="col-12 mb-3 align-self-end">
+                                <a asp-route-id="1"  asp-action="Edit" asp-controller="Product" class="btn btn-outline-warning me-2 mb-2" type="button">
+                                    Edit
+                                </a>
+                                <a class="btn btn-outline-danger me-2 mb-2" asp-action="Delete" asp-controller="Product" asp-route-id=2 type="button"> 
+                                    Remove
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Product -->
+               }
+            </div>
+        </div>
+    </main>
+    *@
+    <main class="row">
+        <div class="col-12  py-3 mb-3">
+            <div class="row">
+                <div class="col-12 mt-3 text-center text-uppercase">
+                    <h2>Shared Items</h2>
+                </div>
+            </div>
+            <div class="row">
+                 @foreach(var item in @Model.associatedShared){
+                    <!-- Product -->
+                    @if (!item.Sold)
+                    {
+                        <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
+                            <div class="col-12 bg-white text-center h-100 product-item">
+                        <div class="row h-100">
+                            <div class="col-12 p-0 mb-3">
+                                <a asp-controller="Product" asp-action="Product">
+                                    <img src="~/images/image-1.jpg" class="img-fluid" />
+                                </a>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <a asp-controller="Product" asp-action="Product" class="product-name">@item.productId.ProductName</a>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <span class="product-price"> EGP @item.productId.ProductPrice </span>
+                            </div>
+                            <div class="col-12 mb-3 align-self-end">
+                                <a asp-route-id="1"  asp-action="Edit" asp-controller="Product" class="btn btn-outline-warning me-2 mb-2" type="button">
+                                    Edit
+                                </a>
+                                <a class="btn btn-outline-danger me-2 mb-2" asp-action="Delete" asp-controller="Product" asp-route-id=2 type="button"> 
+                                    Remove
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>}
+                <!-- Product -->
+               }
+            </div>
+        </div>
+    </main>
+    </div>
     <!-- Main Content -->
 </div>

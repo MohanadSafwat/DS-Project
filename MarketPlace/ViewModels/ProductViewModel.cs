@@ -1,4 +1,5 @@
 ﻿using MarketPlace.Areas.Identity.Data;
+using MarketPlace.Models;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,7 +11,7 @@ namespace MarketPlace.ViewModels
     {
         public int ProductId { get; set; }
 
-        public User SellerId { get; set; }
+        public string SellerId { get; set; }
 
 
         [Required]
@@ -35,5 +36,12 @@ namespace MarketPlace.ViewModels
 
         [Required]
         public List<IFormFile> Files { get; set; }
+
+        public List<AssociatedSell> associatedSell { get; set; }
+        public List<AssociatedShared> associatedShared { get; set; }
+        public List<Product> productsIndex { get; set; }
+
+        public List<AssociatedBought> associatedBought { get; set; }
+
     }
 }

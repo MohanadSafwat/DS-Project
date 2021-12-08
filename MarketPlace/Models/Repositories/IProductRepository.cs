@@ -4,7 +4,7 @@ namespace MarketPlace.Models.Repositories
 {
     public interface IProductRepository<TEnity>
     {
-        IList<TEnity> List();
+        List<TEnity> List();
 
 
         TEnity Find(int id);

@@ -58,7 +58,7 @@ namespace MarketPlace.Models.Repositories
             return db.Products.SingleOrDefault(p => p.ProductId == id);
         }
 
-        public IList<Product> List()
+        public List<Product> List()
         {
             return db.Products.ToList() ;
         }

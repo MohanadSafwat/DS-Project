@@ -23,14 +23,13 @@
 
                             <div class="col-12 text-right">
                                  <input type="text" asp-for="ProductId" class="form-control  my-2" hidden>
-                               <input type="text" asp-for="SellerId" class="form-control my-2" hidden>
-                               <p>IDDDD::::: @ViewBag.user</p>
+                               <input type="text" asp-for="SellerId" class="form-control my-2" value="@ViewBag.id" hidden>
                                <input type="text" asp-for="ProductName" class="form-control  my-2" placeholder="Name...">
                                <input type="text" asp-for="ProductBrand" class="form-control  my-2" placeholder="Brand...">
                                <textarea class="form-control" asp-for="ProductDescription"  my-2" placeholder="Description..."></textarea>
                                 <input type="number" asp-for="ProductPrice" class="form-control  my-2" placeholder="Price...">
 
-                                <input type="file" asp-for="Files" multiple="multiple" class="form-control my-2" accept="image/*" style="padding:3px">
+                                <input type="file" asp-for="Files" multiple class="form-control my-2" accept="image/*" style="padding:3px">
 
                                 <button type="submit"  class="btn btn-outline-primary my-2 form-control">
                                     Add

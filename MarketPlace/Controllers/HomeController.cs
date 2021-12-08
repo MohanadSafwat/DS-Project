@@ -1,5 +1,7 @@
 ﻿using MarketPlace.Areas.Identity.Data;
 using MarketPlace.Models;
+using MarketPlace.Models.Repositories;
+using MarketPlace.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -17,22 +19,39 @@ namespace MarketPlace.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly UserManager<User> _userManager; 
         private readonly AppDBContext _db;
+        private readonly IAssociatedRepository<AssociatedSell> associatedSellRepository;
+        private readonly IAssociatedRepository<AssociatedShared> associatedSharedRepository;
+        private readonly IProductRepository<Product> productRepository;
+        private readonly IAssociatedRepository<AssociatedBought> associatedBoughtRepository;
 
-        public HomeController(ILogger<HomeController> logger , UserManager<User> userManager, AppDBContext db)
+
+        public HomeController(ILogger<HomeController> logger ,
+            UserManager<User> userManager, AppDBContext db,
+            IAssociatedRepository<AssociatedSell> associatedSellRepository,
+            IAssociatedRepository<AssociatedShared> associatedSharedRepository,
+            IAssociatedRepository<AssociatedBought> associtaedBoughtRepository,
+            IProductRepository<Product> productRepository
+
+            )
         {
             _logger = logger;
             _userManager = userManager; 
             _db = db;
-
+            this.associatedSellRepository = associatedSellRepository;
+            this.associatedSharedRepository = associatedSharedRepository;
+            this.productRepository = productRepository;
+            this.associatedBoughtRepository = associatedBoughtRepository;
         }
 
         public async Task<IActionResult> IndexAsync()
         {
             //ViewBag.id =  _userManager.GetUserId(HttpContext.User);
             ViewBag.user  = await _userManager.FindByIdAsync(_userManager.GetUserId(HttpContext.User));
-            
-                            
-            return View();
+
+            var model = new ProductViewModel {
+            productsIndex = productRepository.List()
+            };
+            return View(model);
         }
 
         public IActionResult Privacy()

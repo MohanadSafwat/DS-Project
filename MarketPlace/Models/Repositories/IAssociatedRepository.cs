@@ -7,11 +7,12 @@ namespace MarketPlace.Models.Repositories
         IList<TEnity> List();
 
 
-        TEnity Find(int ProductId, string SellerId);
+        TEnity Find(int ProductId);
         void Add(TEnity entity);
         void Edit(TEnity entity);
-        void Delete(int ProductId, string SellerId);
-
+        void Delete(int ProductId);
+        List<TEnity> FindProducts(string sellerId);
+        
         int IsExist(TEnity entity);
 
         

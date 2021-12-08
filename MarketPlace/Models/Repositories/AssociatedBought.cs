@@ -12,6 +12,21 @@ namespace MarketPlace.Models.Repositories
         {
             db = _db;
         }
+        public List<AssociatedBought> FindProducts(string buyerId)
+        {
+            var result = db.AssociatedBought.Include(p => p.product).Include(s => s.Buyer).Where(s => s.Buyer.Id == buyerId).ToList();
+            if (result != null)
+                return result;
+            else {
+                List < AssociatedBought > list = new List<AssociatedBought>();
+                list.Clear();
+                return list;
+
+            }
+
+            /*            return db.AssociatedBought.Include(p => p.product).Include(s => s.Buyer).Where(s => s.Buyer.Id == buyerId).ToList();
+            */
+        }
         public void Add(AssociatedBought entity)
         {
             db.AssociatedBought.Add(entity);
@@ -21,9 +36,9 @@ namespace MarketPlace.Models.Repositories
         {
             return 0;
         }
-        public void Delete(int ProductId, string SellerId)
+        public void Delete(int ProductId)
         {
-            var AssociatedBought = Find(ProductId, SellerId);
+            var AssociatedBought = Find(ProductId);
             db.AssociatedBought.Remove(AssociatedBought);
             db.SaveChanges();
         }
@@ -35,9 +50,9 @@ namespace MarketPlace.Models.Repositories
             db.SaveChanges();
         }
 
-        public AssociatedBought Find(int ProductId, string SellerId)
+        public AssociatedBought Find(int ProductId)
         {
-            return db.AssociatedBought.SingleOrDefault(p => p.product.ProductId == ProductId && p.Buyer.Id == SellerId);
+            return db.AssociatedBought.Include(p => p.product).Include(s => s.Buyer).SingleOrDefault(p => p.product.ProductId == ProductId );
         }
 
         public IList<AssociatedBought> List()
