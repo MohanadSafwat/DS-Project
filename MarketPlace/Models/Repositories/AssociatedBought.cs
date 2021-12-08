@@ -42,6 +42,13 @@ namespace MarketPlace.Models.Repositories
             /*            return db.AssociatedBought.Include(p => p.product).Include(s => s.Buyer).Where(s => s.Buyer.Id == buyerId).ToList();
             */
         }
+        public List<AssociatedBought> Search(string term)
+        {
+            var result = db.AssociatedBought.Include(p => p.product).Include(s => s.Buyer).Where(p => p.product.ProductName.Contains(term)
+               || p.product.ProductBrand.Contains(term) || p.product.ProductDescription.Contains(term) || p.Buyer.FirstName.Contains(term)
+                   || p.Buyer.LastName.Contains(term)).ToList();
+            return result;
+        }
         public void Add(AssociatedBought entity)
         {
             db.AssociatedBought.Add(entity);
@@ -70,7 +77,7 @@ namespace MarketPlace.Models.Repositories
             return db.AssociatedBought.Include(p => p.product).Include(s => s.Buyer).SingleOrDefault(p => p.product.ProductId == ProductId );
         }
 
-        public IList<AssociatedBought> List()
+        public List<AssociatedBought> List()
         {
             return db.AssociatedBought.Include(s => s.Buyer).Include(p => p.product).ToList();
         }

@@ -158,6 +158,31 @@ namespace MarketPlace.Controllers
             catch { return View(); }
         }
 
+
+        public async Task<IActionResult> Search(ProductViewModel model)
+        {
+            string id = userManager.GetUserId(HttpContext.User);
+
+            Task<User> Seller = UserReturn(id);
+            User userData = await Seller;
+
+            ViewBag.user = userData;
+
+            var vmodel= new ProductViewModel {SearchedItems= associatedSellRepository.Search(model.searchTerm) };
+            return View(vmodel);
+        }
+        public async Task<IActionResult> Product(int productId)
+        {
+            string id = userManager.GetUserId(HttpContext.User);
+
+            Task<User> Seller = UserReturn(id);
+            User userData = await Seller;
+
+            ViewBag.user = userData;
+
+            var vmodel = new ProductViewModel { productDeatails = associatedSellRepository.Find(productId) };
+            return View(vmodel);
+        }
         public IActionResult Delete(int id)
         {
             var product = productRepository.Find(id);

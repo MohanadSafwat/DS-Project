@@ -40,6 +40,12 @@ namespace MarketPlace.Models.Repositories
             db.Update(entityList);
             db.SaveChanges();
         }
+        public List<AssociatedSell> Search(string term) {
+            var result = db.AssociatedSell.Include(p => p.productId).Include(s => s.SellerId).Where(p => p.productId.ProductName.Contains(term)
+               || p.productId.ProductBrand.Contains(term) || p.productId.ProductDescription.Contains(term) || p.SellerId.FirstName.Contains(term)
+                   || p.SellerId.LastName.Contains(term)).ToList();
+            return result;
+        }
         public List<AssociatedSell> FindUsers(int productId)
         {
 
@@ -59,7 +65,7 @@ namespace MarketPlace.Models.Repositories
             return db.AssociatedSell.Include(p => p.productId).Include(s => s.SellerId).Where(s => s.SellerId.Id == sellerId).ToList();
         }
 
-        public IList<AssociatedSell> List()
+        public List<AssociatedSell> List()
         {
             return db.AssociatedSell.Include(s => s.SellerId).Include(p => p.productId).ToList();
         }

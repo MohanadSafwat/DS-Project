@@ -23,10 +23,10 @@
                 </div>
             </div>
             <div class="col-lg-5 mx-auto mt-4 mt-lg-0">
-                <form action="@Url.Action("Search", "Product")">
+                <form asp-action="Search" asp-controller="Product">
                     <div class="form-group">
                         <div class="input-group">
-                            <input type="search" class="form-control border-dark" placeholder="Search..." required>
+                            <input type="search" asp-for=searchTerm class="form-control border-dark" placeholder="Search..." required>
                             <button class="btn btn-outline-dark"><i class="fas fa-search"></i></button>
                         </div>
                     </div>
@@ -72,24 +72,30 @@
                             <div class="row">
                                 @if (@Model.productsIndex.Count != 0)
                                 {
-                                    @for (var i = @Model.productsIndex.Count - 1; i > @Model.productsIndex.Count - 4; i--)
+                                    var count = 0;
+                                    @for (var i = @Model.productsIndex.Count - 1; count <  4; i--)
                                     {
+                                        count++;
+                                        if (count > @Model.productsIndex.Count - 1)
+                                        {
+                                            count = 5; 
+                                        }
                                         <!-- Product -->
                                         <div class="col-lg-3 col-sm-6 my-3">
                                             <div class="col-12 bg-white text-center h-100 product-item">
                                                 <span class="new">New</span>
                                                 <div class="row h-100">
                                                     <div class="col-12 p-0 mb-3">
-                                                        <a asp-controller="Product" asp-action="Product">
+                                                        <a asp-controller="Product" asp-action="Product" asp-route-productId=@Model.productsIndex[i].productId.ProductId>
                                                             <img src="~/images/image-1.jpg" class="img-fluid">
                                                         </a>
                                                     </div>
                                                     <div class="col-12 mb-3">
-                                                        <a asp-controller="Product" asp-action="Product" class="product-name">@Model.productsIndex[i].ProductName</a>
+                                                        <a asp-controller="Product" asp-action="Product" class="product-name">@Model.productsIndex[i].productId.ProductName</a>
                                                     </div>
                                                     <div class="col-12 mb-3">
                                                         <span class="product-price">
-                                                            EGP @Model.productsIndex[i].ProductPrice
+                                                            EGP @Model.productsIndex[i].productId.ProductPrice
                                                         </span>
                                                     </div>
                                                     <div class="col-12 mb-3 align-self-end">

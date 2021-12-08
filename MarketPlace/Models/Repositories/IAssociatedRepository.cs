@@ -4,7 +4,7 @@ namespace MarketPlace.Models.Repositories
 {
     public interface IAssociatedRepository<TEnity>
     {
-        IList<TEnity> List();
+        List<TEnity> List();
 
 
         TEnity Find(int ProductId);
@@ -16,6 +16,8 @@ namespace MarketPlace.Models.Repositories
         public void EditList(List<TEnity> entityList);
         
         int IsExist(TEnity entity);
+
+        public List<TEnity> Search(string term);
 
         
 

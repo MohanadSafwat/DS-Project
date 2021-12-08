@@ -58,13 +58,19 @@ namespace MarketPlace.Models.Repositories
             db.Update(entityList);
             db.SaveChanges();
         }
-
+        public List<AssociatedShared> Search(string term)
+        {
+            var result = db.AssociatedShared.Include(p => p.productId).Include(s => s.SharedId).Where(p => p.productId.ProductName.Contains(term)
+               || p.productId.ProductBrand.Contains(term) || p.productId.ProductDescription.Contains(term) || p.SharedId.FirstName.Contains(term)
+                   || p.SharedId.LastName.Contains(term)).ToList();
+            return result;
+        }
         public AssociatedShared Find(int ProductId)
         {
             return db.AssociatedShared.Include(p => p.productId).Include(s => s.SharedId).SingleOrDefault(p => p.productId.ProductId == ProductId);
         }
 
-        public IList<AssociatedShared> List()
+        public List<AssociatedShared> List()
         {
             return db.AssociatedShared.Include(s=>s.SharedId).Include(p=>p.productId).ToList();
         }

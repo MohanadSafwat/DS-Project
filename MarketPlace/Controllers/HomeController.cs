@@ -49,7 +49,7 @@ namespace MarketPlace.Controllers
             ViewBag.user  = await _userManager.FindByIdAsync(_userManager.GetUserId(HttpContext.User));
 
             var model = new ProductViewModel {
-            productsIndex = productRepository.List()
+            productsIndex = associatedSellRepository.List()
             };
             return View(model);
         }

@@ -39,9 +39,12 @@ namespace MarketPlace.ViewModels
 
         public List<AssociatedSell> associatedSell { get; set; }
         public List<AssociatedShared> associatedShared { get; set; }
-        public List<Product> productsIndex { get; set; }
-
+        public List<AssociatedSell> productsIndex { get; set; }
+        public List<AssociatedSell> SearchedItems { get; set; }
         public List<AssociatedBought> associatedBought { get; set; }
+        public AssociatedSell productDeatails { get; set; }
+
+        public string searchTerm { get; set; }
 
     }
 }
