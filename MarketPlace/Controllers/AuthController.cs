@@ -33,6 +33,10 @@ namespace MarketPlace.Controllers
         {
 
             ViewBag.user = await _userManager.FindByIdAsync(_userManager.GetUserId(HttpContext.User));
+            ViewBag.id = _userManager.GetUserId(HttpContext.User);
+            ViewBag.fullUser = HttpContext.User;
+
+
             return View();
         }
     }

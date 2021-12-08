@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MarketPlace.Areas.Identity.Data;
+using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
@@ -9,7 +10,7 @@ namespace MarketPlace.ViewModels
     {
         public int ProductId { get; set; }
 
-        public int SellerId { get; set; }
+        public User SellerId { get; set; }
 
 
         [Required]

@@ -16,14 +16,12 @@ namespace MarketPlace.Models
 
         public string ProductDescription { get; set; }
 
-        public int SellerId { get; set; }
 
         public string ProductName { get; set; }
 
         
         public string ProductImageUrls { get; set; }
 
-        public bool Sold { get; set; }
 
 
 

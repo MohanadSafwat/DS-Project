@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MarketPlace.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20211207174836_create")]
-    partial class create
+    [Migration("20211207232334_Update1")]
+    partial class Update1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -101,6 +101,78 @@ namespace MarketPlace.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("MarketPlace.Models.AssociatedBought", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("BuyerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("BuyerId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("AssociatedBought");
+                });
+
+            modelBuilder.Entity("MarketPlace.Models.AssociatedSell", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SellerIdId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("Sold")
+                        .HasColumnType("bit");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("SellerIdId");
+
+                    b.ToTable("AssociatedSell");
+                });
+
+            modelBuilder.Entity("MarketPlace.Models.AssociatedShared", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SharedIdId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("Sold")
+                        .HasColumnType("bit");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("SharedIdId");
+
+                    b.ToTable("AssociatedShared");
+                });
+
             modelBuilder.Entity("MarketPlace.Models.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -137,6 +209,33 @@ namespace MarketPlace.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("OrderItems");
+                });
+
+            modelBuilder.Entity("MarketPlace.Models.Product", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ProductBrand")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductImageUrls")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductPrice")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductId");
+
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -272,6 +371,39 @@ namespace MarketPlace.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("MarketPlace.Models.AssociatedBought", b =>
+                {
+                    b.HasOne("MarketPlace.Areas.Identity.Data.User", "Buyer")
+                        .WithMany()
+                        .HasForeignKey("BuyerId");
+
+                    b.HasOne("MarketPlace.Models.Product", "product")
+                        .WithMany()
+                        .HasForeignKey("ProductId");
+                });
+
+            modelBuilder.Entity("MarketPlace.Models.AssociatedSell", b =>
+                {
+                    b.HasOne("MarketPlace.Models.Product", "productId")
+                        .WithMany()
+                        .HasForeignKey("ProductId");
+
+                    b.HasOne("MarketPlace.Areas.Identity.Data.User", "SellerId")
+                        .WithMany()
+                        .HasForeignKey("SellerIdId");
+                });
+
+            modelBuilder.Entity("MarketPlace.Models.AssociatedShared", b =>
+                {
+                    b.HasOne("MarketPlace.Models.Product", "productId")
+                        .WithMany()
+                        .HasForeignKey("ProductId");
+
+                    b.HasOne("MarketPlace.Areas.Identity.Data.User", "SharedId")
+                        .WithMany()
+                        .HasForeignKey("SharedIdId");
                 });
 
             modelBuilder.Entity("MarketPlace.Models.Order", b =>

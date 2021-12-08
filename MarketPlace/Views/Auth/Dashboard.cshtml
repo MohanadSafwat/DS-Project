@@ -52,7 +52,7 @@
 
                                 <input type="file" class="form-control my-2" accept="image/*">*@
 
-                                <a asp-controller="Product" asp-action="Create" class="btn btn-outline-primary my-2 form-control">
+                                <a asp-controller="Product" asp-action="Create" asp-route-sellerId=@ViewBag.fullUser class="btn btn-outline-primary my-2 form-control">
                                     Add
                                 </a>
                             </div>

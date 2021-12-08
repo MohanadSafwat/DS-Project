@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿/*using System.Collections.Generic;
 using System.Linq;
 
 namespace MarketPlace.Models.Repositories
@@ -7,43 +7,10 @@ namespace MarketPlace.Models.Repositories
     {
          List<Product> products;
 
-        public ProductRepository()
-        {
-            products = new List<Product>() { 
-            new Product{ 
-                ProductId =1,
-                ProductBrand = "Apple",
-                ProductDescription ="Good Product",
-                SellerId = 1,
-                ProductPrice = 15000,
-                ProductName = "iPhone 13 mini",
-                ProductImageUrls= "image-1.jpg`image-2.jpg`image-3.jpg",
-                Sold=true
-            },
-            new Product{
-                ProductId =2,
-                ProductBrand = "Apple",
-                ProductDescription ="Good Product",
-                SellerId = 1,
-                ProductPrice = 13000,
-                ProductName = "iPhone 13",
-                ProductImageUrls= "image-1.jpg`image-2.jpg`image-3.jpg",
-                Sold =false
+        public ProductRepository() { 
+        
 
-            },  new Product{
-                ProductId =3,
-                ProductBrand = "Apple",
-                ProductDescription ="Good Product",
-                ProductPrice = 18000,
-                ProductName = "iPhone 13 Pro",
-                SellerId = 1,
-                ProductImageUrls= "image-1.jpg`image-2.jpg`image-3.jpg",
-                Sold=true
-
-            },
-
-            };
-
+            
         }
 
         public void Add(Product entity)
@@ -93,3 +60,4 @@ namespace MarketPlace.Models.Repositories
         }
     }
 }
+*/

@@ -6,9 +6,9 @@ namespace MarketPlace.Models.Repositories
 {
     public class ProductDbRepository : IProductRepository<Product>
     {
-        MarketPlaceDbContext db;
+        AppDBContext db;
 
-        public ProductDbRepository(MarketPlaceDbContext _db)
+        public ProductDbRepository(AppDBContext _db)
         {
             db = _db;
         }

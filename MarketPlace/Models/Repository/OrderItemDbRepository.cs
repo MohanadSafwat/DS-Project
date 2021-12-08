@@ -39,7 +39,9 @@ namespace MarketPlace.Models.Repository
         }
         public List<OrderItem> SoldSellerItems(int SellerId)
         {
-            return db.OrderItems.Where(o => o.sellerId == SellerId).ToList();
+            // edit id to int 
+
+            return db.OrderItems.Where(o => o.seller.Id == SellerId.ToString()).ToList();
         }
     }
 }

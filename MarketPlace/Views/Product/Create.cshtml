@@ -22,6 +22,9 @@
                         <form class="row" asp-action="Create">
 
                             <div class="col-12 text-right">
+                                 <input type="text" asp-for="ProductId" class="form-control  my-2" hidden>
+                               <input type="text" asp-for="SellerId" class="form-control my-2" hidden>
+                               <p>IDDDD::::: @ViewBag.user</p>
                                <input type="text" asp-for="ProductName" class="form-control  my-2" placeholder="Name...">
                                <input type="text" asp-for="ProductBrand" class="form-control  my-2" placeholder="Brand...">
                                <textarea class="form-control" asp-for="ProductDescription"  my-2" placeholder="Description..."></textarea>

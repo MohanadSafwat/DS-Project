@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,8 +19,7 @@ namespace MarketPlace.Models.Repository
                     sellerId=2,
                     ProductId=3
                 },
-                new OrderItem
-                {
+                new OrderItem*//**//*
                     Id=2,
                     sellerId=2,
                     ProductId=4
@@ -64,3 +63,4 @@ namespace MarketPlace.Models.Repository
         }
     }
 }
+*/

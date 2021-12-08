@@ -1,7 +1,9 @@
-﻿using MarketPlace.Models;
+﻿using MarketPlace.Areas.Identity.Data;
+using MarketPlace.Models;
 using MarketPlace.Models.Repositories;
 using MarketPlace.ViewModels;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -16,17 +18,30 @@ namespace MarketPlace.Controllers
         private readonly IProductRepository<Product> productRepository;
         [Obsolete]
         private readonly IHostingEnvironment hosting;
+        private readonly UserManager<User> userManager;
+        private readonly IAssociatedRepository<AssociatedSell> associatedSellRepository;
+        private readonly IAssociatedRepository<AssociatedShared> associatedSharedRepository;
+        private readonly IAssociatedRepository<AssociatedBought> associatedBoughtRepository;
 
         [Obsolete]
         public ProductController(IProductRepository<Product> productRepository,
-            IHostingEnvironment hosting
+            IHostingEnvironment hosting,
+            UserManager<User> userManager,
+            IAssociatedRepository<AssociatedSell> associatedSellRepository,
+            IAssociatedRepository<AssociatedShared> associatedSharedRepository,
+            IAssociatedRepository<AssociatedBought> associatedBoughtRepository
             )
         {
             this.productRepository = productRepository;
             this.hosting = hosting;
+            this.userManager = userManager;
+            this.associatedSellRepository = associatedSellRepository;
+            this.associatedSharedRepository = associatedSharedRepository;
+            this.associatedBoughtRepository = associatedBoughtRepository;
         }
         public IActionResult Create()
         {
+            ViewBag.user = userManager.GetUserId(HttpContext.User);
             return View();
         }
 
@@ -54,11 +69,18 @@ namespace MarketPlace.Controllers
                 ProductName = model.ProductName,
                 ProductPrice = model.ProductPrice,
                 ProductImageUrls =fileNames,
-                Sold =false
-             
                 };
                 productRepository.Add(product);
-                
+
+                int id = product.ProductId;
+
+                AssociatedSell associatedSell = new AssociatedSell { 
+                productId=product,
+                SellerId= model.SellerId,
+                Sold=false
+                };
+
+                associatedSellRepository.Add(associatedSell);
 
                 return Redirect("/Auth/Dashboard");
 

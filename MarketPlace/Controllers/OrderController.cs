@@ -35,7 +35,7 @@ namespace MarketPlace.Controllers
         // GET: OrderController/Create
         public void Create(int productId,int sellerId,int customerId )
         {
-            OrderItem orderItem = new OrderItem
+        /*    OrderItem orderItem = new OrderItem
             {
                 ProductId = productId,
                 sellerId = sellerId
@@ -46,7 +46,7 @@ namespace MarketPlace.Controllers
                 CustomerId=customerId,
                 OrderItem= orderItem,
             };
-            orderDbRepository.Add(order);
+            orderDbRepository.Add(order);*/
         }
 
         // POST: OrderController/Create

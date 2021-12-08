@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MarketPlace.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20211207182349_karim")]
-    partial class karim
+    [Migration("20211207233655_Update2")]
+    partial class Update2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -101,6 +101,78 @@ namespace MarketPlace.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("MarketPlace.Models.AssociatedBought", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("BuyerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("BuyerId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("AssociatedBought");
+                });
+
+            modelBuilder.Entity("MarketPlace.Models.AssociatedSell", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SellerIdId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("Sold")
+                        .HasColumnType("bit");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("SellerIdId");
+
+                    b.ToTable("AssociatedSell");
+                });
+
+            modelBuilder.Entity("MarketPlace.Models.AssociatedShared", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SharedIdId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("Sold")
+                        .HasColumnType("bit");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("SharedIdId");
+
+                    b.ToTable("AssociatedShared");
+                });
+
             modelBuilder.Entity("MarketPlace.Models.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -108,13 +180,15 @@ namespace MarketPlace.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int");
+                    b.Property<string>("CustomerId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("OrderItemId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
 
                     b.HasIndex("OrderItemId");
 
@@ -128,15 +202,46 @@ namespace MarketPlace.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("ProductId")
+                    b.Property<int?>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int>("sellerId")
-                        .HasColumnType("int");
+                    b.Property<string>("sellerId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("sellerId");
+
                     b.ToTable("OrderItems");
+                });
+
+            modelBuilder.Entity("MarketPlace.Models.Product", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ProductBrand")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductImageUrls")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductPrice")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductId");
+
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -274,11 +379,59 @@ namespace MarketPlace.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("MarketPlace.Models.AssociatedBought", b =>
+                {
+                    b.HasOne("MarketPlace.Areas.Identity.Data.User", "Buyer")
+                        .WithMany()
+                        .HasForeignKey("BuyerId");
+
+                    b.HasOne("MarketPlace.Models.Product", "product")
+                        .WithMany()
+                        .HasForeignKey("ProductId");
+                });
+
+            modelBuilder.Entity("MarketPlace.Models.AssociatedSell", b =>
+                {
+                    b.HasOne("MarketPlace.Models.Product", "productId")
+                        .WithMany()
+                        .HasForeignKey("ProductId");
+
+                    b.HasOne("MarketPlace.Areas.Identity.Data.User", "SellerId")
+                        .WithMany()
+                        .HasForeignKey("SellerIdId");
+                });
+
+            modelBuilder.Entity("MarketPlace.Models.AssociatedShared", b =>
+                {
+                    b.HasOne("MarketPlace.Models.Product", "productId")
+                        .WithMany()
+                        .HasForeignKey("ProductId");
+
+                    b.HasOne("MarketPlace.Areas.Identity.Data.User", "SharedId")
+                        .WithMany()
+                        .HasForeignKey("SharedIdId");
+                });
+
             modelBuilder.Entity("MarketPlace.Models.Order", b =>
                 {
+                    b.HasOne("MarketPlace.Areas.Identity.Data.User", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId");
+
                     b.HasOne("MarketPlace.Models.OrderItem", "OrderItem")
                         .WithMany()
                         .HasForeignKey("OrderItemId");
+                });
+
+            modelBuilder.Entity("MarketPlace.Models.OrderItem", b =>
+                {
+                    b.HasOne("MarketPlace.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId");
+
+                    b.HasOne("MarketPlace.Areas.Identity.Data.User", "seller")
+                        .WithMany()
+                        .HasForeignKey("sellerId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
