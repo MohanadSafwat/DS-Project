@@ -12,6 +12,21 @@ namespace MarketPlace.Models.Repositories
         {
             db = _db;
         }
+        public List<AssociatedBought> FindUsers(int productId)
+        {
+
+            var result = db.AssociatedBought.Include(p => p.product).Include(s => s.Buyer).Where(p => p.product.ProductId == productId).ToList();
+            if (result != null)
+                return result;
+            else
+                return new List<AssociatedBought>();
+        }
+        public void EditList(List<AssociatedBought> entityList)
+        {
+
+            db.Update(entityList);
+            db.SaveChanges();
+        }
         public List<AssociatedBought> FindProducts(string buyerId)
         {
             var result = db.AssociatedBought.Include(p => p.product).Include(s => s.Buyer).Where(s => s.Buyer.Id == buyerId).ToList();

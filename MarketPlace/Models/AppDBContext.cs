@@ -15,14 +15,13 @@ namespace MarketPlace.Models
         {
 
         }
-         /*   protected override void OnModelCreating(ModelBuilder builder)
-            {
-                builder.Entity<AssociatedBought>().HasKey(table => new {
-                    table.product,
-                    table.Buyer
-                });
-            }
-         */
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            builder.Entity<User>().HasAlternateKey(x => x.Uid).HasName("Uid");
+
+        }
+
 
         public DbSet<User> User { get; set; }
         public DbSet<Order> Orders { get; set; }

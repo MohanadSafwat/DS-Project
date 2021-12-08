@@ -12,6 +12,8 @@ namespace MarketPlace.Models.Repositories
         void Edit(TEnity entity);
         void Delete(int ProductId);
         List<TEnity> FindProducts(string sellerId);
+        List<TEnity> FindUsers(int productId);
+        public void EditList(List<TEnity> entityList);
         
         int IsExist(TEnity entity);
 

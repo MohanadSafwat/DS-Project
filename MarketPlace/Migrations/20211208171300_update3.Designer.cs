@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MarketPlace.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20211207232334_Update1")]
-    partial class Update1
+    [Migration("20211208171300_update3")]
+    partial class update3
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -84,11 +84,19 @@ namespace MarketPlace.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
+                    b.Property<int>("Uid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
                     b.Property<string>("UserName")
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
+
+                    b.HasAlternateKey("Uid")
+                        .HasName("Uid");
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
@@ -180,13 +188,15 @@ namespace MarketPlace.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int");
+                    b.Property<string>("CustomerId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("OrderItemId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
 
                     b.HasIndex("OrderItemId");
 
@@ -200,13 +210,17 @@ namespace MarketPlace.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("ProductId")
+                    b.Property<int?>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int>("sellerId")
-                        .HasColumnType("int");
+                    b.Property<string>("sellerId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("sellerId");
 
                     b.ToTable("OrderItems");
                 });
@@ -408,9 +422,24 @@ namespace MarketPlace.Migrations
 
             modelBuilder.Entity("MarketPlace.Models.Order", b =>
                 {
+                    b.HasOne("MarketPlace.Areas.Identity.Data.User", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId");
+
                     b.HasOne("MarketPlace.Models.OrderItem", "OrderItem")
                         .WithMany()
                         .HasForeignKey("OrderItemId");
+                });
+
+            modelBuilder.Entity("MarketPlace.Models.OrderItem", b =>
+                {
+                    b.HasOne("MarketPlace.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId");
+
+                    b.HasOne("MarketPlace.Areas.Identity.Data.User", "seller")
+                        .WithMany()
+                        .HasForeignKey("sellerId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

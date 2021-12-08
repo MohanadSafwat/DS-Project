@@ -19,7 +19,7 @@ namespace MarketPlace.Controllers
         private readonly IAssociatedRepository<AssociatedShared> associatedSharedRepository;
         private readonly IAssociatedRepository<AssociatedBought> associatedBoughtRepository;
 
-        public AuthController(UserManager<User> userManager, AppDBContext db,IAssociatedRepository<AssociatedSell> associatedSellRepository, IAssociatedRepository<AssociatedShared> associatedSharedRepository, IAssociatedRepository<AssociatedBought> associtaedBoughtRepository)
+        public AuthController(UserManager<User> userManager, AppDBContext db,IAssociatedRepository<AssociatedSell> associatedSellRepository, IAssociatedRepository<AssociatedShared> associatedSharedRepository, IAssociatedRepository<AssociatedBought> associatedBoughtRepository)
         {
             _userManager = userManager;
             _db = db;
@@ -43,11 +43,6 @@ namespace MarketPlace.Controllers
             ViewBag.id = _userManager.GetUserId(HttpContext.User);
             ViewBag.fullUser = HttpContext.User;
 
-
-            List<AssociatedSell> associatedSellList = new List<AssociatedSell>() { };
-            List<AssociatedShared> associatedSharedList = new List<AssociatedShared>() { };
-            List<AssociatedBought> associatedBoughtList = new List<AssociatedBought>() { };
-
             var sell = associatedSellRepository.FindProducts(ViewBag.id);
             var shared = associatedSharedRepository.FindProducts(ViewBag.id);
             var model = new ProductViewModel{};
@@ -59,6 +54,10 @@ namespace MarketPlace.Controllers
             if (associatedSellRepository.FindProducts(ViewBag.id) != null)
             {
                 model.associatedSell = associatedSellRepository.FindProducts(ViewBag.id);
+            }
+            if (associatedBoughtRepository.FindProducts(ViewBag.id) != null)
+            {
+                model.associatedBought = associatedBoughtRepository.FindProducts(ViewBag.id);
             }
 
             return View(model);

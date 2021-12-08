@@ -29,7 +29,7 @@ namespace MarketPlace.Controllers
             UserManager<User> userManager, AppDBContext db,
             IAssociatedRepository<AssociatedSell> associatedSellRepository,
             IAssociatedRepository<AssociatedShared> associatedSharedRepository,
-            IAssociatedRepository<AssociatedBought> associtaedBoughtRepository,
+            IAssociatedRepository<AssociatedBought> associatedBoughtRepository,
             IProductRepository<Product> productRepository
 
             )

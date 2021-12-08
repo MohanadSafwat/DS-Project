@@ -70,35 +70,38 @@
                                 </div>
                             </div>
                             <div class="row">
-
-                                @for(var i = @Model.productsIndex.Count-1;i>@Model.productsIndex.Count-4;i--)
+                                @if (@Model.productsIndex.Count != 0)
                                 {
-                                     <!-- Product -->
-                                <div class="col-lg-3 col-sm-6 my-3">
-                                    <div class="col-12 bg-white text-center h-100 product-item">
-                                        <span class="new">New</span>
-                                        <div class="row h-100">
-                                            <div class="col-12 p-0 mb-3">
-                                                <a asp-controller="Product" asp-action="Product">
-                                                    <img src="~/images/image-1.jpg" class="img-fluid">
-                                                </a>
-                                            </div>
-                                            <div class="col-12 mb-3">
-                                                <a asp-controller="Product" asp-action="Product" class="product-name">@Model.productsIndex[i].ProductName</a>
-                                            </div>
-                                            <div class="col-12 mb-3">
-                                                <span class="product-price">
-                                                    EGP @Model.productsIndex[i].ProductPrice
-                                                </span>
-                                            </div>
-                                            <div class="col-12 mb-3 align-self-end">
-                                                <button class="btn btn-outline-success me-2 mb-2" type="button">Buy Now</button>
-                                                <button class="btn btn-outline-dark me-2 mb-2" type="button"><i class="fas fa-cart-plus me-2"></i>Add to your store</button>
+                                    @for (var i = @Model.productsIndex.Count - 1; i > @Model.productsIndex.Count - 4; i--)
+                                    {
+                                        <!-- Product -->
+                                        <div class="col-lg-3 col-sm-6 my-3">
+                                            <div class="col-12 bg-white text-center h-100 product-item">
+                                                <span class="new">New</span>
+                                                <div class="row h-100">
+                                                    <div class="col-12 p-0 mb-3">
+                                                        <a asp-controller="Product" asp-action="Product">
+                                                            <img src="~/images/image-1.jpg" class="img-fluid">
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-12 mb-3">
+                                                        <a asp-controller="Product" asp-action="Product" class="product-name">@Model.productsIndex[i].ProductName</a>
+                                                    </div>
+                                                    <div class="col-12 mb-3">
+                                                        <span class="product-price">
+                                                            EGP @Model.productsIndex[i].ProductPrice
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-12 mb-3 align-self-end">
+                                                        <button class="btn btn-outline-success me-2 mb-2" type="button">Buy Now</button>
+                                                        <button class="btn btn-outline-dark me-2 mb-2" type="button"><i class="fas fa-cart-plus me-2"></i>Add to your store</button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <!-- Product -->
+                                        <!-- Product -->
+                                    }
+
                                 }
 
                             </div>

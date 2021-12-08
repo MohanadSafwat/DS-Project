@@ -10,7 +10,10 @@ namespace MarketPlace.Areas.Identity.Data
     // Add profile data for application users by adding properties to the User class
     public class User : IdentityUser
     {
-
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [PersonalData]
+        [Column(TypeName = "int")]
+        public int Uid { get; set; }
 
         [PersonalData]
         [Column(TypeName = "nvarchar(100)")]

@@ -21,6 +21,15 @@ namespace MarketPlace.Models.Repositories
             else
                 return new List<AssociatedShared>();
         }
+        public List<AssociatedShared> FindUsers(int productId)
+        {
+
+            var result = db.AssociatedShared.Include(p => p.productId).Include(s => s.SharedId).Where(p => p.productId.ProductId == productId).ToList();
+            if (result != null)
+                return result;
+            else
+                return new List<AssociatedShared>();
+        }
         public void Add(AssociatedShared entity)
         {
             db.AssociatedShared.Add(entity);
@@ -41,6 +50,12 @@ namespace MarketPlace.Models.Repositories
         {
             
             db.Update(entity);
+            db.SaveChanges();
+        }
+        public void EditList(List<AssociatedShared> entityList)
+        {
+
+            db.Update(entityList);
             db.SaveChanges();
         }
 

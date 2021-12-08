@@ -34,7 +34,21 @@ namespace MarketPlace.Models.Repositories
             db.Update(entity);
             db.SaveChanges();
         }
+        public void EditList(List<AssociatedSell> entityList)
+        {
 
+            db.Update(entityList);
+            db.SaveChanges();
+        }
+        public List<AssociatedSell> FindUsers(int productId)
+        {
+
+            var result = db.AssociatedSell.Include(p => p.productId).Include(s => s.SellerId).Where(p => p.productId.ProductId == productId).ToList();
+            if (result != null)
+                return result;
+            else
+                return new List<AssociatedSell>();
+        }
         public AssociatedSell Find(int ProductId)
         {
             return db.AssociatedSell.Include(p=>p.productId).Include(s=>s.SellerId).SingleOrDefault(p => p.productId.ProductId == ProductId );
