@@ -55,8 +55,11 @@ namespace MarketPlace.Models.Repositories
         public void EditList(List<AssociatedShared> entityList)
         {
 
-            db.Update(entityList);
-            db.SaveChanges();
+            foreach (var entity in entityList) {
+                db.Update(entity);
+                db.SaveChanges();
+            }
+            
         }
         public List<AssociatedShared> Search(string term)
         {

@@ -14,8 +14,8 @@ namespace MarketPlace.Controllers
 {
     public class OrderController : Controller
     {
-        private readonly OrderDbRepository orderDbRepository;
-        private readonly OrderItemDbRepository orderItemDbRepository;
+        private readonly IOrderRepository<Order> orderDbRepository;
+        private readonly IOrderRepository<OrderItem> orderItemDbRepository;
         private readonly IProductRepository<Product> productRepository;
         private readonly UserManager<User> userManager;
         private readonly IAssociatedRepository<AssociatedSell> associatedSellRepository;
@@ -23,8 +23,8 @@ namespace MarketPlace.Controllers
         private readonly IAssociatedRepository<AssociatedBought> associatedBoughtRepository;
         private AppDBContext db;
 
-        public OrderController(OrderDbRepository orderRepository,
-            OrderItemDbRepository orderItemRepository,
+        public OrderController(IOrderRepository<Order> orderRepository,
+            IOrderRepository<OrderItem> orderItemRepository,
             IProductRepository<Product> productRepository,
              UserManager<User> userManager,
              IAssociatedRepository<AssociatedSell> associatedSellRepository,
@@ -83,28 +83,30 @@ namespace MarketPlace.Controllers
                 orderDbRepository.Add(order);
 
                 //update AssociatedSell
-                AssociatedSell updatedSell = new AssociatedSell
-                {
-                    id = oldSell.id,
-                    productId = product,
-                    SellerId = oldSell.SellerId,
-                    Sold = true
-                };
-                associatedSellRepository.Edit(updatedSell);
+                /*  AssociatedSell updatedSell = new AssociatedSell
+                  {
+                      id = oldSell.id,
+                      productId = product,
+                      SellerId = oldSell.SellerId,
+                      Sold = true
+                  };*/
+                oldSell.Sold = true;
+                associatedSellRepository.Edit(oldSell);
 
                 //update AssociatedShared
                 List<AssociatedShared> oldShared = associatedSharedRepository.FindUsers(productId);
                 List<AssociatedShared> updatedSharedList = new List<AssociatedShared>();
                 foreach (var shared in oldShared)
                 {
-                    AssociatedShared updatedShared = new AssociatedShared
+                   /* AssociatedShared updatedShared = new AssociatedShared
                     {
                         id = shared.id,
                         SharedId = shared.SharedId,
                         productId = shared.productId,
                         Sold = true
-                    };
-                    updatedSharedList.Add(updatedShared);
+                    };*/
+                   shared.Sold = true;
+                    updatedSharedList.Add(shared);
                 }
                 associatedSharedRepository.EditList(updatedSharedList);
                 //add buyer
@@ -114,6 +116,7 @@ namespace MarketPlace.Controllers
                     product = product
                 };
                 associatedBoughtRepository.Add(associatedBought);
+                db.SaveChanges();
                 return Redirect("/Auth/Dashboard");
             }else
                 return Redirect("/Auth/Dashboard");

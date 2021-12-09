@@ -1,5 +1,6 @@
 using MarketPlace.Models;
 using MarketPlace.Models.Repositories;
+using MarketPlace.Models.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,6 +32,8 @@ namespace MarketPlace
             services.AddScoped<IAssociatedRepository<AssociatedSell>, AssociatedSellRepository>();
             services.AddScoped<IAssociatedRepository<AssociatedBought>, AssociatedBoughtRepository>();
             services.AddScoped<IAssociatedRepository<AssociatedShared>, AssociatedSharedRepository>();
+            services.AddScoped<IOrderRepository<Order>, OrderDbRepository>();
+            services.AddScoped<IOrderRepository<OrderItem>, OrderItemDbRepository>();
 
             services.AddControllersWithViews();
             services.AddRazorPages().AddRazorRuntimeCompilation();

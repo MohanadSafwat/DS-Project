@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace MarketPlace.Models.Repository
 {
-    interface IOrderRepository<TEntity>
+     public interface IOrderRepository<TEntity>
     {
         public void Add(TEntity entity);
 

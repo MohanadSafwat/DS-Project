@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace MarketPlace.Models.Repository
 {
-    public class OrderItemDbRepository
+    public class OrderItemDbRepository : IOrderRepository<OrderItem>
     {
         AppDBContext db;
 
@@ -17,6 +17,7 @@ namespace MarketPlace.Models.Repository
         public void Add(OrderItem entity)
         {
             db.OrderItems.Add(entity);
+            db.SaveChanges();
         }
 
         public void Delete(int id)
@@ -24,6 +25,8 @@ namespace MarketPlace.Models.Repository
             var orderItem = Find(id);
 
             db.OrderItems.Remove(orderItem);
+            db.SaveChanges();
+
         }
 
         public OrderItem Find(int id)

@@ -18,6 +18,7 @@ namespace MarketPlace.Models.Repository
         public void Add(Order entity)
         {
             db.Orders.Add(entity);
+            db.SaveChanges();
         }
 
         public void Delete(int id)
@@ -25,6 +26,8 @@ namespace MarketPlace.Models.Repository
             var order = Find(id);
 
             db.Orders.Remove(order);
+            db.SaveChanges();
+
         }
 
         public Order Find(int id)
