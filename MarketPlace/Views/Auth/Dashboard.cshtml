@@ -44,13 +44,13 @@
             <div class="col-12 bg-white py-3 mb-3">
                 <div class="row">
                     <div class="col-lg-6 col-md-8 col-sm-10 mx-auto table-responsive">
-                            <div class="col-12 text-right">
-                             
-                                <a asp-controller="Product" asp-action="Create" asp-route-user=@ViewBag.user class="btn btn-outline-primary my-2 form-control">
-                                    Add
-                                </a>
-                            </div>
-                    
+                        <div class="col-12 text-right">
+
+                            <a asp-controller="Product" asp-action="Create" asp-route-user=@ViewBag.user class="btn btn-outline-primary my-2 form-control">
+                                Add
+                            </a>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -64,7 +64,7 @@
             </div>
         </div>
 
-        
+
         <main class="row">
             <div class="col-12 py-3 mb-3">
                 <div class="row">
@@ -90,206 +90,246 @@
 
     <div class="container">
 
-    <main class="row">
-        <div class="col-12  py-3 mb-3">
-            <div class="row">
-                                <div class="col-12 mt-3 text-center text-uppercase">
-                    <h2>Belongs To You</h2>
+        <main class="row">
+            <div class="col-12  py-3 mb-3">
+                <div class="row">
+                    <div class="col-12 mt-3 text-center text-uppercase">
+                        <h2>Belongs To You</h2>
+                    </div>
+                    <div class="col-12 mt-3 text-center text-uppercase">
+                        <p>Unsold</p>
+                    </div>
+                </div>
+                <div class="row">
+                    @foreach (var item in @Model.associatedSell)
+                    {
+                        <!-- Product -->
+                        @if (!item.Sold)
+                        {
+                            <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
+                                <div class="col-12 bg-white text-center h-100 product-item">
+                                    <div class="row h-100">
+                                        <div class="col-12 p-0 mb-3">
+                                            @if (item.productId.ProductImageUrls != null)
+                                            {
+                                                string[] imagesUrl = item.productId.ProductImageUrls.Split('`');
+
+
+                                                <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId>
+                                                    <img src="~/images/@imagesUrl[0]" class="img-fluid">
+                                                </a>
+
+                                            }
+
+                                        </div>
+                                        <div class="col-12 mb-3">
+                                            <a asp-controller="Product" asp-action="Product" class="product-name">@item.productId.ProductName</a>
+                                        </div>
+                                        <div class="col-12 mb-3">
+                                            <span class="product-price"> EGP @item.productId.ProductPrice </span>
+                                        </div>
+                                        <div class="col-12 mb-3 align-self-end">
+                                            <a asp-route-id=@item.productId.ProductId asp-action="Edit" asp-controller="Product" class="btn btn-outline-warning me-2 mb-2" type="button">
+                                                Edit
+                                            </a>
+                                            <a class="btn btn-outline-danger me-2 mb-2" asp-action="Delete" asp-controller="Product" asp-route-id=@item.productId.ProductId type="button">
+                                                Remove
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <!-- Product -->
+                    }
+
+                </div>
+            </div>
+        </main>
+
+        <br />
+
+        <main class="row">
+            <div class="col-12  py-3 mb-3">
+
+                <div class="col-12 mt-3 text-center text-uppercase">
+                    <p>Sold</p>
+                </div>
+                <div class="row">
+                    @foreach (var item in @Model.associatedSell)
+                    {
+                        <!-- Product -->
+                        @if (item.Sold)
+                        {
+                            <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
+                                <div class="col-12 bg-white text-center h-100 product-item">
+                                    <div class="row h-100">
+                                        <div class="col-12 p-0 mb-3">
+                                            @if (item.productId.ProductImageUrls != null)
+                                            {
+                                                string[] imagesUrl = item.productId.ProductImageUrls.Split('`');
+
+
+                                                <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId>
+                                                    <img src="~/images/@imagesUrl[0]" class="img-fluid">
+                                                </a>
+
+                                            }
+                                        </div>
+                                        <div class="col-12 mb-3">
+                                            <a asp-controller="Product" asp-action="Product" class="product-name">@item.productId.ProductName</a>
+                                        </div>
+                                        <div class="col-12 mb-3">
+                                            <span class="product-price"> EGP @item.productId.ProductPrice </span>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <!-- Product -->
+                    }
+                </div>
+            </div>
+        </main>
+        <br />
+
+        <main class="row">
+            <div class="col-12  py-3 mb-3">
+                <div class="row">
+                    <div class="col-12 mt-3 text-center text-uppercase">
+                        <h2>Bought Items</h2>
+                    </div>
+                </div>
+                <div class="row">
+                    @foreach (var item in @Model.associatedBought)
+                    {
+                        <!-- Product -->
+
+                        <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
+                            <div class="col-12 bg-white text-center h-100 product-item">
+                                <div class="row h-100">
+                                    <div class="col-12 p-0 mb-3">
+                                         @if (item.product.ProductImageUrls != null)
+                                            {
+                                                string[] imagesUrl = item.product.ProductImageUrls.Split('`');
+
+
+                                                <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.product.ProductId>
+                                                    <img src="~/images/@imagesUrl[0]" class="img-fluid">
+                                                </a>
+
+                                            }
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <a asp-controller="Product" asp-action="Product" class="product-name">@item.product.ProductName</a>
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <span class="product-price"> EGP @item.product.ProductPrice </span>
+                                    </div>
+                                    <div class="col-12 mb-3 align-self-end">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Product -->
+                    }
+                </div>
+            </div>
+        </main>
+
+        <main class="row">
+            <div class="col-12  py-3 mb-3">
+                <div class="row">
+                    <div class="col-12 mt-3 text-center text-uppercase">
+                        <h2>Shared Items</h2>
+                    </div>
                 </div>
                 <div class="col-12 mt-3 text-center text-uppercase">
                     <p>Unsold</p>
                 </div>
-            </div>
-            <div class="row">
-                @foreach(var item in @Model.associatedSell){
-                    <!-- Product -->
-                    @if (!item.Sold)
+                <div class="row">
+                    @foreach (var item in @Model.associatedShared)
                     {
-                        <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
-                            <div class="col-12 bg-white text-center h-100 product-item">
-                        <div class="row h-100">
-                            <div class="col-12 p-0 mb-3">
-                               <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId>
-                                                            <img src="~/images/image-1.jpg" class="img-fluid">
-                                                        </a>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <a asp-controller="Product" asp-action="Product" class="product-name">@item.productId.ProductName</a>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <span class="product-price"> EGP @item.productId.ProductPrice </span>
-                            </div>
-                            <div class="col-12 mb-3 align-self-end">
-                                <a asp-route-id=@item.productId.ProductId  asp-action="Edit" asp-controller="Product" class="btn btn-outline-warning me-2 mb-2" type="button">
-                                    Edit
-                                </a>
-                                <a class="btn btn-outline-danger me-2 mb-2" asp-action="Delete" asp-controller="Product" asp-route-id=@item.productId.ProductId type="button"> 
-                                    Remove
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>}
-                <!-- Product -->
-               }
+                        <!-- Product -->
+                        @if (!item.Sold)
+                        {
+                            <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
+                                <div class="col-12 bg-white text-center h-100 product-item">
+                                    <div class="row h-100">
+                                        <div class="col-12 p-0 mb-3">
+                                             @if (item.productId.ProductImageUrls != null)
+                                            {
+                                                string[] imagesUrl = item.productId.ProductImageUrls.Split('`');
 
-            </div>
-        </div>
-    </main>
 
-    <br />
+                                                <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId>
+                                                    <img src="~/images/@imagesUrl[0]" class="img-fluid">
+                                                </a>
 
-    <main class="row">
-        <div class="col-12  py-3 mb-3">
-           
-            <div class="col-12 mt-3 text-center text-uppercase">
+                                            }
+                                        </div>
+                                        <div class="col-12 mb-3">
+                                            <a asp-controller="Product" asp-action="Product" class="product-name">@item.productId.ProductName</a>
+                                        </div>
+                                        <div class="col-12 mb-3">
+                                            <span class="product-price"> EGP @item.productId.ProductPrice </span>
+                                        </div>
+                                        <div class="col-12 mb-3 align-self-end">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!-- Product -->
+                        }}
+                </div>
+                <div class="col-12 mt-3 text-center text-uppercase">
                     <p>Sold</p>
                 </div>
-            <div class="row">
-                 @foreach(var item in @Model.associatedSell){
-                    <!-- Product -->
-                    @if (item.Sold)
+                <div class="row">
+                    @foreach (var item in @Model.associatedShared)
                     {
-                        <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
-                            <div class="col-12 bg-white text-center h-100 product-item">
-                        <div class="row h-100">
-                            <div class="col-12 p-0 mb-3">
-                                 <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId>
-                                                            <img src="~/images/image-1.jpg" class="img-fluid">
-                                                        </a>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <a asp-controller="Product" asp-action="Product" class="product-name">@item.productId.ProductName</a>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <span class="product-price"> EGP @item.productId.ProductPrice </span>
-                            </div>
-                           
-                        </div>
-                    </div>
-                </div>}
-                <!-- Product -->
-               }
-            </div>
-        </div>
-    </main>
-    <br />
+                        <!-- Product -->
+                        @if (item.Sold)
+                        {
+                            <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
+                                <div class="col-12 bg-white text-center h-100 product-item">
+                                    <div class="row h-100">
+                                        <div class="col-12 p-0 mb-3">
+                                            @if (item.productId.ProductImageUrls != null)
+                                            {
+                                                string[] imagesUrl = item.productId.ProductImageUrls.Split('`');
 
-    <main class="row">
-        <div class="col-12  py-3 mb-3">
-            <div class="row">
-                <div class="col-12 mt-3 text-center text-uppercase">
-                    <h2>Bought Items</h2>
+
+                                                <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId>
+                                                    <img src="~/images/@imagesUrl[0]" class="img-fluid">
+                                                </a>
+
+                                            }
+                                        </div>
+                                        <div class="col-12 mb-3">
+                                            <a asp-controller="Product" asp-action="Product" class="product-name">@item.productId.ProductName</a>
+                                        </div>
+                                        <div class="col-12 mb-3">
+                                            <span class="product-price"> EGP @item.productId.ProductPrice </span>
+                                        </div>
+                                        <div class="col-12 mb-3 align-self-end">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!-- Product -->
+                        }}
                 </div>
             </div>
-            <div class="row">
-                 @foreach(var item in @Model.associatedBought){
-                    <!-- Product -->
-                    
-                        <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
-                            <div class="col-12 bg-white text-center h-100 product-item">
-                        <div class="row h-100">
-                            <div class="col-12 p-0 mb-3">
-   <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.product.ProductId>
-                                                            <img src="~/images/image-1.jpg" class="img-fluid">
-                                                        </a>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <a asp-controller="Product" asp-action="Product" class="product-name">@item.product.ProductName</a>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <span class="product-price"> EGP @item.product.ProductPrice </span>
-                            </div>
-                            <div class="col-12 mb-3 align-self-end">
-                              
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Product -->
-               }
-            </div>
-        </div>
-    </main>
-    
-    <main class="row">
-        <div class="col-12  py-3 mb-3">
-            <div class="row">
-                <div class="col-12 mt-3 text-center text-uppercase">
-                    <h2>Shared Items</h2>
-                </div>
-            </div>
-            <div class="col-12 mt-3 text-center text-uppercase">
-                    <p>Unsold</p>
-                </div>
-            <div class="row">
-                 @foreach(var item in @Model.associatedShared){
-                    <!-- Product -->
-                    @if (!item.Sold)
-                    {
-                        <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
-                            <div class="col-12 bg-white text-center h-100 product-item">
-                        <div class="row h-100">
-                            <div class="col-12 p-0 mb-3">
-                                 <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId>
-                                                            <img src="~/images/image-1.jpg" class="img-fluid">
-                                                        </a>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <a asp-controller="Product" asp-action="Product" class="product-name">@item.productId.ProductName</a>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <span class="product-price"> EGP @item.productId.ProductPrice </span>
-                            </div>
-                            <div class="col-12 mb-3 align-self-end">
-                              
-                            </div>
-                        </div>
-                    </div>
-                 
-                </div>
-                <!-- Product -->
-                  }}
-            </div>
-            <div class="col-12 mt-3 text-center text-uppercase">
-                    <p>Sold</p>
-                </div>
-            <div class="row">
-                 @foreach(var item in @Model.associatedShared){
-                    <!-- Product -->
-                    @if (item.Sold)
-                    {
-                        <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
-                            <div class="col-12 bg-white text-center h-100 product-item">
-                        <div class="row h-100">
-                            <div class="col-12 p-0 mb-3">
-                                 <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId>
-                                                            <img src="~/images/image-1.jpg" class="img-fluid">
-                                                        </a>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <a asp-controller="Product" asp-action="Product" class="product-name">@item.productId.ProductName</a>
-                            </div>
-                            <div class="col-12 mb-3">
-                                <span class="product-price"> EGP @item.productId.ProductPrice </span>
-                            </div>
-                            <div class="col-12 mb-3 align-self-end">
-                               
-                            </div>
-                        </div>
-                    </div>
-                 
-                </div>
-                <!-- Product -->
-                  }}
-            </div>
-        </div>
-    </main>
+        </main>
     </div>
     <!-- Main Content -->
 </div>
 
 @section Scripts{
-    <script async src="https://cpwebassets.codepen.io/assets/embed/ei.js"></script>
+<script async src="https://cpwebassets.codepen.io/assets/embed/ei.js"></script>
 
 }

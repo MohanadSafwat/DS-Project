@@ -1,5 +1,4 @@
-﻿
-@model MarketPlace.ViewModels.ProductViewModel
+﻿@model MarketPlace.ViewModels.ProductViewModel
 @using Microsoft.AspNetCore.Identity
 @using MarketPlace.Areas.Identity.Data
 
@@ -25,13 +24,15 @@
             </form>
         </div>
         @if (SignInManager.IsSignedIn(User))
-        {<div class="col-lg-auto text-center text-lg-left header-item-holder">
+        {
+            <div class="col-lg-auto text-center text-lg-left header-item-holder">
 
                 <a asp-controller="Auth" asp-action="Dashboard" class="header-item">
                     <i class="fas fa-columns me-2"></i><span id="header-qty" class="me-3">  Dashboard  </span>
                     <i class="fas fa-money-bill-wave me-2"></i><span id="header-price"> @ViewBag.user.Amount</span>
                 </a>
-            </div>}
+            </div>
+        }
     </div>
 </div>
 <!-- Header -->
@@ -45,25 +46,48 @@
 
                 <!-- Product Images -->
                 <div class="col-lg-5 col-md-12 mb-3">
-                    <div class="col-12 mb-3">
-                        <div class="img-large border" style="background-image: url('../images/image-1.jpg')"></div>
-                    </div>
-                    <div class="col-12">
-                        <div class="row">
-                            <div class="col-sm-2 col-3">
-                                <div class="img-small border" style="background-image: url('../images/image-1.jpg')" data-src="../images/image-1.jpg"></div>
-                            </div>
-                            <div class="col-sm-2 col-3">
-                                <div class="img-small border" style="background-image: url('../images/image-2.jpg')" data-src="../images/image-2.jpg"></div>
-                            </div>
-                            <div class="col-sm-2 col-3">
-                                <div class="img-small border" style="background-image: url('../images/image-3.jpg')" data-src="../images/image-3.jpg"></div>
-                            </div>
-                            <div class="col-sm-2 col-3">
-                                <div class="img-small border" style="background-image: url('../images/image-4.jpg')" data-src="../images/image-4.jpg"></div>
+                    @if (Model.productDeatails.productId.ProductImageUrls != null)
+                    {
+
+                        string[] imagesUrl = Model.productDeatails.productId.ProductImageUrls.Split('`');
+                        <div class="col-12 mb-3">
+                            <div class="img-large border" style="background-image: url('../images/@imagesUrl[0]')"></div>
+                        </div>
+                        <div class="col-12">
+                            <div class="row">
+                                @if(imagesUrl.Length > 2)
+                                {
+                                var count = 0;
+                                for (int i = 1; count < 4; i++)
+                                {
+                                    count++;
+                                    if (count > imagesUrl.Length - 3)
+                                    {
+                                        count = 4;
+                                    }
+                                    <div class="col-sm-2 col-3">
+                                        <div class="img-small border" style="background-image: url('../images/@imagesUrl[i]')" data-src="../images/@imagesUrl[i]"></div>
+                                    </div>
+
+                                }
+                                }
+
+                                @*<div class="col-sm-2 col-3">
+                                    <div class="img-small border" style="background-image: url('../images/image-2.jpg')" data-src="../images/image-2.jpg"></div>
+                                </div>
+                                <div class="col-sm-2 col-3">
+                                    <div class="img-small border" style="background-image: url('../images/image-3.jpg')" data-src="../images/image-3.jpg"></div>
+                                </div>
+                                <div class="col-sm-2 col-3">
+                                    <div class="img-small border" style="background-image: url('../images/image-4.jpg')" data-src="../images/image-4.jpg"></div>
+                                </div>*@
                             </div>
                         </div>
-                    </div>
+
+
+                    }
+
+
                 </div>
                 <!-- Product Images -->
                 <!-- Product Info -->
@@ -78,7 +102,7 @@
                         <hr>
                     </div>
                     <div class="col-12">
-                     @Model.productDeatails.productId.ProductDescription
+                        @Model.productDeatails.productId.ProductDescription
 
                     </div>
                 </div>
@@ -89,18 +113,40 @@
                         <div class="row">
                             <div class="col-12">
                                 <span class="detail-price">
-                                    @Model.productDeatails.productId.ProductPrice
+                                    EGP @Model.productDeatails.productId.ProductPrice
 
                                 </span>
 
                             </div>
-                           
                             <div class="col-12 mt-3">
-                                <button class="btn btn-outline-success" type="button">Buy Now</button>
 
-                            </div>
-                            <div class="col-12 mt-3">
-                                <button class="btn btn-outline-dark" type="button"><i class="fas fa-cart-plus me-2"></i>Add to your Store</button>
+                                @if (SignInManager.IsSignedIn(User))
+                                {
+
+                                    if (ViewBag.user.Id != @Model.productDeatails.SellerId.Id)
+                                    {
+                                        <a class="btn btn-outline-success" type="button" asp-controller="Order" asp-action="Create" asp-route-productId="@Model.productDeatails.productId.ProductId" asp-route-customerId="@ViewBag.user.Id">Buy Now</a>
+                                        <br />
+                                        <br />
+                                        <button class="btn btn-outline-dark" type="button"><i class="fas fa-cart-plus me-2"></i>Add to your Store</button>
+
+
+
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-outline-success me-2 mb-2" type="button">Yours</button>
+
+                                    }
+                                }
+                                else
+                                {
+                                    <a class="btn btn-outline-success me-2 mb-2" type="button" href="../Identity/Account/Login">Login</a>
+
+                                }
+
+
+
                             </div>
                         </div>
                     </div>

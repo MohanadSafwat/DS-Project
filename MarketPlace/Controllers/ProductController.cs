@@ -57,38 +57,44 @@ namespace MarketPlace.Controllers
         [Obsolete]
         public async Task<IActionResult> Create(ProductViewModel model)
         {
-            try {
+            try
+            {
                 string fileNames = string.Empty;
                 if (model.Files != null)
                 {
-                    foreach (var file in model.Files) {
+                    /*                    var file = model.Files;
+                    */
+                    foreach (var file in model.Files)
+                    {
                         string upload = Path.Combine(hosting.WebRootPath, "images");
-                        fileNames+=(file.FileName);
+                        fileNames += (file.FileName);
                         fileNames += "`";
                         string fullPath = Path.Combine(upload, file.FileName);
-                        file.CopyTo(new FileStream(fullPath,FileMode.Create));
-                            }
+                        file.CopyTo(new FileStream(fullPath, FileMode.Create));
+                    }
                 }
 
-                Product product = new Product { 
-                ProductBrand = model.ProductBrand,
-                ProductDescription = model.ProductDescription,
-                ProductName = model.ProductName,
-                ProductPrice = model.ProductPrice,
-                ProductImageUrls =fileNames,
+                Product product = new Product
+                {
+                    ProductBrand = model.ProductBrand,
+                    ProductDescription = model.ProductDescription,
+                    ProductName = model.ProductName,
+                    ProductPrice = model.ProductPrice,
+                    ProductImageUrls = fileNames,
                 };
 
                 productRepository.Add(product);
 
                 int id = product.ProductId;
 
-                Task<User> Seller  = UserReturn(model.SellerId);
+                Task<User> Seller = UserReturn(model.SellerId);
                 User userData = await Seller;
 
-                AssociatedSell associatedSell = new AssociatedSell { 
-                productId=product,
-                SellerId= userData,
-                Sold=false
+                AssociatedSell associatedSell = new AssociatedSell
+                {
+                    productId = product,
+                    SellerId = userData,
+                    Sold = false
                 };
 
                 associatedSellRepository.Add(associatedSell);
@@ -99,15 +105,15 @@ namespace MarketPlace.Controllers
             }
             catch { return View(); }
         }
-      
-       
-    
-    public IActionResult Edit(int id)
-    {
-        var product = productRepository.Find(id);
+
+
+
+        public IActionResult Edit(int id)
+        {
+            var product = productRepository.Find(id);
             var model = new ProductViewModel
             {
-                ProductBrand= product.ProductBrand,
+                ProductBrand = product.ProductBrand,
                 ProductDescription = product.ProductDescription,
                 ProductName = product.ProductName,
                 ProductId = product.ProductId,
@@ -115,30 +121,34 @@ namespace MarketPlace.Controllers
                 ProductPrice = product.ProductPrice,
 
             };
-        return View(model);
-    }
+            return View(model);
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Obsolete]
-        public async Task<IActionResult> Edit(ProductViewModel model)
+        public IActionResult Edit(ProductViewModel model)
         {
             try
             {
                 string fileNames = string.Empty;
                 if (model.Files != null)
                 {
-                    foreach (var file in model.Files)
+/*                    var file = model.Files;
+*/                    foreach (var file in model.Files)
                     {
                         string upload = Path.Combine(hosting.WebRootPath, "images");
-                        fileNames+=file.FileName;
-                        fileNames += '`';
-                        string fullPath = Path.Combine(upload, file.FileName);
-                        file.CopyTo(new FileStream(fullPath, FileMode.Create));
+                    fileNames += file.FileName;
+                    fileNames += '`';
+                    string fullPath = Path.Combine(upload, file.FileName);
+                    file.CopyTo(new FileStream(fullPath, FileMode.Create));
                     }
                 }
 
-
+                if (fileNames == "")
+                {
+                    fileNames = model.ProductImagesUrl;
+                }
                 Product product = new Product
                 {
                     ProductId = model.ProductId,
@@ -148,8 +158,10 @@ namespace MarketPlace.Controllers
                     ProductPrice = model.ProductPrice,
                     ProductImageUrls = fileNames
                 };
+                
+               
 
-                productRepository.Edit(model.ProductId,product);
+                productRepository.Edit(model.ProductId, product);
 
 
                 return Redirect("/Auth/Dashboard");
@@ -169,7 +181,7 @@ namespace MarketPlace.Controllers
 
             ViewBag.user = userData;
 
-            var vmodel= new ProductViewModel {SearchedItems= associatedSellRepository.Search(model.searchTerm) };
+            var vmodel = new ProductViewModel { SearchedItems = associatedSellRepository.Search(model.searchTerm) };
             return View(vmodel);
         }
         public async Task<IActionResult> Product(int productId)
@@ -191,9 +203,9 @@ namespace MarketPlace.Controllers
 
             var model = new ProductViewModel
             {
-                
+
                 ProductBrand = product.ProductBrand,
-                SellerId=associatedProduct.SellerId.ToString(),
+                SellerId = associatedProduct.SellerId.ToString(),
                 ProductDescription = product.ProductDescription,
                 ProductName = product.ProductName,
                 ProductId = product.ProductId,
@@ -206,8 +218,8 @@ namespace MarketPlace.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-     
-        public IActionResult Delete(int id,ProductViewModel model)
+
+        public IActionResult Delete(int id, ProductViewModel model)
         {
             try
             {
@@ -217,8 +229,9 @@ namespace MarketPlace.Controllers
 
 
             }
-            catch {
-                return View(); 
+            catch
+            {
+                return View();
             }
         }
     }
