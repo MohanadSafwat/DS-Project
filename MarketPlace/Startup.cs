@@ -29,14 +29,19 @@ namespace MarketPlace
         {
             services.AddDbContext<AppDBContext>(option => option.UseSqlServer(Configuration.GetConnectionString("SqlCon")));
             services.AddScoped<IProductRepository<Product>, ProductDbRepository>();
+            services.AddTransient<IProductRepository<Product>, ProductDbRepository>();
             services.AddScoped<IAssociatedRepository<AssociatedSell>, AssociatedSellRepository>();
             services.AddScoped<IAssociatedRepository<AssociatedBought>, AssociatedBoughtRepository>();
             services.AddScoped<IAssociatedRepository<AssociatedShared>, AssociatedSharedRepository>();
             services.AddScoped<IOrderRepository<Order>, OrderDbRepository>();
             services.AddScoped<IOrderRepository<OrderItem>, OrderItemDbRepository>();
-
+            services.Configure<AppDbConnection>(options =>
+            {
+                options.ConnectionString = Configuration.GetConnectionString("SqlCon");
+            });
             services.AddControllersWithViews();
             services.AddRazorPages().AddRazorRuntimeCompilation();
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

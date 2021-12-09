@@ -1,16 +1,23 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Dapper;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MarketPlace.Models.Repositories
 {
     public class ProductDbRepository : IProductRepository<Product>
     {
         AppDBContext db;
+        private readonly string _connectionString;
 
-        public ProductDbRepository(AppDBContext _db)
+        public ProductDbRepository(AppDBContext _db , IOptions<AppDbConnection> config)
         {
             db = _db;
+            _connectionString = config.Value.ConnectionString;
         }
 
         public void Add(Product entity)
@@ -61,6 +68,14 @@ namespace MarketPlace.Models.Repositories
         public List<Product> List()
         {
             return db.Products.ToList() ;
+        }
+
+        public async Task<IEnumerable<Product>> GetProducts()
+        {
+            using(IDbConnection db = new SqlConnection(_connectionString))
+            {
+                return  await db.QueryAsync<Product>("select ProductId,ProductName,ProductPrice,ProductBrand,ProductDescription from Products", commandType: CommandType.Text);
+            }
         }
     }
 }

@@ -1,9 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MarketPlace.Models.Repositories
 {
     public interface IProductRepository<TEnity>
     {
+
+
+        Task<IEnumerable<Product>> GetProducts();
+
         List<TEnity> List();
 
 
