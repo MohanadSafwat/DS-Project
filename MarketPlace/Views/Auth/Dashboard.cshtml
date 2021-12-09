@@ -64,13 +64,14 @@
             </div>
         </div>
 
+        
         <main class="row">
             <div class="col-12 py-3 mb-3">
                 <div class="row">
                     <div class="col-lg-6 col-md-8 col-sm-10 mx-auto table-responsive">
-                        <form class="row">
+                        <form class="row" asp-action="Add" asp-controller="Auth">
                             <div class="col-12 text-right">
-                                <input type="number" class="form-control  my-2" placeholder="Amount of Money...">
+                                <input type="number" asp-for=Amount class="form-control  my-2" placeholder="Amount of Money...">
 
 
                                 <button class="btn btn-outline-success my-2 form-control" type="submit">

@@ -44,6 +44,7 @@ namespace MarketPlace.ViewModels
         public List<AssociatedBought> associatedBought { get; set; }
         public AssociatedSell productDeatails { get; set; }
 
+        public int Amount { get; set; }
         public string searchTerm { get; set; }
 
     }

@@ -36,6 +36,20 @@ namespace MarketPlace.Controllers
         {
             return View();
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Add(ProductViewModel model)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                System.Diagnostics.Debug.WriteLine(model.Amount);
+                user.Amount += model.Amount;
+                _db.SaveChanges();
+                return Redirect("/Auth/Dashboard");
+            }
+            catch { return Redirect("/Auth/Dashboard"); }
+        }
         public async Task<IActionResult> Dashboard()
         {
 
