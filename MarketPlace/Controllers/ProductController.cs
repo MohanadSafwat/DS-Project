@@ -22,7 +22,7 @@ namespace MarketPlace.Controllers
         private readonly IAssociatedRepository<AssociatedSell> associatedSellRepository;
         private readonly IAssociatedRepository<AssociatedShared> associatedSharedRepository;
         private readonly IAssociatedRepository<AssociatedBought> associatedBoughtRepository;
-
+        private AppDBContext db;
         [Obsolete]
         public ProductController(IProductRepository<Product> productRepository,
             IHostingEnvironment hosting,
@@ -30,6 +30,7 @@ namespace MarketPlace.Controllers
             IAssociatedRepository<AssociatedSell> associatedSellRepository,
             IAssociatedRepository<AssociatedShared> associatedSharedRepository,
             IAssociatedRepository<AssociatedBought> associatedBoughtRepositor
+
             )
         {
             this.productRepository = productRepository;
@@ -37,7 +38,7 @@ namespace MarketPlace.Controllers
             this.userManager = userManager;
             this.associatedSellRepository = associatedSellRepository;
             this.associatedSharedRepository = associatedSharedRepository;
-            this.associatedBoughtRepository = associatedBoughtRepository;
+            this.associatedBoughtRepository = associatedBoughtRepositor;//this updated
         }
         public async Task<User> UserReturn(string id)
         {

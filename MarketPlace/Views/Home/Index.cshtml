@@ -34,8 +34,8 @@
             </div>
             @if (SignInManager.IsSignedIn(User))
             {<div class="col-lg-auto text-center text-lg-left header-item-holder">
-
-                    <a asp-controller="Auth" asp-action="Dashboard" class="header-item">
+             
+                    <a asp-controller ="Auth" asp-action="Dashboard" class="header-item">
                         <i class="fas fa-columns me-2"></i><span id="header-qty" class="me-3">  Dashboard  </span>
                         <i class="fas fa-money-bill-wave me-2"></i><span id="header-price"> @ViewBag.user.Amount</span>
                     </a>
@@ -99,7 +99,7 @@
                                                         </span>
                                                     </div>
                                                     <div class="col-12 mb-3 align-self-end">
-                                                        <button class="btn btn-outline-success me-2 mb-2" type="button">Buy Now</button>
+                                                        <a class="btn btn-outline-success me-2 mb-2" type="button" asp-controller="Order" asp-action="Create" asp-route-productId="@Model.productsIndex[i].productId.ProductId" asp-route-customerId="@ViewBag.user.Id">Buy Now</a>
                                                         <button class="btn btn-outline-dark me-2 mb-2" type="button"><i class="fas fa-cart-plus me-2"></i>Add to your store</button>
                                                     </div>
                                                 </div>

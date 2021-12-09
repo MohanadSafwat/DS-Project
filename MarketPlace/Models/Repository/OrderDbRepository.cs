@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MarketPlace.Models.Repository
 {
-    public class OrderDbRepository
+    public class OrderDbRepository:IOrderRepository<Order>
     {
         AppDBContext db;
 
