@@ -457,3 +457,4 @@ C:\Users\Mohan\OneDrive\Documents\GitHub\DS-Project\MarketPlace\obj\Debug\netcor
 C:\Users\Mohan\OneDrive\Documents\GitHub\DS-Project\MarketPlace\obj\Debug\netcoreapp3.1\MarketPlace.dll
 C:\Users\Mohan\OneDrive\Documents\GitHub\DS-Project\MarketPlace\obj\Debug\netcoreapp3.1\MarketPlace.pdb
 C:\Users\Mohan\OneDrive\Documents\GitHub\DS-Project\MarketPlace\obj\Debug\netcoreapp3.1\MarketPlace.genruntimeconfig.cache
+C:\Users\Mohan\OneDrive\Documents\GitHub\DS-Project\MarketPlace\obj\Debug\netcoreapp3.1\Razor\Views\Product\Store.cshtml.g.cs

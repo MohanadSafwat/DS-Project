@@ -1,0 +1,186 @@
+﻿@using MarketPlace.Areas.Identity.Data
+@using Microsoft.AspNetCore.Identity
+
+@model MarketPlace.ViewModels.ProductViewModel
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+<!-- Top Nav -->
+<!-- Header -->
+<div class="col-12 bg-white py-4">
+    <div class="row">
+        <div class="col-lg-auto">
+            <div class="site-logo text-center text-lg-left">
+                <a asp-controller="Home" asp-action="Index">Marketplace</a>
+            </div>
+        </div>
+        <div class="col-lg-5 mx-auto mt-4 mt-lg-0">
+            <form action="@Url.Action("Search", "Product")">
+                <div class="form-group">
+                    <div class="input-group">
+                        <input type="search" asp-for=searchTerm class="form-control border-dark" placeholder="Search..." required>
+                        <button class="btn btn-outline-dark"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+         @if (SignInManager.IsSignedIn(User))
+            {
+                <div class="col-lg-auto text-center text-lg-left header-item-holder">
+
+                    <a asp-controller="Auth" asp-action="Dashboard" class="header-item">
+                        <i class="fas fa-columns me-2"></i><span id="header-qty" class="me-3">  Dashboard  </span>
+                        <i class="fas fa-money-bill-wave me-2"></i><span id="header-price"> @ViewBag.user.Amount</span>
+                    </a>
+                </div>
+            }
+    </div>
+</div>
+<!-- Header -->
+
+    <div class="container">
+
+        <main class="row">
+            <div class="col-12  py-3 mb-3">
+                <div class="row">
+                    <div class="col-12 mt-3 text-center text-uppercase">
+                        <h2> @ViewBag.seller.FirstName @ViewBag.seller.LastName's Products</h2>
+                    </div>
+                    
+                </div>
+                <div class="row">
+                    @foreach (var item in @Model.associatedSell)
+                    {
+                        <!-- Product -->
+                        @if (!item.Sold)
+                        {
+                            <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
+                                <div class="col-12 bg-white text-center h-100 product-item">
+                                    <div class="row h-100">
+                                        <div class="col-12 p-0 mb-3">
+                                            @if (item.productId.ProductImageUrls != null)
+                                            {
+                                                string[] imagesUrl = item.productId.ProductImageUrls.Split('`');
+
+
+                                                <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId>
+                                                    <img src="~/images/@imagesUrl[0]" class="img-fluid">
+                                                </a>
+
+                                            }
+
+                                        </div>
+                                        <div class="col-12 mb-3">
+                                            <a asp-controller="Product" asp-action="Product" class="product-name">@item.productId.ProductName</a>
+                                        </div>
+                                        <div class="col-12 mb-3">
+                                            <span class="product-price"> EGP @item.productId.ProductPrice </span>
+                                        </div>
+                                        <div class="col-12 mb-3 align-self-end">
+                                              @if (SignInManager.IsSignedIn(User))
+                                                            {
+
+                                                                if (ViewBag.user.Id != @item.SellerId.Id)
+                                                                {
+                                                                    <a class="btn btn-outline-success me-2 mb-2" type="button" asp-controller="Order" asp-action="Create" asp-route-productId="@item.productId.ProductId" asp-route-customerId="@ViewBag.user.Id">Buy Now</a>
+                                                                    <button class="btn btn-outline-dark me-2 mb-2" type="button"><i class="fas fa-cart-plus me-2"></i>Add to your store</button>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <button class="btn btn-outline-success me-2 mb-2" type="button">Yours</button>
+
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                <a class="btn btn-outline-success me-2 mb-2" type="button" href="../Identity/Account/Login">Login</a>
+
+                                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <!-- Product -->
+                    }
+
+                </div>
+            </div>
+        </main>
+
+     
+        <main class="row">
+            <div class="col-12  py-3 mb-3">
+                <div class="row">
+                    <div class="col-12 mt-3 text-center text-uppercase">
+                        <h2>@ViewBag.seller.FirstName's Shared Items</h2>
+                    </div>
+                </div>
+            
+                <div class="row">
+                    @foreach (var item in @Model.associatedShared)
+                    {
+                        <!-- Product -->
+                        @if (!item.Sold)
+                        {
+                            <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
+                                <div class="col-12 bg-white text-center h-100 product-item">
+                                    <div class="row h-100">
+                                        <div class="col-12 p-0 mb-3">
+                                             @if (item.productId.ProductImageUrls != null)
+                                            {
+                                                string[] imagesUrl = item.productId.ProductImageUrls.Split('`');
+
+
+                                                <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId>
+                                                    <img src="~/images/@imagesUrl[0]" class="img-fluid">
+                                                </a>
+
+                                            }
+                                        </div>
+                                        <div class="col-12 mb-3">
+                                            <a asp-controller="Product" asp-action="Product" class="product-name">@item.productId.ProductName</a>
+                                        </div>
+                                        <div class="col-12 mb-3">
+                                            <span class="product-price"> EGP @item.productId.ProductPrice </span>
+                                        </div>
+                                        <div class="col-12 mb-3 align-self-end">
+                                              @if (SignInManager.IsSignedIn(User))
+                                                            {
+
+                                                                if (ViewBag.user.Id != @item.SharedId.Id)
+                                                                {
+                                                                    <a class="btn btn-outline-success me-2 mb-2" type="button" asp-controller="Order" asp-action="Create" asp-route-productId="@item.productId.ProductId" asp-route-customerId="@ViewBag.user.Id">Buy Now</a>
+                                                                    <button class="btn btn-outline-dark me-2 mb-2" type="button"><i class="fas fa-cart-plus me-2"></i>Add to your store</button>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <button class="btn btn-outline-success me-2 mb-2" type="button">Yours</button>
+
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                <a class="btn btn-outline-success me-2 mb-2" type="button" href="../Identity/Account/Login">Login</a>
+
+                                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!-- Product -->
+                        }}
+                </div>
+             
+            </div>
+        </main>
+    </div>
+    <!-- Main Content -->
+</div>
+
+@section Scripts{
+<script async src="https://cpwebassets.codepen.io/assets/embed/ei.js"></script>
+
+}

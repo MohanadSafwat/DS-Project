@@ -184,6 +184,32 @@ namespace MarketPlace.Controllers
             var vmodel = new ProductViewModel { SearchedItems = associatedSellRepository.Search(model.searchTerm) };
             return View(vmodel);
         }
+        public async Task<IActionResult> Store(string sellerId)
+        {
+
+            ViewBag.user = await userManager.FindByIdAsync(userManager.GetUserId(HttpContext.User));
+            ViewBag.id = userManager.GetUserId(HttpContext.User);
+            ViewBag.fullUser = HttpContext.User;
+
+            Task<User> Seller = UserReturn(sellerId);
+            ViewBag.seller = await Seller;
+
+            
+            var vmodel = new ProductViewModel { };
+
+            if (associatedSharedRepository.FindProducts(sellerId) != null)
+            {
+                vmodel.associatedShared = associatedSharedRepository.FindProducts(sellerId);
+            }
+            if (associatedSellRepository.FindProducts(sellerId) != null)
+            {
+                vmodel.associatedSell = associatedSellRepository.FindProducts(sellerId);
+            }
+           
+
+            return View(vmodel);
+        }
+
         public async Task<IActionResult> Product(int productId)
         {
             string id = userManager.GetUserId(HttpContext.User);

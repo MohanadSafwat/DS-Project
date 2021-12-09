@@ -77,6 +77,5 @@ namespace MarketPlace.Controllers
             return View(model);
         }
 
-     
     }
 }

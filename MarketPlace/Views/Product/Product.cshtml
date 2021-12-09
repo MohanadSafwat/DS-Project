@@ -72,15 +72,7 @@
                                 }
                                 }
 
-                                @*<div class="col-sm-2 col-3">
-                                    <div class="img-small border" style="background-image: url('../images/image-2.jpg')" data-src="../images/image-2.jpg"></div>
-                                </div>
-                                <div class="col-sm-2 col-3">
-                                    <div class="img-small border" style="background-image: url('../images/image-3.jpg')" data-src="../images/image-3.jpg"></div>
-                                </div>
-                                <div class="col-sm-2 col-3">
-                                    <div class="img-small border" style="background-image: url('../images/image-4.jpg')" data-src="../images/image-4.jpg"></div>
-                                </div>*@
+                                
                             </div>
                         </div>
 
@@ -95,7 +87,7 @@
                     <div class="col-12 product-name large">
                         @Model.productDeatails.productId.ProductName
                         <small>By <a href="#">@Model.productDeatails.productId.ProductBrand</a></small>
-                        <small>Sold By <a href="#">@Model.productDeatails.SellerId.FirstName @Model.productDeatails.SellerId.LastName </a></small>
+                        <small>Sold By <a asp-action="Store" asp-route-sellerId=@Model.productDeatails.SellerId.Id asp-controller="Product">@Model.productDeatails.SellerId.FirstName @Model.productDeatails.SellerId.LastName </a></small>
 
                     </div>
                     <div class="col-12 px-0">
