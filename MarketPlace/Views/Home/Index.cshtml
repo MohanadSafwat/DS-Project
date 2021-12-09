@@ -1,5 +1,4 @@
-﻿
-@using Microsoft.AspNetCore.Identity
+﻿@using Microsoft.AspNetCore.Identity
 @using MarketPlace.Areas.Identity.Data
 @model MarketPlace.ViewModels.ProductViewModel
 
@@ -33,13 +32,15 @@
                 </form>
             </div>
             @if (SignInManager.IsSignedIn(User))
-            {<div class="col-lg-auto text-center text-lg-left header-item-holder">
-             
-                    <a asp-controller ="Auth" asp-action="Dashboard" class="header-item">
+            {
+                <div class="col-lg-auto text-center text-lg-left header-item-holder">
+
+                    <a asp-controller="Auth" asp-action="Dashboard" class="header-item">
                         <i class="fas fa-columns me-2"></i><span id="header-qty" class="me-3">  Dashboard  </span>
                         <i class="fas fa-money-bill-wave me-2"></i><span id="header-price"> @ViewBag.user.Amount</span>
                     </a>
-                </div>}
+                </div>
+            }
         </div>
     </div>
     <!-- Header -->
@@ -73,15 +74,15 @@
                                 @if (@Model.productsIndex.Count != 0)
                                 {
                                     var count = 0;
-                                    for (var i = @Model.productsIndex.Count - 1; count <  4; i--)
+                                    for (var i = @Model.productsIndex.Count - 1; count < 4; i--)
                                     {
-                                       
-                                            count++;
-                                            if (count > @Model.productsIndex.Count - 1)
-                                            {
-                                                count = 5;
-                                            }
-                                             if (@Model.productsIndex[i].Sold ==false)
+
+                                        count++;
+                                        if (count > @Model.productsIndex.Count - 1)
+                                        {
+                                            count = 5;
+                                        }
+                                        if (@Model.productsIndex[i].Sold == false)
                                         {
                                             <!-- Product -->
                                             <div class="col-lg-3 col-sm-6 my-3">
@@ -102,8 +103,27 @@
                                                             </span>
                                                         </div>
                                                         <div class="col-12 mb-3 align-self-end">
-                                                            <a class="btn btn-outline-success me-2 mb-2" type="button" asp-controller="Order" asp-action="Create" asp-route-productId="@Model.productsIndex[i].productId.ProductId" asp-route-customerId="@ViewBag.user.Id">Buy Now</a>
-                                                            <button class="btn btn-outline-dark me-2 mb-2" type="button"><i class="fas fa-cart-plus me-2"></i>Add to your store</button>
+                                                            @if (SignInManager.IsSignedIn(User))
+                                                            {
+                                                                
+                                                                    if (ViewBag.user.Id != @Model.productsIndex[i].SellerId.Id)
+                                                                    {
+                                                                        <a class="btn btn-outline-success me-2 mb-2" type="button" asp-controller="Order" asp-action="Create" asp-route-productId="@Model.productsIndex[i].productId.ProductId" asp-route-customerId="@ViewBag.user.Id">Buy Now</a>
+                                                                        <button class="btn btn-outline-dark me-2 mb-2" type="button"><i class="fas fa-cart-plus me-2"></i>Add to your store</button>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <button class="btn btn-outline-success me-2 mb-2" type="button">Yours</button>
+
+                                                                    }
+                                                                }else
+                                                                {
+                                                                    <a class="btn btn-outline-success me-2 mb-2" type="button" href="../Identity/Account/Login">Login</a>
+
+                                                                }
+
+                                                            
+                                                           
                                                         </div>
                                                     </div>
                                                 </div>
