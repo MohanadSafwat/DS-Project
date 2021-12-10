@@ -205,8 +205,8 @@ namespace MarketPlace.Controllers
             {
                 vmodel.associatedSell = associatedSellRepository.FindProducts(sellerId);
             }
-           
 
+            vmodel.associatedSharedRepository = associatedSharedRepository;
             return View(vmodel);
         }
 
