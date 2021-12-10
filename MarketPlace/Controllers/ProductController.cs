@@ -181,7 +181,7 @@ namespace MarketPlace.Controllers
 
             ViewBag.user = userData;
 
-            var vmodel = new ProductViewModel { SearchedItems = associatedSellRepository.Search(model.searchTerm) };
+            var vmodel = new ProductViewModel { SearchedItems = associatedSellRepository.Search(model.searchTerm),associatedSharedRepository=associatedSharedRepository };
             return View(vmodel);
         }
         public async Task<IActionResult> Store(string sellerId)

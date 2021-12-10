@@ -86,7 +86,27 @@
                                                     if (ViewBag.user.Id != @item.SellerId.Id)
                                                     {
                                                         <a class="btn btn-outline-success me-2 mb-2" type="button" asp-controller="Order" asp-action="Create" asp-route-productId="@item.productId.ProductId" asp-route-customerId="@ViewBag.user.Id">Buy Now</a>
-                                                        <button class="btn btn-outline-dark me-2 mb-2" type="button"><i class="fas fa-cart-plus me-2"></i>Add to your store</button>
+                                                        var sharedList = @Model.associatedSharedRepository.FindUsers(@item.productId.ProductId);
+                                                        bool check = false;
+                                                        foreach (var item1 in sharedList)
+                                                        {
+                                                            if (item1.SharedId.Id == @ViewBag.user.Id)
+                                                            {
+                                                                check = true;
+                                                                break;
+                                                            }
+                                                        }
+                                                        if (check)
+                                                        {
+
+                                                            <button class="btn btn-outline-success me-2 mb-2" type="button">Shared</button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a class="btn btn-outline-success me-2 mb-2" type="button" asp-controller="Order" asp-action="Share" asp-route-productId="@item.productId.ProductId" asp-route-customerId="@ViewBag.user.Id"><i class="fas fa-cart-plus me-2"></i>Add to your store</a>
+
+
+                                                        }
                                                     }
                                                     else
                                                     {
