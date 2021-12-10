@@ -117,11 +117,20 @@
 
                                     if (ViewBag.user.Id != @Model.productDeatails.SellerId.Id)
                                     {
-                                        <a class="btn btn-outline-success" type="button" asp-controller="Order" asp-action="Create" asp-route-productId="@Model.productDeatails.productId.ProductId" asp-route-customerId="@ViewBag.user.Id">Buy Now</a>
-                                        <br />
-                                        <br />
-                                        <button class="btn btn-outline-dark" type="button"><i class="fas fa-cart-plus me-2"></i>Add to your Store</button>
+                                        if (@Model.productDeatails.Sold != true)
+                                        {
+                                            <a class="btn btn-outline-success" type="button" asp-controller="Order" asp-action="Create" asp-route-productId="@Model.productDeatails.productId.ProductId" asp-route-customerId="@ViewBag.user.Id">Buy Now</a>
+                                            <br />
+                                            <br />
+                                            <button class="btn btn-outline-dark" type="button"><i class="fas fa-cart-plus me-2"></i>Add to your Store</button>
 
+
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-outline-success me-2 mb-2" type="button">Bought</button>
+
+                                        }
 
 
                                     }

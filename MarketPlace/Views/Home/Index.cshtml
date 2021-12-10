@@ -45,9 +45,6 @@
     </div>
     <!-- Header -->
 
-    <a asp-controller="Auth" asp-action="Report" target="_blank" class="btn btn-success btn-lg">
-        Report
-    </a>
 
     <div class="row min-vh-100">
 
@@ -105,7 +102,7 @@
                                                             }
                                                         </div>
                                                         <div class="col-12 mb-3">
-                                                            <a asp-controller="Product" asp-action="Product" class="product-name">@Model.productsIndex[i].productId.ProductName</a>
+                                                            <a asp-controller="Product" asp-action="Product" class="product-name"asp-route-productId="@Model.productsIndex[i].productId.ProductId">@Model.productsIndex[i].productId.ProductName</a>
                                                         </div>
                                                         <div class="col-12 mb-3">
                                                             <span class="product-price">
@@ -118,7 +115,7 @@
 
                                                                 if (ViewBag.user.Id != @Model.productsIndex[i].SellerId.Id)
                                                                 {
-                                                                    <a class="btn btn-outline-success me-2 mb-2" type="button" asp-controller="Order" asp-action="Create" asp-route-productId="@Model.productsIndex[i].productId.ProductId" asp-route-customerId="@ViewBag.user.Id">Buy Now</a>
+                                                                    <a class="btn btn-outline-success me-2 mb-2" type="button"  asp-controller="Order" asp-action="Create" asp-route-productId="@Model.productsIndex[i].productId.ProductId" asp-route-customerId="@ViewBag.user.Id">Buy Now</a>
                                                                     <button class="btn btn-outline-dark me-2 mb-2" type="button"><i class="fas fa-cart-plus me-2"></i>Add to your store</button>
                                                                 }
                                                                 else
