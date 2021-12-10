@@ -69,7 +69,7 @@ namespace MarketPlace.Controllers
             User Customer = await customer;
 
             AssociatedSell oldSell = associatedSellRepository.Find(productId);
-            if(PerformBuy(product.ProductPrice, Customer, oldSell.SellerId))
+            if (PerformBuy(product.ProductPrice, Customer, oldSell.SellerId))
             {
                 //create new orderItem
                 OrderItem orderItem = new OrderItem
@@ -126,14 +126,14 @@ namespace MarketPlace.Controllers
                 List<AssociatedShared> updatedSharedList = new List<AssociatedShared>();
                 foreach (var shared in oldShared)
                 {
-                   /* AssociatedShared updatedShared = new AssociatedShared
-                    {
-                        id = shared.id,
-                        SharedId = shared.SharedId,
-                        productId = shared.productId,
-                        Sold = true
-                    };*/
-                   shared.Sold = true;
+                    /* AssociatedShared updatedShared = new AssociatedShared
+                     {
+                         id = shared.id,
+                         SharedId = shared.SharedId,
+                         productId = shared.productId,
+                         Sold = true
+                     };*/
+                    shared.Sold = true;
                     updatedSharedList.Add(shared);
                 }
                 associatedSharedRepository.EditList(updatedSharedList);
@@ -146,8 +146,11 @@ namespace MarketPlace.Controllers
                 associatedBoughtRepository.Add(associatedBought);
                 db.SaveChanges();
                 return Redirect("/Auth/Dashboard");
-            }else
-                return Redirect("/Auth/Dashboard");
+            }
+            else
+            {
+                return Redirect("/Home/Index");
+            }
         }
         public async Task<IActionResult> Share(int productId, string customerId)
         {
@@ -184,16 +187,19 @@ namespace MarketPlace.Controllers
             {
                 if (cusromer.Amount >= amount)
                 {
-                    
+
                     cusromer.Amount -= amount;
                     seller.Amount += amount;
-                    
+
                     db.SaveChanges();
-                    
+
                     return true;
                 }
                 else
+                {
+                    System.Diagnostics.Debug.WriteLine("no");
                     return false;
+                }
             }
             catch { return false; }
         }
