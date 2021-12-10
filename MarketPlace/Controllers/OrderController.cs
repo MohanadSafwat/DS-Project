@@ -149,6 +149,27 @@ namespace MarketPlace.Controllers
             }else
                 return Redirect("/Auth/Dashboard");
         }
+        public async Task<IActionResult> Share(int productId, string customerId)
+        {
+            //get product
+            Product product = productRepository.Find(productId);
+
+            //get customer
+            Task<User> customer = UserReturn(customerId);
+            User Customer = await customer;
+                //Add AssociatedShared
+            AssociatedShared newShared = new AssociatedShared
+                {
+                    SharedId = Customer,
+                    productId = product,
+                    Sold = false
+                };
+            associatedSharedRepository.Add(newShared);
+            db.SaveChanges();
+            return Redirect("/Auth/Dashboard");
+            
+          
+        }
         public async Task<User> UserReturn(string id)
         {
             return await userManager.FindByIdAsync(id);

@@ -1,5 +1,6 @@
 ﻿using MarketPlace.Areas.Identity.Data;
 using MarketPlace.Models;
+using MarketPlace.Models.Repositories;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -42,6 +43,7 @@ namespace MarketPlace.ViewModels
         public List<AssociatedSell> productsIndex { get; set; }
         public List<AssociatedSell> SearchedItems { get; set; }
         public List<AssociatedBought> associatedBought { get; set; }
+        public IAssociatedRepository<AssociatedShared> associatedSharedRepository { get; set; }
         public AssociatedSell productDeatails { get; set; }
 
         public int Amount { get; set; }
