@@ -1,6 +1,16 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+
+@{
+    var unSoldItemCounter = 0;
+    var unSoldSharedItemCounter = 0;
+    var soldItemCounter = 0;
+    var soldSharedItemCounter = 0;
+    var boughtItemCounter = 0;
+
+
+}
 @model MarketPlace.ViewModels.ProductViewModel
 <!-- Top Nav -->
 <!-- Header -->
@@ -38,15 +48,15 @@
 
                 <div class="col-12">
                     <a asp-controller="Auth" asp-action="ProductReport" target="_blank" class="btn btn-success btn-sm">
-                            Products Report
+                        Products Report
                     </a>
                 </div>
                 <br />
                 <br />
-                
+
                 <div class="col-12">
-                    <a asp-controller="Auth" asp-action="TransactionReport" target="_blank" class="btn btn-success btn-sm" >
-                            Transaction Report
+                    <a asp-controller="Auth" asp-action="TransactionReport" target="_blank" class="btn btn-success btn-sm">
+                        Transaction Report
                     </a>
                 </div>
             </div>
@@ -123,11 +133,13 @@
                     </div>
                 </div>
                 <div class="row">
+
                     @foreach (var item in @Model.associatedSell)
                     {
                         <!-- Product -->
                         @if (!item.Sold)
                         {
+                            unSoldItemCounter++;
                             <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
                                 <div class="col-12 bg-white text-center h-100 product-item">
                                     <div class="row h-100">
@@ -162,8 +174,14 @@
                                 </div>
                             </div>
                         }
+
                         <!-- Product -->
                     }
+                    @if (unSoldItemCounter == 0)
+                    {
+                        <p> There is no items</p>
+                    }
+
 
                 </div>
             </div>
@@ -183,6 +201,7 @@
                         <!-- Product -->
                         @if (item.Sold)
                         {
+                            soldItemCounter++;
                             <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
                                 <div class="col-12 bg-white text-center h-100 product-item">
                                     <div class="row h-100">
@@ -211,6 +230,10 @@
                         }
                         <!-- Product -->
                     }
+                    @if (soldItemCounter == 0)
+                    {
+                        <p> There is no items</p>
+                    }
                 </div>
             </div>
         </main>
@@ -227,7 +250,7 @@
                     @foreach (var item in @Model.associatedBought)
                     {
                         <!-- Product -->
-
+                        boughtItemCounter++;
                         <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
                             <div class="col-12 bg-white text-center h-100 product-item">
                                 <div class="row h-100">
@@ -256,6 +279,10 @@
                         </div>
                         <!-- Product -->
                     }
+                    @if (boughtItemCounter == 0)
+                    {
+                        <p> There is no bought items</p>
+                    }
                 </div>
             </div>
         </main>
@@ -276,6 +303,7 @@
                         <!-- Product -->
                         @if (!item.Sold)
                         {
+                            unSoldSharedItemCounter++;
                             <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
                                 <div class="col-12 bg-white text-center h-100 product-item">
                                     <div class="row h-100">
@@ -305,6 +333,10 @@
                             </div>
                             <!-- Product -->
                         }}
+                    @if (unSoldSharedItemCounter == 0)
+                    {
+                        <p> There is no shared items</p>
+                    }
                 </div>
                 <div class="col-12 mt-3 text-center text-uppercase">
                     <p>Sold</p>
@@ -315,6 +347,8 @@
                         <!-- Product -->
                         @if (item.Sold)
                         {
+
+                            soldSharedItemCounter++;
                             <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
                                 <div class="col-12 bg-white text-center h-100 product-item">
                                     <div class="row h-100">
@@ -344,6 +378,10 @@
                             </div>
                             <!-- Product -->
                         }}
+                    @if (soldSharedItemCounter == 0)
+                    {
+                        <p > There is no shared items</p>
+                    }
                 </div>
             </div>
         </main>
