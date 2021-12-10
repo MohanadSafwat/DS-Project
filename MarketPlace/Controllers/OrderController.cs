@@ -5,8 +5,10 @@ using MarketPlace.Models.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,10 +24,12 @@ namespace MarketPlace.Controllers
         private readonly IAssociatedRepository<AssociatedShared> associatedSharedRepository;
         private readonly IAssociatedRepository<AssociatedBought> associatedBoughtRepository;
         private AppDBContext db;
+        private readonly string _connectionString;
 
-        public OrderController(IOrderRepository<Order> orderRepository,
+        public OrderController(IOptions<AppDbConnection> config,IOrderRepository<Order> orderRepository,
             IOrderRepository<OrderItem> orderItemRepository,
             IProductRepository<Product> productRepository,
+
              UserManager<User> userManager,
              IAssociatedRepository<AssociatedSell> associatedSellRepository,
              IAssociatedRepository<AssociatedShared> associatedSharedRepository,
@@ -34,6 +38,7 @@ namespace MarketPlace.Controllers
         {
             this.orderDbRepository = orderRepository;
             this.orderItemDbRepository = orderItemRepository;
+            this._connectionString = config.Value.ConnectionString;
             this.productRepository = productRepository;
             this.userManager = userManager;
             this.associatedSellRepository = associatedSellRepository;
@@ -73,6 +78,29 @@ namespace MarketPlace.Controllers
                     seller = oldSell.SellerId
                 };
                 orderItemDbRepository.Add(orderItem);
+
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    String query = "INSERT INTO dbo.Transactions (CustomerEmail,SellerEmail,ItemName,ItemPrice) VALUES (@CustomerEmail,@SellerEmail, @ItemName,@ItemPrice)";
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+
+                        command.Parameters.AddWithValue("@CustomerEmail", Customer.Email);
+                        command.Parameters.AddWithValue("@SellerEmail", oldSell.SellerId.Email);
+                        command.Parameters.AddWithValue("@ItemName", orderItem.Product.ProductName);
+                        command.Parameters.AddWithValue("@ItemPrice", orderItem.Product.ProductPrice);
+
+                        // connection.ServerVersion = 'connection.ServerVersion' threw an exception of type 'System.InvalidOperationException'
+                        connection.Open();
+
+                        int result = command.ExecuteNonQuery();
+
+                        // Check Error
+                        if (result < 0)
+                            Console.WriteLine("Error inserting data into Database!");
+                    }
+                }
 
                 //create new order
                 Order order = new Order
@@ -126,6 +154,7 @@ namespace MarketPlace.Controllers
             return await userManager.FindByIdAsync(id);
 
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public bool PerformBuy (int amount,User cusromer,User seller )
@@ -134,9 +163,12 @@ namespace MarketPlace.Controllers
             {
                 if (cusromer.Amount >= amount)
                 {
+                    
                     cusromer.Amount -= amount;
                     seller.Amount += amount;
+                    
                     db.SaveChanges();
+                    
                     return true;
                 }
                 else

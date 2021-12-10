@@ -1,4 +1,5 @@
 ﻿using AspNetCore.Reporting;
+using Dapper;
 using MarketPlace.Areas.Identity.Data;
 using MarketPlace.Models;
 using MarketPlace.Models.Repositories;
@@ -6,8 +7,11 @@ using MarketPlace.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,12 +26,16 @@ namespace MarketPlace.Controllers
         private readonly IAssociatedRepository<AssociatedBought> associatedBoughtRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IProductRepository<Product> _productRepository;
-       
 
-        public AuthController(IProductRepository<Product> productRepository,IWebHostEnvironment webHostEnvironment,UserManager<User> userManager, AppDBContext db,IAssociatedRepository<AssociatedSell> associatedSellRepository, IAssociatedRepository<AssociatedShared> associatedSharedRepository, IAssociatedRepository<AssociatedBought> associatedBoughtRepository)
+        private readonly string _connectionString;
+        
+
+
+        public AuthController(IOptions<AppDbConnection> config,IProductRepository<Product> productRepository,IWebHostEnvironment webHostEnvironment,UserManager<User> userManager, AppDBContext db,IAssociatedRepository<AssociatedSell> associatedSellRepository, IAssociatedRepository<AssociatedShared> associatedSharedRepository, IAssociatedRepository<AssociatedBought> associatedBoughtRepository)
         {
             _userManager = userManager;
             _db = db;
+            _connectionString = config.Value.ConnectionString;
             this.associatedSellRepository = associatedSellRepository;
             this.associatedSharedRepository = associatedSharedRepository;
             this.associatedBoughtRepository = associatedBoughtRepository;
@@ -86,14 +94,14 @@ namespace MarketPlace.Controllers
             return View(model);
         }
 
-        public async Task< IActionResult> Report()
+        public async Task< IActionResult> ProductReport()
         {
             string mimType = "";
             int extension = 1;
             var path = $"{this._webHostEnvironment.WebRootPath}\\Reports\\products.rdlc";
             Dictionary<string, string> parameters = new Dictionary<string, string>();
             // parameters.Add("rp1", "Welcome!!");
-            var products = await _productRepository.GetProducts();
+            var products = await GetProducts();
             LocalReport localReport = new LocalReport(path);
             localReport.AddDataSource("DataSet1", products);
             
@@ -102,5 +110,36 @@ namespace MarketPlace.Controllers
 
         }
 
+        public async Task<IActionResult> TransactionReport()
+        {
+            string mimType = "";
+            int extension = 1;
+            var path = $"{this._webHostEnvironment.WebRootPath}\\Reports\\trans.rdlc";
+            Dictionary<string, string> parameters = new Dictionary<string, string>();
+            // parameters.Add("rp1", "Welcome!!");
+            var trans = await GetTransactions();
+            LocalReport localReport = new LocalReport(path);
+            localReport.AddDataSource("DataSet2", trans);
+
+            var result = localReport.Execute(RenderType.Pdf, extension, parameters, mimType);
+            return File(result.MainStream, "application/pdf");
+
+        }
+
+        public async Task<IEnumerable<Product>> GetProducts()
+        {
+            using (IDbConnection db = new SqlConnection(_connectionString))
+            {
+                return await db.QueryAsync<Product>("select ProductId,ProductName,ProductPrice,ProductBrand,ProductDescription from Products", commandType: CommandType.Text);
+            }
+        }
+
+        public async Task<IEnumerable<Transaction>> GetTransactions()
+        {
+            using (IDbConnection db = new SqlConnection(_connectionString))
+            {
+                return await db.QueryAsync<Transaction>("select Id,CustomerEmail,SellerEmail,ItemName,itemPrice from Transactions", commandType: CommandType.Text);
+            }
+        }
     }
 }

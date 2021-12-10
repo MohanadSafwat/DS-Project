@@ -11,4 +11,18 @@
     <WebStackScaffolding_DbContextDialogWidth>650.4</WebStackScaffolding_DbContextDialogWidth>
     <WebStackScaffolding_IdentityDialogWidth>650.4</WebStackScaffolding_IdentityDialogWidth>
   </PropertyGroup>
+  <ItemGroup>
+    <None Update="MarketPlaceDBDataSet.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Update="MarketPlaceDBDataSet1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Update="MarketPlaceDBDataSet2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Update="transactions.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
 </Project>

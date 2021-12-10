@@ -30,6 +30,7 @@ namespace MarketPlace.Models
         public DbSet<AssociatedBought> AssociatedBought { get; set; }
         public DbSet<AssociatedSell> AssociatedSell { get; set; }
         public DbSet<AssociatedShared> AssociatedShared { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
 
 
     }

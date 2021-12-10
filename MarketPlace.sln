@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.31424.327
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarketPlace", "MarketPlace\MarketPlace.csproj", "{05CF937A-8A31-408B-9127-FCD3BB3FC4E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RDLCDesign", "RDLCDesign\RDLCDesign.csproj", "{841B62CA-D88E-4510-B48A-ECF7B6E0C2A2}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{05CF937A-8A31-408B-9127-FCD3BB3FC4E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05CF937A-8A31-408B-9127-FCD3BB3FC4E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{05CF937A-8A31-408B-9127-FCD3BB3FC4E9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{841B62CA-D88E-4510-B48A-ECF7B6E0C2A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{841B62CA-D88E-4510-B48A-ECF7B6E0C2A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{841B62CA-D88E-4510-B48A-ECF7B6E0C2A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{841B62CA-D88E-4510-B48A-ECF7B6E0C2A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

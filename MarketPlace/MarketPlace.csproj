@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="wwwroot\Reports\Report1.rdlc" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AspNetCore.Reporting" Version="2.1.0" />
     <PackageReference Include="Dapper" Version="2.0.123" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.21" />
@@ -26,12 +22,54 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="MarketPlaceDBDataSet.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MarketPlaceDBDataSet.xsd</DependentUpon>
+    </Compile>
+    <Compile Update="MarketPlaceDBDataSet1.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MarketPlaceDBDataSet1.xsd</DependentUpon>
+    </Compile>
+    <Compile Update="MarketPlaceDBDataSet2.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MarketPlaceDBDataSet2.xsd</DependentUpon>
+    </Compile>
+    <Compile Update="transactions.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>transactions.xsd</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Update="wwwroot\Reports\products.rdlc">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\Reports\Report1.rdlc">
+    <Content Update="wwwroot\Reports\trans.rdlc">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="MarketPlaceDBDataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>MarketPlaceDBDataSet.Designer.cs</LastGenOutput>
+    </None>
+    <None Update="MarketPlaceDBDataSet1.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>MarketPlaceDBDataSet1.Designer.cs</LastGenOutput>
+    </None>
+    <None Update="MarketPlaceDBDataSet2.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>MarketPlaceDBDataSet2.Designer.cs</LastGenOutput>
+    </None>
+    <None Update="transactions.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>transactions.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 
 </Project>

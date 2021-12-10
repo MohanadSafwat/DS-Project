@@ -2,7 +2,6 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @model MarketPlace.ViewModels.ProductViewModel
-
 <!-- Top Nav -->
 <!-- Header -->
 <div class="col-12 bg-white py-4">
@@ -22,13 +21,36 @@
                 </div>
             </form>
         </div>
-        <div class="col-lg-auto text-center text-lg-left header-item-holder">
 
-            <a asp-controller="Auth" asp-action="Dashboard" class="header-item">
-                <i class="fas fa-columns me-2"></i><span id="header-qty" class="me-3">Dashboard</span>
-                <i class="fas fa-money-bill-wave me-2"></i><span id="header-price">@ViewBag.user.Amount</span>
-            </a>
-        </div>
+        @if (ViewBag.user.Email != "admin@marketplace.com")
+        {
+            <div class="col-lg-auto text-center text-lg-left header-item-holder">
+
+                <a asp-controller="Auth" asp-action="Dashboard" class="header-item">
+                    <i class="fas fa-columns me-2"></i><span id="header-qty" class="me-3">Dashboard</span>
+                    <i class="fas fa-money-bill-wave me-2"></i><span id="header-price">@ViewBag.user.Amount</span>
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class=" = row">
+
+                <div class="col-12">
+                    <a asp-controller="Auth" asp-action="ProductReport" target="_blank" class="btn btn-success btn-sm">
+                            Products Report
+                    </a>
+                </div>
+                <br />
+                <br />
+                
+                <div class="col-12">
+                    <a asp-controller="Auth" asp-action="TransactionReport" target="_blank" class="btn btn-success btn-sm" >
+                            Transaction Report
+                    </a>
+                </div>
+            </div>
+        }
     </div>
 </div>
 <!-- Header -->
@@ -210,16 +232,16 @@
                             <div class="col-12 bg-white text-center h-100 product-item">
                                 <div class="row h-100">
                                     <div class="col-12 p-0 mb-3">
-                                         @if (item.product.ProductImageUrls != null)
-                                            {
-                                                string[] imagesUrl = item.product.ProductImageUrls.Split('`');
+                                        @if (item.product.ProductImageUrls != null)
+                                        {
+                                            string[] imagesUrl = item.product.ProductImageUrls.Split('`');
 
 
-                                                <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.product.ProductId>
-                                                    <img src="~/images/@imagesUrl[0]" class="img-fluid">
-                                                </a>
+                                            <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.product.ProductId>
+                                                <img src="~/images/@imagesUrl[0]" class="img-fluid">
+                                            </a>
 
-                                            }
+                                        }
                                     </div>
                                     <div class="col-12 mb-3">
                                         <a asp-controller="Product" asp-action="Product" class="product-name">@item.product.ProductName</a>
@@ -258,7 +280,7 @@
                                 <div class="col-12 bg-white text-center h-100 product-item">
                                     <div class="row h-100">
                                         <div class="col-12 p-0 mb-3">
-                                             @if (item.productId.ProductImageUrls != null)
+                                            @if (item.productId.ProductImageUrls != null)
                                             {
                                                 string[] imagesUrl = item.productId.ProductImageUrls.Split('`');
 
@@ -330,6 +352,6 @@
 </div>
 
 @section Scripts{
-<script async src="https://cpwebassets.codepen.io/assets/embed/ei.js"></script>
+    <script async src="https://cpwebassets.codepen.io/assets/embed/ei.js"></script>
 
 }
