@@ -458,3 +458,17 @@ C:\Users\Mohan\OneDrive\Documents\GitHub\DS-Project\MarketPlace\obj\Debug\netcor
 C:\Users\Mohan\OneDrive\Documents\GitHub\DS-Project\MarketPlace\obj\Debug\netcoreapp3.1\MarketPlace.pdb
 C:\Users\Mohan\OneDrive\Documents\GitHub\DS-Project\MarketPlace\obj\Debug\netcoreapp3.1\MarketPlace.genruntimeconfig.cache
 C:\Users\Mohan\OneDrive\Documents\GitHub\DS-Project\MarketPlace\obj\Debug\netcoreapp3.1\Razor\Views\Product\Store.cshtml.g.cs
+C:\Users\Mohan\OneDrive\Documents\GitHub\DS-Project\MarketPlace\bin\Debug\netcoreapp3.1\wwwroot\Reports\products.rdlc
+C:\Users\Mohan\OneDrive\Documents\GitHub\DS-Project\MarketPlace\bin\Debug\netcoreapp3.1\wwwroot\Reports\trans.rdlc
+C:\Users\Mohan\OneDrive\Documents\GitHub\DS-Project\MarketPlace\bin\Debug\netcoreapp3.1\AspNetCore.Reporting.dll
+C:\Users\Mohan\OneDrive\Documents\GitHub\DS-Project\MarketPlace\bin\Debug\netcoreapp3.1\AspNetCore.ReportingServices.dll
+C:\Users\Mohan\OneDrive\Documents\GitHub\DS-Project\MarketPlace\bin\Debug\netcoreapp3.1\Dapper.dll
+C:\Users\Mohan\OneDrive\Documents\GitHub\DS-Project\MarketPlace\bin\Debug\netcoreapp3.1\System.CodeDom.dll
+C:\Users\Mohan\OneDrive\Documents\GitHub\DS-Project\MarketPlace\bin\Debug\netcoreapp3.1\System.Data.SqlClient.dll
+C:\Users\Mohan\OneDrive\Documents\GitHub\DS-Project\MarketPlace\bin\Debug\netcoreapp3.1\System.ServiceModel.Http.dll
+C:\Users\Mohan\OneDrive\Documents\GitHub\DS-Project\MarketPlace\bin\Debug\netcoreapp3.1\System.ServiceModel.Primitives.dll
+C:\Users\Mohan\OneDrive\Documents\GitHub\DS-Project\MarketPlace\bin\Debug\netcoreapp3.1\System.ServiceModel.dll
+C:\Users\Mohan\OneDrive\Documents\GitHub\DS-Project\MarketPlace\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
+C:\Users\Mohan\OneDrive\Documents\GitHub\DS-Project\MarketPlace\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
+C:\Users\Mohan\OneDrive\Documents\GitHub\DS-Project\MarketPlace\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netstandard2.0\System.Private.ServiceModel.dll
+C:\Users\Mohan\OneDrive\Documents\GitHub\DS-Project\MarketPlace\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Private.ServiceModel.dll
