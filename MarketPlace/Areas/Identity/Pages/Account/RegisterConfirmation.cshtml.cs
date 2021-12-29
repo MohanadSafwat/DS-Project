@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using System.Net.Http;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace MarketPlace.Areas.Identity.Pages.Account
 {
@@ -35,24 +38,34 @@ namespace MarketPlace.Areas.Identity.Pages.Account
                 return RedirectToPage("/Index");
             }
 
-            var user = await _userManager.FindByEmailAsync(email);
+            var client = new HttpClient();
+            string uri = "http://localhost:61955/api/authenticate/getUser/" + email;
+            string codeUri = "http://localhost:61955/api/authenticate/getCode/" + email;
+            HttpResponseMessage response = await client.GetAsync(uri);
+            HttpResponseMessage codeResponse = await client.GetAsync(codeUri);
+            var user = JsonConvert.DeserializeObject<Dictionary<string, string>>(response.Content.ReadAsStringAsync().Result);
+            var codeJson = codeResponse.Content.ReadAsStringAsync().Result;
+            //var user = request.Content;
             if (user == null)
             {
                 return NotFound($"Unable to load user with email '{email}'.");
             }
+
+            User user2 = await _userManager.FindByEmailAsync(email);
 
             Email = email;
             // Once you add a real email sender, you should remove this code that lets you confirm the account
             DisplayConfirmAccountLink = true;
             if (DisplayConfirmAccountLink)
             {
-                var userId = await _userManager.GetUserIdAsync(user);
-                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                var userId = user["id"];
+                var userId2 = user2.Id;
+                var code2 = await _userManager.GenerateEmailConfirmationTokenAsync(user2);
+                code2 = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code2));
                 EmailConfirmationUrl = Url.Page(
                     "/Account/ConfirmEmail",
                     pageHandler: null,
-                    values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
+                    values: new { area = "Identity",email = email ,userId = userId, code = codeJson,code2 =code2, userId2 = userId2, returnUrl = returnUrl },
                     protocol: Request.Scheme);
             }
 
