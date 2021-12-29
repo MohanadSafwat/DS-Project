@@ -14,10 +14,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using System.Net.Http;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
+using System.Web.Http;
 
 namespace MarketPlace.Areas.Identity.Pages.Account
 {
-    [AllowAnonymous]
+
+    [Microsoft.AspNetCore.Authorization.AllowAnonymous]
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<User> _signInManager;
@@ -84,21 +89,31 @@ namespace MarketPlace.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
         }
 
+        
         public async Task OnGetAsync(string returnUrl = null)
         {
+            
+            
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
+       
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
+                
+                var client = new HttpClient();
+                //string json = "{\"Email\":\"a99.b5dr123@gmail.com\",\"Username\":\"ahmed55edad\",\"Password\":\"Ahmed_123\"}";
+                var json = JsonConvert.SerializeObject(Input);
+                string uri = "http://localhost:61955/api/authenticate/register/";
+                HttpResponseMessage request = await client.PostAsync(uri, new StringContent(json, Encoding.UTF8, "application/json"));
                 var user = new User { UserName = Input.Email, Email = Input.Email , FirstName=Input.FirstName, LastName = Input.LastName, Address = Input.Address, Card = Input.Card };
                 var result = await _userManager.CreateAsync(user, Input.Password);
-                if (result.Succeeded)
+                if (request.IsSuccessStatusCode)
                 {
                     _logger.LogInformation("User created a new account with password.");
 
@@ -123,10 +138,12 @@ namespace MarketPlace.Areas.Identity.Pages.Account
                         return LocalRedirect(returnUrl);
                     }
                 }
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
+                var ErrMsg = JsonConvert.DeserializeObject<Dictionary<string, string>>(request.Content.ReadAsStringAsync().Result);
+
+                //for (int i = 0;i< ErrMsg.Count; i++)
+                //{
+                    ModelState.AddModelError(string.Empty, ErrMsg["message"].ToString());
+               // }
             }
 
             // If we got this far, something failed, redisplay form

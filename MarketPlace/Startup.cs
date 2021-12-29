@@ -1,16 +1,21 @@
 using MarketPlace.Models;
 using MarketPlace.Models.Repositories;
 using MarketPlace.Models.Repository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace MarketPlace
@@ -40,6 +45,44 @@ namespace MarketPlace
                 options.ConnectionString = Configuration.GetConnectionString("SqlCon");
             });
             services.AddControllersWithViews();
+            /*services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(o =>
+            {
+                o.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ByYM000OLlMQG6VVVp1OH7Xzyr7gHuw1qvUC5dcGt3SNM")),
+                    ValidIssuer = "http://localhost:61955",
+                    ValidAudience = "http://localhost:4200",
+                    ValidateIssuerSigningKey = true,
+                    ValidateAudience = true,
+                    ValidateIssuer = true
+                };
+
+
+            });*/
+            //services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            /*services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = "Cookies";
+                options.DefaultChallengeScheme = "oidc";
+            })
+                        .AddCookie("Cookies")
+                        .AddOpenIdConnect("oidc", options =>
+                        {
+                            options.SignInScheme = "Cookies";
+
+                            options.Authority = "http://localhost:5000";
+                            options.RequireHttpsMetadata = false;
+
+                            options.ClientId = "testclient";
+                            options.ClientSecret = "secret";
+                            options.ResponseType = "code id_token";
+                            options.SaveTokens = true;
+                            options.GetClaimsFromUserInfoEndpoint = true;
+
+                            options.Scope.Add("testapi");
+                            options.Scope.Add("offline_access");
+                        });*/
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddMvc();
         }
@@ -55,9 +98,9 @@ namespace MarketPlace
             {
                 app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                //app.UseHsts();
             }
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();

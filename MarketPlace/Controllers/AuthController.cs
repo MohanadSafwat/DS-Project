@@ -45,14 +45,15 @@ namespace MarketPlace.Controllers
 
 
         }
-        public IActionResult Login()
+
+        /*public IActionResult Login()
         {
             return View();
         }
         public IActionResult Register()
         {
             return View();
-        }
+        }*/
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(ProductViewModel model)
