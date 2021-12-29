@@ -17,6 +17,9 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using MarketPlace.Models.Repositories;
+using MarketPlace.Models;
+using MarketPlace.Models.Repository;
 
 namespace JWTAuthentication
 {
@@ -33,7 +36,15 @@ namespace JWTAuthentication
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            
+            services.AddScoped<IProductRepository<Product>, ProductDbRepository>();
+            services.AddTransient<IProductRepository<Product>, ProductDbRepository>();
+            services.AddScoped<IAssociatedRepository<AssociatedSell>, AssociatedSellRepository>();
+            services.AddScoped<IAssociatedRepository<AssociatedBought>, AssociatedBoughtRepository>();
+            services.AddScoped<IAssociatedRepository<AssociatedShared>, AssociatedSharedRepository>();
+            services.AddScoped<IOrderRepository<Order>, OrderDbRepository>();
+            services.AddScoped<IOrderRepository<OrderItem>, OrderItemDbRepository>();
+            // services.AddDbContext<AppDBContext>(option => option.UseSqlServer(Configuration.GetConnectionString("ConnStr")));
+
             // For Entity Framework
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnStr")));
 
