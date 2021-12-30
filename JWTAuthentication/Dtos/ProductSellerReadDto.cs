@@ -2,9 +2,9 @@ using MarketPlace.Models;
 
 namespace MarketPlace.Dtos
 {
-    public class ProductReadDto
+    public class ProductSellerReadDto
     {
-                public Product product { get; set; }
+        public Product product { get; set; }
 
         public string sellerId { get; set; }
         public string sellerFirstName { get; set; }
