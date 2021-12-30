@@ -1,4 +1,5 @@
 ﻿using JWTAuthentication.Authentication;
+using MarketPlace.Dtos;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -83,5 +84,14 @@ namespace MarketPlace.Models.Repositories
             return db.AssociatedBought.Include(s => s.Buyer).Include(p => p.product).ToList();
         }
 
+        List<ProductReadDto> IAssociatedRepository<AssociatedBought>.List()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        List<ProductReadDto> IAssociatedRepository<AssociatedBought>.FindProducts(string sellerId)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

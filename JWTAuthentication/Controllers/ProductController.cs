@@ -60,16 +60,15 @@ namespace JWTAuthentication.Controllers
         public  ActionResult GetAllProducts()
         {
             
-            // var productsIndex = associatedSellRepository;
-            // productsIndex.
+            var productsIndex = associatedSellRepository;
 
 
             var model = new 
             {
                 productsIndex = associatedSellRepository.List(),
 
-                associatedSharedRepository = associatedSharedRepository
             };
+
             return Ok(model);
         }
         public async Task<User> UserReturn(string id)

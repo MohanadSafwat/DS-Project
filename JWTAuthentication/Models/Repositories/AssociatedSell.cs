@@ -1,5 +1,7 @@
 ﻿using JWTAuthentication.Authentication;
+using MarketPlace.Dtos;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -61,14 +63,29 @@ namespace MarketPlace.Models.Repositories
             return db.AssociatedSell.Include(p=>p.productId).Include(s=>s.SellerId).SingleOrDefault(p => p.productId.ProductId == ProductId );
         }
 
-        public List<AssociatedSell> FindProducts(string sellerId)
+        public List<ProductReadDto> FindProducts(string sellerId)
         {
-            return db.AssociatedSell.Include(p => p.productId).Include(s => s.SellerId).Where(s => s.SellerId.Id == sellerId).ToList();
+            return db.AssociatedSell.Where(s => s.SellerId.Id == sellerId).Select(x => new ProductReadDto{
+                sellerId = x.SellerId.Id,
+                product = x.productId,
+                sellerFirstName = x.SellerId.FirstName,
+                sellerLastName = x.SellerId.LastName,
+                sellerEmail = x.SellerId.Email}).ToList();
         }
 
-        public List<AssociatedSell> List()
+        public List<ProductReadDto> List()
         {
-            return db.AssociatedSell.Include(s=>s.SellerId).Include(p => p.productId).ToList();
+            return db.AssociatedSell.Include(s=>s.SellerId).Include(p=>p.productId).Select(x => new ProductReadDto
+            {
+                sellerId = x.SellerId.Id,
+                product = x.productId,
+                sellerFirstName = x.SellerId.FirstName,
+                sellerLastName = x.SellerId.LastName,
+                sellerEmail = x.SellerId.Email,
+                Sold = x.Sold
+
+
+            }).ToList();
         }
 
     }
