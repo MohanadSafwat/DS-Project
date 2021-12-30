@@ -21,6 +21,7 @@ using MarketPlace.Models.Repositories;
 using MarketPlace.Models;
 using MarketPlace.Models.Repository;
 using MarketPlace.Dtos;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 
 namespace JWTAuthentication
 {
@@ -39,13 +40,23 @@ namespace JWTAuthentication
             services.AddControllers();
             services.AddScoped<IProductRepository<Product>, ProductDbRepository>();
             services.AddTransient<IProductRepository<Product>, ProductDbRepository>();
-            services.AddScoped<IAssociatedRepository<AssociatedSell,ProductSellerReadDto>, AssociatedSellRepository>();
-            services.AddScoped<IAssociatedRepository<AssociatedBought,ProductBoughtReadDto>, AssociatedBoughtRepository>();
-            services.AddScoped<IAssociatedRepository<AssociatedShared,ProductSharedReadDto>, AssociatedSharedRepository>();
+            services.AddScoped<IAssociatedRepository<AssociatedSell, ProductSellerReadDto>, AssociatedSellRepository>();
+            services.AddScoped<IAssociatedRepository<AssociatedBought, ProductBoughtReadDto>, AssociatedBoughtRepository>();
+            services.AddScoped<IAssociatedRepository<AssociatedShared, ProductSharedReadDto>, AssociatedSharedRepository>();
             services.AddScoped<IOrderRepository<Order>, OrderDbRepository>();
             services.AddScoped<IOrderRepository<OrderItem>, OrderItemDbRepository>();
             // services.AddDbContext<AppDBContext>(option => option.UseSqlServer(Configuration.GetConnectionString("ConnStr")));
-
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll",
+    builder =>
+    {
+                builder.WithOrigins("https://webapp.io/", "https://www.webapp.io/")
+    .SetIsOriginAllowed((host) => true)
+    .AllowAnyHeader()
+    .AllowAnyMethod();
+            });
+            });
             // For Entity Framework
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnStr")));
 
@@ -61,6 +72,7 @@ namespace JWTAuthentication
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
+            
 
             // Adding Jwt Bearer
             .AddJwtBearer(options =>
@@ -77,12 +89,12 @@ namespace JWTAuthentication
                 };
             });
 
-           /* services.AddAuthorization(auth =>
-            {
-                auth.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
-                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-                    .RequireAuthenticatedUser().Build());
-            });*/
+            /* services.AddAuthorization(auth =>
+             {
+                 auth.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
+                     .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                     .RequireAuthenticatedUser().Build());
+             });*/
 
             /* services.AddAuthentication().AddOpenIdConnectServer(options =>
              {
@@ -184,10 +196,12 @@ namespace JWTAuthentication
             }
 
             app.UseRouting();
+            app.UseCors("AllowAll");
+app.UseMiddleware<CorsMiddleware>();
 
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseStaticFiles();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
