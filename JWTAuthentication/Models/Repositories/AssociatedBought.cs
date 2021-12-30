@@ -14,7 +14,7 @@ namespace MarketPlace.Models.Repositories
         {
             db = _db;
         }
-         public List<AssociatedBought> FindUsers(int productId)
+        public List<AssociatedBought> FindUsers(int productId)
         {
 
             var result = db.AssociatedBought.Include(p => p.product).Include(s => s.Buyer).Where(p => p.product.ProductId == productId).ToList();
@@ -34,8 +34,9 @@ namespace MarketPlace.Models.Repositories
             var result = db.AssociatedBought.Include(p => p.product).Include(s => s.Buyer).Where(s => s.Buyer.Id == buyerId).ToList();
             if (result != null)
                 return result;
-            else {
-                List < AssociatedBought > list = new List<AssociatedBought>();
+            else
+            {
+                List<AssociatedBought> list = new List<AssociatedBought>();
                 list.Clear();
                 return list;
 
@@ -76,7 +77,7 @@ namespace MarketPlace.Models.Repositories
 
         public AssociatedBought Find(int ProductId)
         {
-            return db.AssociatedBought.Include(p => p.product).Include(s => s.Buyer).SingleOrDefault(p => p.product.ProductId == ProductId );
+            return db.AssociatedBought.Include(p => p.product).Include(s => s.Buyer).SingleOrDefault(p => p.product.ProductId == ProductId);
         }
 
         public List<AssociatedBought> List()
@@ -99,7 +100,7 @@ namespace MarketPlace.Models.Repositories
             else
                 return new List<ProductBoughtReadDto>();
         }
-      
+
         public List<ProductBoughtReadDto> FindProductsDtos(string buyerId)
         {
             var result = db.AssociatedBought.Select(x => new ProductBoughtReadDto
@@ -121,7 +122,7 @@ namespace MarketPlace.Models.Repositories
             }
 
         }
-         public List<ProductBoughtReadDto> FindSoldProductsDtos(string buyerId)
+        public List<ProductBoughtReadDto> FindSoldProductsDtos(string buyerId)
         {
             var result = db.AssociatedBought.Select(x => new ProductBoughtReadDto
             {
@@ -142,7 +143,7 @@ namespace MarketPlace.Models.Repositories
             }
 
         }
-         public List<ProductBoughtReadDto> FindUnSoldProductsDtos(string buyerId)
+        public List<ProductBoughtReadDto> FindUnSoldProductsDtos(string buyerId)
         {
             var result = db.AssociatedBought.Select(x => new ProductBoughtReadDto
             {
@@ -176,7 +177,7 @@ namespace MarketPlace.Models.Repositories
                || p.product.ProductBrand.Contains(term) || p.product.ProductDescription.Contains(term) || p.BuyerFirstName.Contains(term)
                    || p.BuyerLastName.Contains(term)).ToList();
             return result;
-}
+        }
 
         public ProductBoughtReadDto FindProductByIdDtos(int ProductId)
         {
@@ -201,6 +202,17 @@ namespace MarketPlace.Models.Repositories
             }).ToList();
         }
 
+        public bool IsUserBuyThis(string accountId, int productId)
+        {
+            if (db.AssociatedBought.Where(p => p.product.ProductId == productId).Where(s => s.Buyer.Id == accountId) != null)
+                return true;
+            else
+                return false;
+        }
 
+        public bool IsUserShareThis(string accountId, int productId)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

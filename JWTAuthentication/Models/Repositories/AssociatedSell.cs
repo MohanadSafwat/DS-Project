@@ -157,5 +157,14 @@ namespace MarketPlace.Models.Repositories
             }).ToList();
         }
 
+        public bool IsUserBuyThis(string accountId,int productId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsUserShareThis(string accountId,int productId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

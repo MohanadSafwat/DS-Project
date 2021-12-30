@@ -185,5 +185,17 @@ namespace MarketPlace.Models.Repositories
             }).ToList();
         }
 
+        public bool IsUserBuyThis(string accountId, int productId)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public bool IsUserShareThis(string accountId, int productId)
+        {
+            if( db.AssociatedShared.Where(p => p.productId.ProductId == productId).Where(s=>s.SharedId.Id == accountId) != null)
+            return true;
+            else
+            return false;
+        }
     }
 }

@@ -129,11 +129,51 @@ namespace JWTAuthentication.Controllers
             return Ok(product);
         }
 
-        [HttpGet("GetUnsoldProductsBySellerId/{id}")]
-        public ActionResult GetUnsoldProductsBySellerId(string id)
+        [HttpGet("GetUnSoldProductsBySellerId/{id}")]
+        public ActionResult GetUnSoldProductsBySellerId(string id)
         {
-            var products = associatedSellRepository.FindProducts(id);
+            var products = associatedSellRepository.FindUnSoldProductsDtos(id);
             return Ok(products);
+        }
+
+        [HttpGet("GetSoldProductsBySellerId/{id}")]
+        public ActionResult GetSoldProductsBySellerId(string id)
+        {
+            var products = associatedSellRepository.FindSoldProductsDtos(id);
+            return Ok(products);
+        }
+
+        [HttpGet("GetUnSoldProductsBySharerId/{id}")]
+        public ActionResult GetUnSoldProductsBySharerId(string id)
+        {
+            var products = associatedSharedRepository.FindUnSoldProductsDtos(id);
+            return Ok(products);
+        }
+
+        [HttpGet("GetSoldProductsBySharerId/{id}")]
+        public ActionResult GetSoldProductsBySharerId(string id)
+        {
+            var products = associatedSharedRepository.FindSoldProductsDtos(id);
+            return Ok(products);
+        }
+
+        [HttpGet("GetProductsByBuyerId/{id}")]
+        public ActionResult GetProductsByBuyerId(string id)
+        {
+            var products = associatedSharedRepository.FindProductsDtos(id);
+            return Ok(products);
+        }
+          [HttpGet("IsUserShareThis/{accountId}/{productId}")]
+        public ActionResult IsUserShareThis(string accountId,int productId)
+        {
+            var result = associatedSharedRepository.IsUserShareThis(accountId,productId);
+            return Ok(result);
+        }
+     [HttpGet("IsUserBuyThis/{accountId}/{productId}")]
+        public ActionResult IsUserBuyThis(string accountId,int productId)
+        {
+            var result = associatedBoughtRepository.IsUserBuyThis(accountId,productId);
+            return Ok(result);
         }
 
 

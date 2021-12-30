@@ -16,6 +16,8 @@ namespace MarketPlace.Models.Repositories
         List<TEntity> List();
         TEntity Find(int ProductId);
         void Add(TEntity entity);
+        bool IsUserBuyThis(string accountId,int productId);
+        bool IsUserShareThis(string accountId ,int productId);
         void Edit(TEntity entity);
         void Delete(int ProductId);
         List<TEntity> FindProducts(string accountId);
