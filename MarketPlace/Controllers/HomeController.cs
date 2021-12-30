@@ -1,4 +1,5 @@
-﻿using MarketPlace.Areas.Identity.Data;
+﻿using JWTAuthentication.Authentication;
+using MarketPlace.Areas.Identity.Data;
 using MarketPlace.Models;
 using MarketPlace.Models.Repositories;
 using MarketPlace.ViewModels;
@@ -17,8 +18,10 @@ namespace MarketPlace.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly UserManager<User> _userManager; 
+        private readonly UserManager<User> _userManager;
+        private readonly UserManager<User2> _userManager2;
         private readonly AppDBContext _db;
+        private readonly AppDB2Context _db2;
         private readonly IAssociatedRepository<AssociatedSell> associatedSellRepository;
         private readonly IAssociatedRepository<AssociatedShared> associatedSharedRepository;
         private readonly IProductRepository<Product> productRepository;
@@ -30,13 +33,15 @@ namespace MarketPlace.Controllers
             IAssociatedRepository<AssociatedSell> associatedSellRepository,
             IAssociatedRepository<AssociatedShared> associatedSharedRepository,
             IAssociatedRepository<AssociatedBought> associatedBoughtRepository,
-            IProductRepository<Product> productRepository
+            IProductRepository<Product> productRepository, UserManager<User2> userManager2, AppDB2Context db2
 
             )
         {
             _logger = logger;
             _userManager = userManager; 
             _db = db;
+            _userManager2 = userManager2;
+            _db2 = db2;
             this.associatedSellRepository = associatedSellRepository;
             this.associatedSharedRepository = associatedSharedRepository;
             this.productRepository = productRepository;
@@ -46,7 +51,11 @@ namespace MarketPlace.Controllers
         public async Task<IActionResult> IndexAsync()
         {
             //ViewBag.id =  _userManager.GetUserId(HttpContext.User);
-            ViewBag.user  = await _userManager.FindByIdAsync(_userManager.GetUserId(HttpContext.User));
+
+            ViewBag.user  = await _userManager.FindByIdAsync(_userManager.GetUserId(HttpContext.User)) ;
+            if (ViewBag.user == null)
+                ViewBag.user  = await _userManager2.FindByIdAsync(_userManager2.GetUserId(HttpContext.User)) ;
+
 
             var model = new ProductViewModel {
             productsIndex = associatedSellRepository.List(),

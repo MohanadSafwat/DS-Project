@@ -19,17 +19,21 @@ namespace JWTAuthentication.Controllers
     public class AuthenticateController : ControllerBase
     {
         private readonly UserManager<User> userManager;
+        private readonly UserManager<User2> userManager2;
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly IConfiguration _configuration;
         private readonly ApplicationDbContext _db;
+        private readonly ApplicationDb2Context _db2;
         private readonly SignInManager<User> _signInManager;
-        public AuthenticateController(SignInManager<User> signInManager, ApplicationDbContext db,UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
+        public AuthenticateController(SignInManager<User> signInManager, ApplicationDbContext db, ApplicationDb2Context db2, UserManager<User> userManager, UserManager<User2> userManager2, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
         {
             this.userManager = userManager;
+            this.userManager2 = userManager2;
             this.roleManager = roleManager;
             _signInManager = signInManager;
             _configuration = configuration;
             _db = db;
+            _db2 = db2;
         }
 
         [HttpPost]
@@ -75,23 +79,62 @@ namespace JWTAuthentication.Controllers
         [Route("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-            var userExists = await userManager.FindByNameAsync(model.Email);
-            if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
 
-            User user = new User()
+
+
+            if (model.Address == "North" || model.Address == "north")
             {
-                UserName = model.Email,
-                Email = model.Email,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                Address = model.Address,
-                Card = model.Card,
-            };
-            var result = await userManager.CreateAsync(user, model.Password);
-            if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+                var userExists = await userManager.FindByNameAsync(model.Email);
+                var userExists2 = await userManager2.FindByNameAsync(model.Email);
+                if (userExists != null || userExists2 != null)
+                    return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
+
+                User user = new User()
+                {
+                    UserName = model.Email,
+                    Email = model.Email,
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Address = model.Address,
+                    Card = model.Card,
+                };
+                var result = await userManager.CreateAsync(user, model.Password);
+                if (!result.Succeeded)
+                    return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please use at least one uppercase and lowercase and a symbol in the password" });
+
+            }
+            else if (model.Address == "South" || model.Address == "south")
+            {
+                var userExists = await userManager.FindByNameAsync(model.Email);
+                var userExists2 = await userManager2.FindByNameAsync(model.Email);
+                if (userExists != null || userExists2 != null)
+                    return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
+                User2 user = new User2()
+                {
+                    UserName = model.Email,
+                    Email = model.Email,
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Address = model.Address,
+                    Card = model.Card,
+                };
+                var result = await userManager2.CreateAsync(user, model.Password);
+                if (!result.Succeeded)
+                    return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please use at least one uppercase and lowercase and a symbol in the password" });
+
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Address must be North or South" });
+
+            }
+
+
+
+
+
 
             return Ok(new Response { Status = "Success", Message = "User created successfully!" });
         }
@@ -137,10 +180,14 @@ namespace JWTAuthentication.Controllers
         public async Task<IActionResult> GetUser(string email)
         {
             var userExists = await userManager.FindByEmailAsync(email);
-            if (userExists == null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Email Not exists!" });   
+            var userExists2 = await userManager2.FindByEmailAsync(email);
+            if (userExists == null && userExists2 == null)
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Email Not exists!" });
+
             
-            return Ok(userExists);
+            if (userExists != null) return Ok(userExists);
+            else return Ok(userExists2);
+
         }
 
         [HttpGet]
@@ -148,11 +195,20 @@ namespace JWTAuthentication.Controllers
         public async Task<IActionResult> GetCode(string email)
         {
             var userExists = await userManager.FindByEmailAsync(email);
-            if (userExists == null)
+            var userExists2 = await userManager2.FindByEmailAsync(email);
+            if (userExists == null && userExists2 == null)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Email Not exists!" });
-            var code = await userManager.GenerateEmailConfirmationTokenAsync(userExists);
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            return Ok(code);
+            if (userExists != null)
+            {
+                var code = await userManager.GenerateEmailConfirmationTokenAsync(userExists);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                return Ok(code);
+            } else
+            {
+                var code = await userManager2.GenerateEmailConfirmationTokenAsync(userExists2);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                return Ok(code);
+            }
         }
 
         [HttpGet]
@@ -164,7 +220,7 @@ namespace JWTAuthentication.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Email Not exists!" });
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
             var result = await userManager.ConfirmEmailAsync(userExists, code);
-            if(result.Succeeded)
+            if (result.Succeeded)
                 return Ok();
             else
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Invalid Token" });

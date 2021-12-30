@@ -18,6 +18,7 @@ using System.Text;
 using RestSharp;
 using Microsoft.Net.Http.Headers;
 using System.Net.Http.Headers;
+using JWTAuthentication.Authentication;
 
 namespace MarketPlace.Areas.Identity.Pages.Account
 {
@@ -26,15 +27,19 @@ namespace MarketPlace.Areas.Identity.Pages.Account
     public class LoginModel : PageModel
     {
         private readonly UserManager<User> _userManager;
+        private readonly UserManager<User2> _userManager2;
         private readonly SignInManager<User> _signInManager;
+        private readonly SignInManager<User2> _signInManager2;
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<User> signInManager, 
+        public LoginModel(SignInManager<User> signInManager, SignInManager<User2> signInManager2,
             ILogger<LoginModel> logger,
-            UserManager<User> userManager)
+            UserManager<User> userManager, UserManager<User2> userManager2)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _userManager2 = userManager2;
+            _signInManager2 = signInManager2;
             _logger = logger;
         }
 
@@ -92,16 +97,17 @@ namespace MarketPlace.Areas.Identity.Pages.Account
                 
                 var json = JsonConvert.SerializeObject(Input);
                 string uri = "http://localhost:61955/api/authenticate/login/";
-                HttpResponseMessage request = await client.PostAsync(uri, new StringContent(json, Encoding.UTF8, "application/json"));
+                //HttpResponseMessage request = await client.PostAsync(uri, new StringContent(json, Encoding.UTF8, "application/json"));
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                var result2 = await _signInManager2.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 
-                if (request.IsSuccessStatusCode && result.Succeeded)
+                if (/*request.IsSuccessStatusCode &&*/ result.Succeeded || result2.Succeeded)
                 {
-                    var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(request.Content.ReadAsStringAsync().Result);
+                    //var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(request.Content.ReadAsStringAsync().Result);
                     /*await HttpContext.SignInAsync(data["token"].ClaimsPrincipal,
            data["token"].AuthProperties);*/
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", data["token"]);
-                    HttpResponseMessage res = await client.PostAsync(uri, new StringContent(json, Encoding.UTF8, "application/json"));
+                    //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", data["token"]);
+                   //HttpResponseMessage res = await client.PostAsync(uri, new StringContent(json, Encoding.UTF8, "application/json"));
 
                     //var _bearer_token = Request.Headers[HeaderNames.Authorization].ToString();/*.Replace("Bearer ", "");*/
 

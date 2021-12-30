@@ -112,7 +112,7 @@ namespace MarketPlace.Areas.Identity.Pages.Account
                 string uri = "http://localhost:61955/api/authenticate/register/";
                 HttpResponseMessage request = await client.PostAsync(uri, new StringContent(json, Encoding.UTF8, "application/json"));
                 var user = new User { UserName = Input.Email, Email = Input.Email , FirstName=Input.FirstName, LastName = Input.LastName, Address = Input.Address, Card = Input.Card };
-                var result = await _userManager.CreateAsync(user, Input.Password);
+                //var result = await _userManager.CreateAsync(user, Input.Password);
                 if (request.IsSuccessStatusCode)
                 {
                     _logger.LogInformation("User created a new account with password.");
@@ -143,7 +143,9 @@ namespace MarketPlace.Areas.Identity.Pages.Account
                 //for (int i = 0;i< ErrMsg.Count; i++)
                 //{
                     ModelState.AddModelError(string.Empty, ErrMsg["message"].ToString());
-               // }
+                // }
+
+                
             }
 
             // If we got this far, something failed, redisplay form

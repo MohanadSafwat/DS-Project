@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JWTAuthentication.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211228081022_initial")]
-    partial class initial
+    [Migration("20211230205026_north")]
+    partial class north
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -95,6 +95,9 @@ namespace JWTAuthentication.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasAlternateKey("Uid")
+                        .HasName("Uid");
+
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
 
@@ -104,6 +107,149 @@ namespace JWTAuthentication.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("MarketPlace.Models.AssociatedBought", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("BuyerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("BuyerId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("AssociatedBought");
+                });
+
+            modelBuilder.Entity("MarketPlace.Models.AssociatedSell", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SellerIdId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("Sold")
+                        .HasColumnType("bit");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("SellerIdId");
+
+                    b.ToTable("AssociatedSell");
+                });
+
+            modelBuilder.Entity("MarketPlace.Models.AssociatedShared", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SharedIdId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("Sold")
+                        .HasColumnType("bit");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("SharedIdId");
+
+                    b.ToTable("AssociatedShared");
+                });
+
+            modelBuilder.Entity("MarketPlace.Models.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CustomerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("OrderItemId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("OrderItemId");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("MarketPlace.Models.OrderItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("sellerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("sellerId");
+
+                    b.ToTable("OrderItems");
+                });
+
+            modelBuilder.Entity("MarketPlace.Models.Product", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ProductBrand")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductImageUrls")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductPrice")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductId");
+
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -235,6 +381,61 @@ namespace JWTAuthentication.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("MarketPlace.Models.AssociatedBought", b =>
+                {
+                    b.HasOne("JWTAuthentication.Authentication.User", "Buyer")
+                        .WithMany()
+                        .HasForeignKey("BuyerId");
+
+                    b.HasOne("MarketPlace.Models.Product", "product")
+                        .WithMany()
+                        .HasForeignKey("ProductId");
+                });
+
+            modelBuilder.Entity("MarketPlace.Models.AssociatedSell", b =>
+                {
+                    b.HasOne("MarketPlace.Models.Product", "productId")
+                        .WithMany()
+                        .HasForeignKey("ProductId");
+
+                    b.HasOne("JWTAuthentication.Authentication.User", "SellerId")
+                        .WithMany()
+                        .HasForeignKey("SellerIdId");
+                });
+
+            modelBuilder.Entity("MarketPlace.Models.AssociatedShared", b =>
+                {
+                    b.HasOne("MarketPlace.Models.Product", "productId")
+                        .WithMany()
+                        .HasForeignKey("ProductId");
+
+                    b.HasOne("JWTAuthentication.Authentication.User", "SharedId")
+                        .WithMany()
+                        .HasForeignKey("SharedIdId");
+                });
+
+            modelBuilder.Entity("MarketPlace.Models.Order", b =>
+                {
+                    b.HasOne("JWTAuthentication.Authentication.User", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId");
+
+                    b.HasOne("MarketPlace.Models.OrderItem", "OrderItem")
+                        .WithMany()
+                        .HasForeignKey("OrderItemId");
+                });
+
+            modelBuilder.Entity("MarketPlace.Models.OrderItem", b =>
+                {
+                    b.HasOne("MarketPlace.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId");
+
+                    b.HasOne("JWTAuthentication.Authentication.User", "seller")
+                        .WithMany()
+                        .HasForeignKey("sellerId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

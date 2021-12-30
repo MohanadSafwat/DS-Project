@@ -22,9 +22,9 @@ namespace MarketPlace.Areas.Identity
 
                 services.AddDefaultIdentity<User>(options => {
                     options.SignIn.RequireConfirmedAccount = true;
-                    options.Password.RequireUppercase = false;
+                    /*options.Password.RequireUppercase = false;
                     options.Password.RequireLowercase = false;
-                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireNonAlphanumeric = false;*/
 
 
                 })

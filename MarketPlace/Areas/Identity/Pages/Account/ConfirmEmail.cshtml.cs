@@ -50,7 +50,7 @@ namespace MarketPlace.Areas.Identity.Pages.Account
             }
 
             code2 = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code2));
-            var result = await _userManager.ConfirmEmailAsync(user2, code2);
+            //var result = await _userManager.ConfirmEmailAsync(user2, code2);
             HttpResponseMessage confirmResponse = await client.GetAsync(confrimUri);
             StatusMessage = confirmResponse.IsSuccessStatusCode ? "Thank you for confirming your email." : "Error confirming your email.";
             return Page();

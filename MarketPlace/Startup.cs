@@ -1,3 +1,5 @@
+using JWTAuthentication.Authentication;
+using MarketPlace.Areas.Identity.Data;
 using MarketPlace.Models;
 using MarketPlace.Models.Repositories;
 using MarketPlace.Models.Repository;
@@ -6,6 +8,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,6 +36,7 @@ namespace MarketPlace
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AppDBContext>(option => option.UseSqlServer(Configuration.GetConnectionString("SqlCon")));
+            services.AddDbContext<AppDB2Context>(option => option.UseSqlServer(Configuration.GetConnectionString("SqlCon2")));
             services.AddScoped<IProductRepository<Product>, ProductDbRepository>();
             services.AddTransient<IProductRepository<Product>, ProductDbRepository>();
             services.AddScoped<IAssociatedRepository<AssociatedSell>, AssociatedSellRepository>();
@@ -44,6 +48,18 @@ namespace MarketPlace
             {
                 options.ConnectionString = Configuration.GetConnectionString("SqlCon");
             });
+            services.Configure<AppDb2Connection>(options =>
+            {
+                options.ConnectionString = Configuration.GetConnectionString("SqlCon2");
+            });
+
+            /*services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<AppDBContext>()
+                .AddDefaultTokenProviders();*/
+            services.AddSecondIdentity<User2, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<AppDB2Context>()
+                .AddTokenProvider("Default", typeof(Token2<User2>));
+
             services.AddControllersWithViews();
             /*services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(o =>
             {
@@ -59,30 +75,7 @@ namespace MarketPlace
 
 
             });*/
-            //services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
-            /*services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = "Cookies";
-                options.DefaultChallengeScheme = "oidc";
-            })
-                        .AddCookie("Cookies")
-                        .AddOpenIdConnect("oidc", options =>
-                        {
-                            options.SignInScheme = "Cookies";
-
-                            options.Authority = "http://localhost:5000";
-                            options.RequireHttpsMetadata = false;
-
-                            options.ClientId = "testclient";
-                            options.ClientSecret = "secret";
-                            options.ResponseType = "code id_token";
-                            options.SaveTokens = true;
-                            options.GetClaimsFromUserInfoEndpoint = true;
-
-                            options.Scope.Add("testapi");
-                            options.Scope.Add("offline_access");
-                        });*/
+            
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddMvc();
         }

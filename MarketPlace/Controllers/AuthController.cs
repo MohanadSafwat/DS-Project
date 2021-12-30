@@ -1,5 +1,6 @@
 ﻿using AspNetCore.Reporting;
 using Dapper;
+using JWTAuthentication.Authentication;
 using MarketPlace.Areas.Identity.Data;
 using MarketPlace.Models;
 using MarketPlace.Models.Repositories;
@@ -20,7 +21,9 @@ namespace MarketPlace.Controllers
     public class AuthController : Controller
     {
         private readonly UserManager<User> _userManager; 
+        private readonly UserManager<User2> _userManager2; 
         private readonly AppDBContext _db;
+        private readonly AppDB2Context _db2;
         private readonly IAssociatedRepository<AssociatedSell> associatedSellRepository;
         private readonly IAssociatedRepository<AssociatedShared> associatedSharedRepository;
         private readonly IAssociatedRepository<AssociatedBought> associatedBoughtRepository;
@@ -31,10 +34,12 @@ namespace MarketPlace.Controllers
         
 
 
-        public AuthController(IOptions<AppDbConnection> config,IProductRepository<Product> productRepository,IWebHostEnvironment webHostEnvironment,UserManager<User> userManager, AppDBContext db,IAssociatedRepository<AssociatedSell> associatedSellRepository, IAssociatedRepository<AssociatedShared> associatedSharedRepository, IAssociatedRepository<AssociatedBought> associatedBoughtRepository)
+        public AuthController(IOptions<AppDbConnection> config,IProductRepository<Product> productRepository,IWebHostEnvironment webHostEnvironment, UserManager<User> userManager, AppDBContext db,  UserManager<User2> userManager2, AppDB2Context db2, IAssociatedRepository<AssociatedSell> associatedSellRepository, IAssociatedRepository<AssociatedShared> associatedSharedRepository, IAssociatedRepository<AssociatedBought> associatedBoughtRepository)
         {
             _userManager = userManager;
             _db = db;
+            _userManager2 = userManager2;
+            _db2 = db2;
             _connectionString = config.Value.ConnectionString;
             this.associatedSellRepository = associatedSellRepository;
             this.associatedSharedRepository = associatedSharedRepository;
@@ -72,6 +77,8 @@ namespace MarketPlace.Controllers
         {
 
             ViewBag.user = await _userManager.FindByIdAsync(_userManager.GetUserId(HttpContext.User));
+            if (ViewBag.user == null)
+                ViewBag.user = await _userManager2.FindByIdAsync(_userManager2.GetUserId(HttpContext.User));
             ViewBag.id = _userManager.GetUserId(HttpContext.User);
             ViewBag.fullUser = HttpContext.User;
 

@@ -22,6 +22,7 @@ using MarketPlace.Models;
 using MarketPlace.Models.Repository;
 using MarketPlace.Dtos;
 using Microsoft.AspNetCore.Cors.Infrastructure;
+using Autofac;
 
 namespace JWTAuthentication
 {
@@ -59,12 +60,22 @@ namespace JWTAuthentication
             });
             // For Entity Framework
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnStr")));
+            services.AddDbContext<ApplicationDb2Context>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnStr2")));
 
             // For Identity
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+            services.AddSecondIdentity<User2, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<ApplicationDb2Context>()
+                .AddTokenProvider("Default", typeof(Token2<User2>));
+                    
+            
+
+            /*services.AddIdentityCore<CustomerUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<TenantDataContext>()
+                .AddTokenProvider<DataProtectorTokenProvider<CustomerUser>>(TokenOptions.DefaultProvider);*/
             // Adding Authentication
             services.AddAuthentication(options =>
             {
@@ -187,6 +198,14 @@ namespace JWTAuthentication
 });*/
         }
 
+
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            
+            builder.RegisterType<Token2<User2>>()
+                    .As<IUserTwoFactorTokenProvider<User2>>()
+                    .InstancePerLifetimeScope();
+        }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
