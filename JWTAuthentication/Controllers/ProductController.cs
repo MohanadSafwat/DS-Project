@@ -32,14 +32,14 @@ namespace JWTAuthentication.Controllers
         private readonly IProductRepository<Product> productRepository;
         [Obsolete]
         private readonly IHostingEnvironment hosting;
-        private readonly IAssociatedRepository<AssociatedSell,ProductSellerReadDto> associatedSellRepository;
-        private readonly IAssociatedRepository<AssociatedShared,ProductSharedReadDto> associatedSharedRepository;
-        private readonly IAssociatedRepository<AssociatedBought,ProductBoughtReadDto> associatedBoughtRepository;
+        private readonly IAssociatedRepository<AssociatedSell, ProductSellerReadDto> associatedSellRepository;
+        private readonly IAssociatedRepository<AssociatedShared, ProductSharedReadDto> associatedSharedRepository;
+        private readonly IAssociatedRepository<AssociatedBought, ProductBoughtReadDto> associatedBoughtRepository;
         private ApplicationDbContext db;
         [Obsolete]
-        public ProductController(IAssociatedRepository<AssociatedSell,ProductSellerReadDto> associatedSellRepository,
-            IAssociatedRepository<AssociatedShared,ProductSharedReadDto> associatedSharedRepository,
-            IAssociatedRepository<AssociatedBought,ProductBoughtReadDto> associatedBoughtRepositor,
+        public ProductController(IAssociatedRepository<AssociatedSell, ProductSellerReadDto> associatedSellRepository,
+            IAssociatedRepository<AssociatedShared, ProductSharedReadDto> associatedSharedRepository,
+            IAssociatedRepository<AssociatedBought, ProductBoughtReadDto> associatedBoughtRepositor,
             IProductRepository<Product> productRepository,
             IHostingEnvironment hosting,
             SignInManager<User> signInManager, ApplicationDbContext db, UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
@@ -60,17 +60,8 @@ namespace JWTAuthentication.Controllers
         [Route("GetAllProducts")]
         public ActionResult GetAllProducts()
         {
-
-            var productsIndex = associatedSellRepository;
-
-
-            var model = new
-            {
-                productsIndex = associatedSellRepository.List(),
-
-            };
-
-            return Ok(model);
+            var productsIndex = associatedSellRepository.List();
+            return Ok(productsIndex);
         }
         public async Task<User> UserReturn(string id)
         {
@@ -138,6 +129,12 @@ namespace JWTAuthentication.Controllers
             return Ok(product);
         }
 
+        [HttpGet("GetUnsoldProductsBySellerId/{id}")]
+        public ActionResult GetUnsoldProductsBySellerId(string id)
+        {
+            var products = associatedSellRepository.FindProducts(id);
+            return Ok(products);
+        }
 
 
     }

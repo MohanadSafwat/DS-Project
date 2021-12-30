@@ -4,27 +4,24 @@ using System.Collections.Generic;
 
 namespace MarketPlace.Models.Repositories
 {
-    public interface IAssociatedRepository<TEntity,TDtos>
+    public interface IAssociatedRepository<TEntity, TDtos>
     {
-        List<TDtos> List();
-
-
+        List<TDtos> ListDtos();
+        TDtos FindProductByIdDtos(int ProductId);
+        List<TDtos> FindProductsDtos(string accountId);
+        List<TDtos> FindUnSoldProductsDtos(string accountId);
+        List<TDtos> FindSoldProductsDtos(string accountId);
+        List<TDtos> FindUsersDtos(int productId);
+         List<TDtos> SearchDtos(string term);
+        List<TEntity> List();
         TEntity Find(int ProductId);
-        TDtos FindProductById(int ProductId);
-
         void Add(TEntity entity);
         void Edit(TEntity entity);
         void Delete(int ProductId);
-
-        List<TDtos> FindProducts(string sellerId);
-        List<TDtos> FindUsers(int productId);
-        public void EditList(List<TEntity> entityList);
-        
+        List<TEntity> FindProducts(string accountId);
+        List<TEntity> FindUsers(int productId);
+         void EditList(List<TEntity> entityList);
         int IsExist(TEntity entity);
-
-        public List<TDtos> Search(string term);
-
-        
-
+         List<TEntity> Search(string term);
     }
 }

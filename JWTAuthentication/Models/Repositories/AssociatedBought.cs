@@ -14,21 +14,14 @@ namespace MarketPlace.Models.Repositories
         {
             db = _db;
         }
-        public List<ProductBoughtReadDto> FindUsers(int productId)
+         public List<AssociatedBought> FindUsers(int productId)
         {
 
-            var result = db.AssociatedBought.Select(x => new ProductBoughtReadDto
-            {
-                BuyerId = x.Buyer.Id,
-                product = x.product,
-                BuyerFirstName = x.Buyer.FirstName,
-                BuyerLastName = x.Buyer.LastName,
-                BuyerEmail = x.Buyer.Email
-            }).Where(p => p.product.ProductId == productId).ToList();
+            var result = db.AssociatedBought.Include(p => p.product).Include(s => s.Buyer).Where(p => p.product.ProductId == productId).ToList();
             if (result != null)
                 return result;
             else
-                return new List<ProductBoughtReadDto>();
+                return new List<AssociatedBought>();
         }
         public void EditList(List<AssociatedBought> entityList)
         {
@@ -36,39 +29,26 @@ namespace MarketPlace.Models.Repositories
             db.Update(entityList);
             db.SaveChanges();
         }
-        public List<ProductBoughtReadDto> FindProducts(string buyerId)
+        public List<AssociatedBought> FindProducts(string buyerId)
         {
-            var result = db.AssociatedBought.Select(x => new ProductBoughtReadDto
-            {
-                BuyerId = x.Buyer.Id,
-                product = x.product,
-                BuyerFirstName = x.Buyer.FirstName,
-                BuyerLastName = x.Buyer.LastName,
-                BuyerEmail = x.Buyer.Email
-            }).Where(b => b.BuyerId == buyerId).ToList();
+            var result = db.AssociatedBought.Include(p => p.product).Include(s => s.Buyer).Where(s => s.Buyer.Id == buyerId).ToList();
             if (result != null)
                 return result;
-            else
-            {
-                List<ProductBoughtReadDto> list = new List<ProductBoughtReadDto>();
+            else {
+                List < AssociatedBought > list = new List<AssociatedBought>();
                 list.Clear();
                 return list;
 
             }
 
+            /*            return db.AssociatedBought.Include(p => p.product).Include(s => s.Buyer).Where(s => s.Buyer.Id == buyerId).ToList();
+            */
         }
-        public List<ProductBoughtReadDto> Search(string term)
+        public List<AssociatedBought> Search(string term)
         {
-            var result = db.AssociatedBought.Select(x => new ProductBoughtReadDto
-            {
-                BuyerId = x.Buyer.Id,
-                product = x.product,
-                BuyerFirstName = x.Buyer.FirstName,
-                BuyerLastName = x.Buyer.LastName,
-                BuyerEmail = x.Buyer.Email
-            }).Where(p => p.product.ProductName.Contains(term)
-               || p.product.ProductBrand.Contains(term) || p.product.ProductDescription.Contains(term) || p.BuyerFirstName.Contains(term)
-                   || p.BuyerLastName.Contains(term)).ToList();
+            var result = db.AssociatedBought.Include(p => p.product).Include(s => s.Buyer).Where(p => p.product.ProductName.Contains(term)
+               || p.product.ProductBrand.Contains(term) || p.product.ProductDescription.Contains(term) || p.Buyer.FirstName.Contains(term)
+                   || p.Buyer.LastName.Contains(term)).ToList();
             return result;
         }
         public void Add(AssociatedBought entity)
@@ -96,9 +76,109 @@ namespace MarketPlace.Models.Repositories
 
         public AssociatedBought Find(int ProductId)
         {
-            return db.AssociatedBought.Include(p => p.product).Include(s => s.Buyer).SingleOrDefault(p => p.product.ProductId == ProductId);
+            return db.AssociatedBought.Include(p => p.product).Include(s => s.Buyer).SingleOrDefault(p => p.product.ProductId == ProductId );
         }
-        public ProductBoughtReadDto FindProductById(int ProductId)
+
+        public List<AssociatedBought> List()
+        {
+            return db.AssociatedBought.Include(s => s.Buyer).Include(p => p.product).ToList();
+        }
+        public List<ProductBoughtReadDto> FindUsersDtos(int productId)
+        {
+
+            var result = db.AssociatedBought.Select(x => new ProductBoughtReadDto
+            {
+                BuyerId = x.Buyer.Id,
+                product = x.product,
+                BuyerFirstName = x.Buyer.FirstName,
+                BuyerLastName = x.Buyer.LastName,
+                BuyerEmail = x.Buyer.Email
+            }).Where(p => p.product.ProductId == productId).ToList();
+            if (result != null)
+                return result;
+            else
+                return new List<ProductBoughtReadDto>();
+        }
+      
+        public List<ProductBoughtReadDto> FindProductsDtos(string buyerId)
+        {
+            var result = db.AssociatedBought.Select(x => new ProductBoughtReadDto
+            {
+                BuyerId = x.Buyer.Id,
+                product = x.product,
+                BuyerFirstName = x.Buyer.FirstName,
+                BuyerLastName = x.Buyer.LastName,
+                BuyerEmail = x.Buyer.Email
+            }).Where(b => b.BuyerId == buyerId).ToList();
+            if (result != null)
+                return result;
+            else
+            {
+                List<ProductBoughtReadDto> list = new List<ProductBoughtReadDto>();
+                list.Clear();
+                return list;
+
+            }
+
+        }
+         public List<ProductBoughtReadDto> FindSoldProductsDtos(string buyerId)
+        {
+            var result = db.AssociatedBought.Select(x => new ProductBoughtReadDto
+            {
+                BuyerId = x.Buyer.Id,
+                product = x.product,
+                BuyerFirstName = x.Buyer.FirstName,
+                BuyerLastName = x.Buyer.LastName,
+                BuyerEmail = x.Buyer.Email
+            }).Where(b => b.BuyerId == buyerId && b.Sold).ToList();
+            if (result != null)
+                return result;
+            else
+            {
+                List<ProductBoughtReadDto> list = new List<ProductBoughtReadDto>();
+                list.Clear();
+                return list;
+
+            }
+
+        }
+         public List<ProductBoughtReadDto> FindUnSoldProductsDtos(string buyerId)
+        {
+            var result = db.AssociatedBought.Select(x => new ProductBoughtReadDto
+            {
+                BuyerId = x.Buyer.Id,
+                product = x.product,
+                BuyerFirstName = x.Buyer.FirstName,
+                BuyerLastName = x.Buyer.LastName,
+                BuyerEmail = x.Buyer.Email
+            }).Where(b => b.BuyerId == buyerId && !b.Sold).ToList();
+            if (result != null)
+                return result;
+            else
+            {
+                List<ProductBoughtReadDto> list = new List<ProductBoughtReadDto>();
+                list.Clear();
+                return list;
+
+            }
+
+        }
+        public List<ProductBoughtReadDto> SearchDtos(string term)
+        {
+            var result = db.AssociatedBought.Select(x => new ProductBoughtReadDto
+            {
+                BuyerId = x.Buyer.Id,
+                product = x.product,
+                BuyerFirstName = x.Buyer.FirstName,
+                BuyerLastName = x.Buyer.LastName,
+                BuyerEmail = x.Buyer.Email
+            }).Where(p => p.product.ProductName.Contains(term)
+               || p.product.ProductBrand.Contains(term) || p.product.ProductDescription.Contains(term) || p.BuyerFirstName.Contains(term)
+                   || p.BuyerLastName.Contains(term)).ToList();
+            return result;
+}
+
+        public ProductBoughtReadDto FindProductByIdDtos(int ProductId)
         {
             return db.AssociatedBought.Select(x => new ProductBoughtReadDto
             {
@@ -109,7 +189,7 @@ namespace MarketPlace.Models.Repositories
                 BuyerEmail = x.Buyer.Email
             }).SingleOrDefault(p => p.product.ProductId == ProductId);
         }
-        public List<ProductBoughtReadDto> List()
+        public List<ProductBoughtReadDto> ListDtos()
         {
             return db.AssociatedBought.Select(x => new ProductBoughtReadDto
             {
