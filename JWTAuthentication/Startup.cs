@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Authorization;
 using MarketPlace.Models.Repositories;
 using MarketPlace.Models;
 using MarketPlace.Models.Repository;
+using MarketPlace.Dtos;
 
 namespace JWTAuthentication
 {
@@ -38,9 +39,9 @@ namespace JWTAuthentication
             services.AddControllers();
             services.AddScoped<IProductRepository<Product>, ProductDbRepository>();
             services.AddTransient<IProductRepository<Product>, ProductDbRepository>();
-            services.AddScoped<IAssociatedRepository<AssociatedSell>, AssociatedSellRepository>();
-            services.AddScoped<IAssociatedRepository<AssociatedBought>, AssociatedBoughtRepository>();
-            services.AddScoped<IAssociatedRepository<AssociatedShared>, AssociatedSharedRepository>();
+            services.AddScoped<IAssociatedRepository<AssociatedSell,ProductSellerReadDto>, AssociatedSellRepository>();
+            services.AddScoped<IAssociatedRepository<AssociatedBought,ProductBoughtReadDto>, AssociatedBoughtRepository>();
+            services.AddScoped<IAssociatedRepository<AssociatedShared,ProductSharedReadDto>, AssociatedSharedRepository>();
             services.AddScoped<IOrderRepository<Order>, OrderDbRepository>();
             services.AddScoped<IOrderRepository<OrderItem>, OrderItemDbRepository>();
             // services.AddDbContext<AppDBContext>(option => option.UseSqlServer(Configuration.GetConnectionString("ConnStr")));
