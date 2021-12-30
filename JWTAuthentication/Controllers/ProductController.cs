@@ -60,7 +60,7 @@ namespace JWTAuthentication.Controllers
         [Route("GetAllProducts")]
         public ActionResult GetAllProducts()
         {
-            var productsIndex = associatedSellRepository.List();
+            var productsIndex = associatedSellRepository.ListDtos();
             return Ok(productsIndex);
         }
         public async Task<User> UserReturn(string id)
@@ -125,7 +125,7 @@ namespace JWTAuthentication.Controllers
         [HttpGet("GetProductById/{id}")]
         public ActionResult GetProductById(int id)
         {
-            var product = associatedSellRepository.Find(id);
+            var product = associatedSellRepository.FindProductByIdDtos(id);
             return Ok(product);
         }
 
@@ -205,7 +205,7 @@ namespace JWTAuthentication.Controllers
             if (accountData == null)
                 return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "404", Message = "No Suach a User" });
 
-            var product = associatedSellRepository.Find(productId);
+            var product = associatedSellRepository.FindProductByIdDtos(productId);
             if (product == null)
                 return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "404", Message = "No Suach a Product" });
 
@@ -220,7 +220,7 @@ namespace JWTAuthentication.Controllers
             if (accountData == null)
                 return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "404", Message = "No Suach a User" });
 
-            var product = associatedSellRepository.Find(productId);
+            var product = associatedSellRepository.FindProductByIdDtos(productId);
             if (product == null)
                 return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "404", Message = "No Suach a Product" });
 
