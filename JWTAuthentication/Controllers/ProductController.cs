@@ -130,50 +130,163 @@ namespace JWTAuthentication.Controllers
         }
 
         [HttpGet("GetUnSoldProductsBySellerId/{id}")]
-        public ActionResult GetUnSoldProductsBySellerId(string id)
+        public async Task<ActionResult> GetUnSoldProductsBySellerId(string id)
         {
+            Task<User> account = UserReturn(id);
+            User accountData = await account;
+            if (accountData == null)
+                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "404", Message = "No Suach a User" });
+
             var products = associatedSellRepository.FindUnSoldProductsDtos(id);
+            if (products.Count == 0)
+                return StatusCode(StatusCodes.Status204NoContent, new Response { Status = "User has no unsold products" });
+
             return Ok(products);
         }
 
         [HttpGet("GetSoldProductsBySellerId/{id}")]
-        public ActionResult GetSoldProductsBySellerId(string id)
+        public async Task<ActionResult> GetSoldProductsBySellerId(string id)
         {
+            Task<User> account = UserReturn(id);
+            User accountData = await account;
+            if (accountData == null)
+                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "404", Message = "No Suach a User" });
+
             var products = associatedSellRepository.FindSoldProductsDtos(id);
+            if (products.Count == 0)
+                return StatusCode(StatusCodes.Status204NoContent, new Response { Message = "User has no sold products" });
+
             return Ok(products);
         }
 
         [HttpGet("GetUnSoldProductsBySharerId/{id}")]
-        public ActionResult GetUnSoldProductsBySharerId(string id)
+        public async Task<ActionResult> GetUnSoldProductsBySharerId(string id)
         {
+            Task<User> account = UserReturn(id);
+            User accountData = await account;
+            if (accountData == null)
+                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "404", Message = "No Suach a User" });
             var products = associatedSharedRepository.FindUnSoldProductsDtos(id);
+            if (products.Count == 0)
+                return StatusCode(StatusCodes.Status204NoContent, new Response { Message = "User has no unsold shared products" });
             return Ok(products);
         }
 
         [HttpGet("GetSoldProductsBySharerId/{id}")]
-        public ActionResult GetSoldProductsBySharerId(string id)
+        public async Task<ActionResult> GetSoldProductsBySharerId(string id)
         {
+            Task<User> account = UserReturn(id);
+            User accountData = await account;
+            if (accountData == null)
+                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "404", Message = "No Suach a User" });
             var products = associatedSharedRepository.FindSoldProductsDtos(id);
+            if (products.Count == 0)
+                return StatusCode(StatusCodes.Status204NoContent, new Response { Message = "User has no sold shared products" });
             return Ok(products);
         }
 
         [HttpGet("GetProductsByBuyerId/{id}")]
-        public ActionResult GetProductsByBuyerId(string id)
+        public async Task<ActionResult> GetProductsByBuyerId(string id)
         {
+            Task<User> account = UserReturn(id);
+            User accountData = await account;
+            if (accountData == null)
+                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "404", Message = "No Suach a User" });
             var products = associatedSharedRepository.FindProductsDtos(id);
+            if (products.Count == 0)
+                return StatusCode(StatusCodes.Status204NoContent, new Response { Message = "User has buy any  products" });
             return Ok(products);
         }
-          [HttpGet("IsUserShareThis/{accountId}/{productId}")]
-        public ActionResult IsUserShareThis(string accountId,int productId)
+        [HttpGet("IsUserShareThis/{accountId}/{productId}")]
+        public async Task<ActionResult> IsUserShareThis(string accountId, int productId)
         {
-            var result = associatedSharedRepository.IsUserShareThis(accountId,productId);
+            Task<User> account = UserReturn(accountId);
+            User accountData = await account;
+            if (accountData == null)
+                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "404", Message = "No Suach a User" });
+
+            var product = associatedSellRepository.Find(productId);
+            if (product == null)
+                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "404", Message = "No Suach a Product" });
+
+            var result = associatedSharedRepository.IsUserShareThis(accountId, productId);
             return Ok(result);
         }
-     [HttpGet("IsUserBuyThis/{accountId}/{productId}")]
-        public ActionResult IsUserBuyThis(string accountId,int productId)
+        [HttpGet("IsUserBuyThis/{accountId}/{productId}")]
+        public async Task<ActionResult> IsUserBuyThis(string accountId, int productId)
         {
-            var result = associatedBoughtRepository.IsUserBuyThis(accountId,productId);
+            Task<User> account = UserReturn(accountId);
+            User accountData = await account;
+            if (accountData == null)
+                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "404", Message = "No Suach a User" });
+
+            var product = associatedSellRepository.Find(productId);
+            if (product == null)
+                return StatusCode(StatusCodes.Status404NotFound, new Response { Status = "404", Message = "No Suach a Product" });
+
+            var result = associatedBoughtRepository.IsUserBuyThis(accountId, productId);
             return Ok(result);
+        }
+
+        [HttpGet("Search/{term}")]
+        public ActionResult Search(string term)
+        {
+            var result = associatedSellRepository.SearchDtos(term);
+            if (result == null)
+                return StatusCode(StatusCodes.Status204NoContent, new Response { Status = "204", Message = "No Suach a Products" });
+            return Ok(result);
+        }
+
+        [HttpPut("{id}")]
+        [Route("Edit")]
+        public ActionResult EditProduct(int id, [FromForm] ProductViewModel model)
+        {
+            var product = productRepository.Find(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+
+            try
+            {
+                string fileNames = string.Empty;
+                if (model.Files != null)
+                {
+                    foreach (var file in model.Files)
+                    {
+                        string upload = Path.Combine(hosting.WebRootPath, "images");
+                        fileNames += file.FileName;
+                        fileNames += '`';
+                        string fullPath = Path.Combine(upload, file.FileName);
+                        file.CopyTo(new FileStream(fullPath, FileMode.Create));
+                    }
+                }
+
+                if (fileNames == "")
+                {
+                    fileNames = model.ProductImagesUrl;
+                }
+                Product newProduct = new Product
+                {
+                    ProductId = model.ProductId,
+                    ProductBrand = model.ProductBrand,
+                    ProductDescription = model.ProductDescription,
+                    ProductName = model.ProductName,
+                    ProductPrice = model.ProductPrice,
+                    ProductImageUrls = fileNames
+                };
+
+
+
+                productRepository.Edit(id, newProduct);
+
+
+                return StatusCode(StatusCodes.Status201Created, new Response { Status = "Edited" });
+
+
+            }
+            catch { return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error" }); }
         }
 
 
