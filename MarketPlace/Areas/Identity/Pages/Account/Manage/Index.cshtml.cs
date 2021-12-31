@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using JWTAuthentication.Authentication;
 using MarketPlace.Areas.Identity.Data;
 using MarketPlace.Models;
 using Microsoft.AspNetCore.Identity;

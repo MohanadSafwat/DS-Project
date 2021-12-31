@@ -1,4 +1,4 @@
-﻿using MarketPlace.Areas.Identity.Data;
+﻿/*using MarketPlace.Areas.Identity.Data;
 
 namespace MarketPlace.Models
 {
@@ -12,3 +12,4 @@ namespace MarketPlace.Models
         public bool Sold { get; set; }
     }
 }
+*/

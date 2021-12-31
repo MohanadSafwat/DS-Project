@@ -1,14 +1,13 @@
-﻿/*using MarketPlace.Areas.Identity.Data;
+﻿using JWTAuthentication.Authentication;
 
 namespace MarketPlace.Models
 {
-    public class AssociatedShared
+    public class AssociatedSharedSouth
     {
         public int id { get; set; }
         public Product productId { get; set; }
-        public User SharedId { get; set; }
+        public User2 SharedId { get; set; }
 
         public bool Sold { get; set; }
     }
 }
-*/

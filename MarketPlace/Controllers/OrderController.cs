@@ -1,4 +1,7 @@
-﻿using MarketPlace.Areas.Identity.Data;
+﻿/*using JWTAuthentication.Authentication;
+using JWTAuthentication.Models;
+using MarketPlace.Areas.Identity.Data;
+using MarketPlace.Dtos;
 using MarketPlace.Models;
 using MarketPlace.Models.Repositories;
 using MarketPlace.Models.Repository;
@@ -20,9 +23,9 @@ namespace MarketPlace.Controllers
         private readonly IOrderRepository<OrderItem> orderItemDbRepository;
         private readonly IProductRepository<Product> productRepository;
         private readonly UserManager<User> userManager;
-        private readonly IAssociatedRepository<AssociatedSell> associatedSellRepository;
-        private readonly IAssociatedRepository<AssociatedShared> associatedSharedRepository;
-        private readonly IAssociatedRepository<AssociatedBought> associatedBoughtRepository;
+        private readonly IAssociatedRepository<AssociatedSell, ProductSellerReadDto> associatedSellRepository;
+        private readonly IAssociatedRepository<AssociatedShared, ProductSharedReadDto> associatedSharedRepository;
+        private readonly IAssociatedRepository<AssociatedBought, ProductBoughtReadDto> associatedBoughtRepository;
         private AppDBContext db;
         private readonly string _connectionString;
 
@@ -31,9 +34,9 @@ namespace MarketPlace.Controllers
             IProductRepository<Product> productRepository,
 
              UserManager<User> userManager,
-             IAssociatedRepository<AssociatedSell> associatedSellRepository,
-             IAssociatedRepository<AssociatedShared> associatedSharedRepository,
-            IAssociatedRepository<AssociatedBought> associatedBoughtRepositor,
+             IAssociatedRepository<AssociatedSell, ProductSellerReadDto> associatedSellRepository,
+             IAssociatedRepository<AssociatedShared, ProductSharedReadDto> associatedSharedRepository,
+            IAssociatedRepository<AssociatedBought, ProductBoughtReadDto> associatedBoughtRepositor,
             AppDBContext _db)
         {
             this.orderDbRepository = orderRepository;
@@ -111,13 +114,13 @@ namespace MarketPlace.Controllers
                 orderDbRepository.Add(order);
 
                 //update AssociatedSell
-                /*  AssociatedSell updatedSell = new AssociatedSell
+                *//*  AssociatedSell updatedSell = new AssociatedSell
                   {
                       id = oldSell.id,
                       productId = product,
                       SellerId = oldSell.SellerId,
                       Sold = true
-                  };*/
+                  };*//*
                 oldSell.Sold = true;
                 associatedSellRepository.Edit(oldSell);
 
@@ -126,13 +129,13 @@ namespace MarketPlace.Controllers
                 List<AssociatedShared> updatedSharedList = new List<AssociatedShared>();
                 foreach (var shared in oldShared)
                 {
-                    /* AssociatedShared updatedShared = new AssociatedShared
+                    *//* AssociatedShared updatedShared = new AssociatedShared
                      {
                          id = shared.id,
                          SharedId = shared.SharedId,
                          productId = shared.productId,
                          Sold = true
-                     };*/
+                     };*//*
                     shared.Sold = true;
                     updatedSharedList.Add(shared);
                 }
@@ -263,3 +266,4 @@ namespace MarketPlace.Controllers
         }
     }
 }
+*/

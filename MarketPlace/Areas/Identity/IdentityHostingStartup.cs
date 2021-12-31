@@ -1,4 +1,5 @@
 ﻿using System;
+using JWTAuthentication.Authentication;
 using MarketPlace.Areas.Identity.Data;
 using MarketPlace.Models;
 using Microsoft.AspNetCore.Hosting;

@@ -1,5 +1,6 @@
 ﻿using JWTAuthentication.Authentication;
 using MarketPlace.Areas.Identity.Data;
+using MarketPlace.Dtos;
 using MarketPlace.Models;
 using MarketPlace.Models.Repositories;
 using MarketPlace.ViewModels;
@@ -22,17 +23,23 @@ namespace MarketPlace.Controllers
         private readonly UserManager<User2> _userManager2;
         private readonly AppDBContext _db;
         private readonly AppDB2Context _db2;
-        private readonly IAssociatedRepository<AssociatedSell> associatedSellRepository;
-        private readonly IAssociatedRepository<AssociatedShared> associatedSharedRepository;
+        private readonly IAssociatedRepository<AssociatedSell, ProductSellerReadDto> associatedSellRepository;
+        private readonly IAssociatedRepository<AssociatedShared, ProductSharedReadDto> associatedSharedRepository;
         private readonly IProductRepository<Product> productRepository;
-        private readonly IAssociatedRepository<AssociatedBought> associatedBoughtRepository;
+        private readonly IAssociatedRepository<AssociatedBought,ProductBoughtReadDto> associatedBoughtRepository;
+        private readonly IAssociatedRepository<AssociatedSellSouth, ProductSellerReadDto> southAssociatedSellRepository;
+        private readonly IAssociatedRepository<AssociatedSharedSouth, ProductSharedReadDto> southAssociatedSharedRepository;
+        private readonly IAssociatedRepository<AssociatedBoughtSouth, ProductBoughtReadDto> southAssociatedBoughtRepository;
 
 
         public HomeController(ILogger<HomeController> logger ,
             UserManager<User> userManager, AppDBContext db,
-            IAssociatedRepository<AssociatedSell> associatedSellRepository,
-            IAssociatedRepository<AssociatedShared> associatedSharedRepository,
-            IAssociatedRepository<AssociatedBought> associatedBoughtRepository,
+            IAssociatedRepository<AssociatedSell, ProductSellerReadDto> associatedSellRepository,
+            IAssociatedRepository<AssociatedShared, ProductSharedReadDto> associatedSharedRepository,
+            IAssociatedRepository<AssociatedBought, ProductBoughtReadDto> associatedBoughtRepository,
+             IAssociatedRepository<AssociatedSellSouth, ProductSellerReadDto> southAssociatedSellRepository,
+            IAssociatedRepository<AssociatedSharedSouth, ProductSharedReadDto> southAssociatedSharedRepository,
+            IAssociatedRepository<AssociatedBoughtSouth, ProductBoughtReadDto> southAssociatedBoughtRepository,
             IProductRepository<Product> productRepository, UserManager<User2> userManager2, AppDB2Context db2
 
             )
@@ -46,22 +53,58 @@ namespace MarketPlace.Controllers
             this.associatedSharedRepository = associatedSharedRepository;
             this.productRepository = productRepository;
             this.associatedBoughtRepository = associatedBoughtRepository;
-        }
+            this.southAssociatedSellRepository = southAssociatedSellRepository;
+            this.southAssociatedSharedRepository = southAssociatedSharedRepository;
+            this.southAssociatedBoughtRepository = southAssociatedBoughtRepository;
+        
+    }
 
         public async Task<IActionResult> IndexAsync()
         {
             //ViewBag.id =  _userManager.GetUserId(HttpContext.User);
 
             ViewBag.user  = await _userManager.FindByIdAsync(_userManager.GetUserId(HttpContext.User)) ;
-            if (ViewBag.user == null)
-                ViewBag.user  = await _userManager2.FindByIdAsync(_userManager2.GetUserId(HttpContext.User)) ;
-
-
-            var model = new ProductViewModel {
-            productsIndex = associatedSellRepository.List(),
-            associatedSharedRepository = associatedSharedRepository
+            var model = new ProductViewModel
+            {
+           
             };
-            return View(model);
+            if (ViewBag.user != null)
+            {
+                ViewBag.userLocation = "North";
+                model = new ProductViewModel
+                {
+                    productsIndex = associatedSellRepository.List(),
+                     associatedSharedRepository = associatedSharedRepository
+                 };
+                return View(model);
+
+            }
+            else
+            {
+                ViewBag.user = await _userManager2.FindByIdAsync(_userManager2.GetUserId(HttpContext.User));
+
+                if (ViewBag.user != null)
+                {
+                    ViewBag.userLocation = "South";
+
+                    model = new ProductViewModel
+                    {
+                        productsIndexSouth = southAssociatedSellRepository.List(),
+                        southAssociatedSharedRepository = southAssociatedSharedRepository
+
+                    };
+                    return View(model);
+                }
+                else {
+                    model = new ProductViewModel
+                    {
+                        productsIndex = associatedSellRepository.List(),
+                        associatedSharedRepository = associatedSharedRepository
+                    };
+                    return View(model);
+                 }
+            }
+
         }
 
         public IActionResult Privacy()
