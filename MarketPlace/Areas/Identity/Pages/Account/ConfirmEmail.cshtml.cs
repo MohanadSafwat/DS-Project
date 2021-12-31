@@ -27,7 +27,7 @@ namespace MarketPlace.Areas.Identity.Pages.Account
         [TempData]
         public string StatusMessage { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(string email, string userId, string code, string userId2, string code2)
+        public async Task<IActionResult> OnGetAsync(string email, string userId, string code/*, string userId2, string code2*/)
         {
             if (userId == null || code == null)
             {
@@ -43,13 +43,13 @@ namespace MarketPlace.Areas.Identity.Pages.Account
             
             
             var user = response.Content.ReadAsStringAsync().Result;
-            var user2 = await _userManager.FindByIdAsync(userId2);
-            if (user == null || user2 ==  null)
+            //var user2 = await _userManager.FindByIdAsync(userId2);
+            if (user == null /*|| user2 ==  null*/)
             {
                 return NotFound($"Unable to load user with Email '{email}'.");
             }
 
-            code2 = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code2));
+            //code2 = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code2));
             //var result = await _userManager.ConfirmEmailAsync(user2, code2);
             HttpResponseMessage confirmResponse = await client.GetAsync(confrimUri);
             StatusMessage = confirmResponse.IsSuccessStatusCode ? "Thank you for confirming your email." : "Error confirming your email.";

@@ -56,9 +56,18 @@ namespace MarketPlace
             /*services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<AppDBContext>()
                 .AddDefaultTokenProviders();*/
-            services.AddSecondIdentity<User2, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddSecondIdentity<User2, IdentityRole>(options => { options.SignIn.RequireConfirmedAccount = true;
+                options.Tokens.EmailConfirmationTokenProvider = "MyTokenProvider";
+            })
                 .AddEntityFrameworkStores<AppDB2Context>()
-                .AddTokenProvider("Default", typeof(Token2<User2>));
+                .AddTokenProvider<Token2<User2>>("MyTokenProvider");
+            /* services.AddIdentityCore<User2>(options => {
+                 options.SignIn.RequireConfirmedAccount = true;
+                 options.Tokens.EmailConfirmationTokenProvider = "MyTokenProvider";
+             })
+                 .AddRoles<IdentityRole>()
+                 .AddEntityFrameworkStores<AppDB2Context>()
+                 .AddTokenProvider<Token2<User2>>("MyTokenProvider");*/
 
             services.AddControllersWithViews();
             /*services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(o =>

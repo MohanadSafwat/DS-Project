@@ -200,11 +200,13 @@ namespace JWTAuthentication.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Email Not exists!" });
             if (userExists != null)
             {
+                userManager.RegisterTokenProvider("MyTokenProvider", new Token1<User>());
                 var code = await userManager.GenerateEmailConfirmationTokenAsync(userExists);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                 return Ok(code);
             } else
             {
+                userManager2.RegisterTokenProvider("MyTokenProvider", new Token2<User2>());
                 var code = await userManager2.GenerateEmailConfirmationTokenAsync(userExists2);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                 return Ok(code);
@@ -216,14 +218,34 @@ namespace JWTAuthentication.Controllers
         public async Task<IActionResult> ConfirmEmail([FromQuery] string email, [FromQuery] string code)
         {
             var userExists = await userManager.FindByEmailAsync(email);
-            if (userExists == null)
+            var userExists2 = await userManager2.FindByEmailAsync(email);
+            if (userExists == null && userExists2 == null)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Email Not exists!" });
-            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
-            var result = await userManager.ConfirmEmailAsync(userExists, code);
-            if (result.Succeeded)
-                return Ok();
+
+
+            if (userExists != null)
+            {
+                userManager.RegisterTokenProvider("MyTokenProvider", new Token1<User>());
+                code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+                var result = await userManager.ConfirmEmailAsync(userExists, code);
+                if (result.Succeeded)
+                    return Ok();
+                else
+                    return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Invalid Token" });
+
+            }
             else
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Invalid Token" });
+            {
+                userManager2.RegisterTokenProvider("MyTokenProvider", new Token2<User2>());
+                code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+                var result = await userManager2.ConfirmEmailAsync(userExists2, code);
+                if (result.Succeeded)
+                    return Ok();
+                else
+                    return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Invalid Token" });
+
+            }
+
 
         }
 

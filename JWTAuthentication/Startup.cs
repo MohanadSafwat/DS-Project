@@ -1,9 +1,12 @@
-using IdentityModel.Client;
+using Autofac;
 using JWTAuthentication.Authentication;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-
+using MarketPlace.Dtos;
+using MarketPlace.Models;
+using MarketPlace.Models.Repositories;
+using MarketPlace.Models.Repository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -12,17 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Net.Http;
 using System.Text;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using MarketPlace.Models.Repositories;
-using MarketPlace.Models;
-using MarketPlace.Models.Repository;
-using MarketPlace.Dtos;
-using Microsoft.AspNetCore.Cors.Infrastructure;
-using Autofac;
 
 namespace JWTAuthentication
 {
@@ -52,30 +45,47 @@ namespace JWTAuthentication
                 options.AddPolicy("AllowAll",
     builder =>
     {
-                builder.WithOrigins("https://webapp.io/", "https://www.webapp.io/")
-    .SetIsOriginAllowed((host) => true)
-    .AllowAnyHeader()
-    .AllowAnyMethod();
-            });
+        builder.WithOrigins("https://webapp.io/", "https://www.webapp.io/")
+.SetIsOriginAllowed((host) => true)
+.AllowAnyHeader()
+.AllowAnyMethod();
+    });
             });
             // For Entity Framework
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnStr")));
             services.AddDbContext<ApplicationDb2Context>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnStr2")));
 
             // For Identity
-            services.AddIdentity<User, IdentityRole>()
+            services.AddIdentity<User, IdentityRole>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = true;
+                options.Tokens.EmailConfirmationTokenProvider = "MyTokenProvider";
+
+            })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
+                /*.AddTokenProvider<Token1<User>>("Default");*/
                 .AddDefaultTokenProviders();
 
-            services.AddSecondIdentity<User2, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDb2Context>()
-                .AddTokenProvider("Default", typeof(Token2<User2>));
-                    
-            
 
-            /*services.AddIdentityCore<CustomerUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<TenantDataContext>()
-                .AddTokenProvider<DataProtectorTokenProvider<CustomerUser>>(TokenOptions.DefaultProvider);*/
+            /*services.AddSecondIdentity<User2, IdentityRole>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = true;
+            }
+            )
+                .AddTokenProvider("Default", typeof(Token2<User2>))
+                .AddDefaultTokenProviders();*/
+
+
+            services.AddIdentityCore<User2>(options => {
+                options.SignIn.RequireConfirmedAccount = true
+;
+                options.Tokens.EmailConfirmationTokenProvider = "MyTokenProvider";
+            })
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDb2Context>()
+                .AddTokenProvider<Token2<User2>>("MyTokenProvider");
+
+
             // Adding Authentication
             services.AddAuthentication(options =>
             {
@@ -83,7 +93,7 @@ namespace JWTAuthentication
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-            
+
 
             // Adding Jwt Bearer
             .AddJwtBearer(options =>
@@ -198,10 +208,9 @@ namespace JWTAuthentication
 });*/
         }
 
-
         public void ConfigureContainer(ContainerBuilder builder)
         {
-            
+
             builder.RegisterType<Token2<User2>>()
                     .As<IUserTwoFactorTokenProvider<User2>>()
                     .InstancePerLifetimeScope();
@@ -216,7 +225,7 @@ namespace JWTAuthentication
 
             app.UseRouting();
             app.UseCors("AllowAll");
-app.UseMiddleware<CorsMiddleware>();
+            app.UseMiddleware<CorsMiddleware>();
 
             app.UseAuthentication();
             app.UseAuthorization();

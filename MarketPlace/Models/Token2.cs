@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace JWTAuthentication.Authentication
 {
-    public class Token2<TUser> : IUserTwoFactorTokenProvider<TUser> where TUser : User2
+    public class Token2<TUser> : IUserTwoFactorTokenProvider<TUser> where TUser : IdentityUser
     {
         public Task<bool> CanGenerateTwoFactorTokenAsync(UserManager<TUser> manager, TUser user)
         {
@@ -21,7 +21,7 @@ namespace JWTAuthentication.Authentication
         }
 
         // Genereates a simple token based on the user id, email and another string.
-        private string GenerateToken(User2 user, string purpose)
+        private string GenerateToken(TUser user, string purpose)
         {
             string secretString = "secretString";
             return secretString + user.Email + purpose + user.Id;

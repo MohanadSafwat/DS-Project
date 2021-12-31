@@ -18,6 +18,7 @@ using System.Net.Http;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
 using System.Web.Http;
+using JWTAuthentication.Authentication;
 
 namespace MarketPlace.Areas.Identity.Pages.Account
 {
@@ -29,15 +30,23 @@ namespace MarketPlace.Areas.Identity.Pages.Account
         private readonly UserManager<User> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly UserManager<User2> _userManager2;
+        private readonly SignInManager<User2> _signInManager2;
+
 
         public RegisterModel(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            UserManager<User2> userManager2, 
+            SignInManager<User2> signInManager2
+            )
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _userManager2 = userManager2;
+            _signInManager2 = signInManager2;
             _logger = logger;
             _emailSender = emailSender;
         }
@@ -112,17 +121,22 @@ namespace MarketPlace.Areas.Identity.Pages.Account
                 string uri = "http://localhost:61955/api/authenticate/register/";
                 HttpResponseMessage request = await client.PostAsync(uri, new StringContent(json, Encoding.UTF8, "application/json"));
                 var user = new User { UserName = Input.Email, Email = Input.Email , FirstName=Input.FirstName, LastName = Input.LastName, Address = Input.Address, Card = Input.Card };
+                var user2 = new User2 { UserName = Input.Email, Email = Input.Email , FirstName=Input.FirstName, LastName = Input.LastName, Address = Input.Address, Card = Input.Card };
                 //var result = await _userManager.CreateAsync(user, Input.Password);
                 if (request.IsSuccessStatusCode)
                 {
                     _logger.LogInformation("User created a new account with password.");
-
+                    /*_userManager.RegisterTokenProvider("MyTokenProvider", new Token1<User>());
+                    _userManager2.RegisterTokenProvider("MyTokenProvider", new Token2<User2>());
+                    
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    var code2 = await _userManager2.GenerateEmailConfirmationTokenAsync(user2);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                    code2 = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code2));*/
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
                         pageHandler: null,
-                        values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
+                        values: new { area = "Identity", userId = user.Id/*, code = code*/, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
