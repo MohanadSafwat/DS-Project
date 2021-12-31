@@ -39,8 +39,13 @@ namespace JWTAuthentication
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
             services.AddScoped<IProductRepository<Product>, ProductDbRepository>();
             services.AddTransient<IProductRepository<Product>, ProductDbRepository>();
+            services.AddScoped<IAssociatedRepository<AssociatedSellSouth, ProductSellerReadDto>, SouthAssociatedSellRepository>();
+            services.AddScoped<IAssociatedRepository<AssociatedBoughtSouth, ProductBoughtReadDto>, SouthAssociatedBoughtRepository>();
+            services.AddScoped<IAssociatedRepository<AssociatedSharedSouth, ProductSharedReadDto>, SouthAssociatedSharedRepository>();
+
             services.AddScoped<IAssociatedRepository<AssociatedSell, ProductSellerReadDto>, AssociatedSellRepository>();
             services.AddScoped<IAssociatedRepository<AssociatedBought, ProductBoughtReadDto>, AssociatedBoughtRepository>();
             services.AddScoped<IAssociatedRepository<AssociatedShared, ProductSharedReadDto>, AssociatedSharedRepository>();
@@ -52,11 +57,11 @@ namespace JWTAuthentication
                 options.AddPolicy("AllowAll",
     builder =>
     {
-                builder.WithOrigins("https://webapp.io/", "https://www.webapp.io/")
-    .SetIsOriginAllowed((host) => true)
-    .AllowAnyHeader()
-    .AllowAnyMethod();
-            });
+        builder.WithOrigins("https://webapp.io/", "https://www.webapp.io/")
+.SetIsOriginAllowed((host) => true)
+.AllowAnyHeader()
+.AllowAnyMethod();
+    });
             });
             // For Entity Framework
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnStr")));
@@ -70,8 +75,8 @@ namespace JWTAuthentication
             services.AddSecondIdentity<User2, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDb2Context>()
                 .AddTokenProvider("Default", typeof(Token2<User2>));
-                    
-            
+
+
 
             /*services.AddIdentityCore<CustomerUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<TenantDataContext>()
@@ -83,7 +88,7 @@ namespace JWTAuthentication
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-            
+
 
             // Adding Jwt Bearer
             .AddJwtBearer(options =>
@@ -201,7 +206,7 @@ namespace JWTAuthentication
 
         public void ConfigureContainer(ContainerBuilder builder)
         {
-            
+
             builder.RegisterType<Token2<User2>>()
                     .As<IUserTwoFactorTokenProvider<User2>>()
                     .InstancePerLifetimeScope();
@@ -216,7 +221,7 @@ namespace JWTAuthentication
 
             app.UseRouting();
             app.UseCors("AllowAll");
-app.UseMiddleware<CorsMiddleware>();
+            app.UseMiddleware<CorsMiddleware>();
 
             app.UseAuthentication();
             app.UseAuthorization();
