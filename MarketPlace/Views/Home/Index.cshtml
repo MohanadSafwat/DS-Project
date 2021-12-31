@@ -77,15 +77,15 @@
                                     @if (@Model.productsIndexSouth.Count != 0)
                                     {
                                         var count = 0;
-                                        for (var i = @Model.productsIndex.Count - 1; count < 4; i--)
+                                        for (var i = @Model.productsIndexSouth.Count - 1; count < 4; i--)
                                         {
 
                                             count++;
-                                            if (count > @Model.productsIndex.Count - 1)
+                                            if (count > @Model.productsIndexSouth.Count - 1)
                                             {
                                                 count = 5;
                                             }
-                                            if (@Model.productsIndex[i].Sold == false)
+                                            if (@Model.productsIndexSouth[i].Sold == false)
                                             {
                                                 <!-- Product -->
                                                 <div class="col-lg-3 col-sm-6 my-3">
@@ -93,33 +93,33 @@
                                                         <span class="new">New</span>
                                                         <div class="row h-100">
                                                             <div class="col-12 p-0 mb-3">
-                                                                @if (@Model.productsIndex[i].productId.ProductImageUrls != null)
+                                                                @if (@Model.productsIndexSouth[i].productId.ProductImageUrls != null)
                                                                 {
-                                                                    string[] imagesUrl = @Model.productsIndex[i].productId.ProductImageUrls.Split('`');
+                                                                    string[] imagesUrl = @Model.productsIndexSouth[i].productId.ProductImageUrls.Split('`');
 
 
-                                                                    <a asp-controller="Product" asp-action="Product" asp-route-productId=@Model.productsIndex[i].productId.ProductId>
+                                                                    <a asp-controller="Product" asp-action="Product" asp-route-productId=@Model.productsIndexSouth[i].productId.ProductId>
                                                                         <img src="~/images/@imagesUrl[0]" class="img-fluid">
                                                                     </a>
 
                                                                 }
                                                             </div>
                                                             <div class="col-12 mb-3">
-                                                                <a asp-controller="Product" asp-action="Product" class="product-name"asp-route-productId="@Model.productsIndex[i].productId.ProductId">@Model.productsIndex[i].productId.ProductName</a>
+                                                                <a asp-controller="Product" asp-action="Product" class="product-name"asp-route-productId="@Model.productsIndexSouth[i].productId.ProductId">@Model.productsIndexSouth[i].productId.ProductName</a>
                                                             </div>
                                                             <div class="col-12 mb-3">
                                                                 <span class="product-price">
-                                                                    EGP @Model.productsIndex[i].productId.ProductPrice
+                                                                    EGP @Model.productsIndexSouth[i].productId.ProductPrice
                                                                 </span>
                                                             </div>
                                                             <div class="col-12 mb-3 align-self-end">
                                                                 @if (SignInManager.IsSignedIn(User))
                                                                 {
 
-                                                                    if (ViewBag.user.Id != @Model.productsIndex[i].SellerId.Id)
+                                                                    if (ViewBag.user.Id != @Model.productsIndexSouth[i].SellerId.Id)
                                                                     {
-                                                                        <a class="btn btn-outline-success me-2 mb-2" type="button" asp-controller="Order" asp-action="Create" asp-route-productId="@Model.productsIndex[i].productId.ProductId" asp-route-customerId="@ViewBag.user.Id">Buy Now</a>
-                                                                        var sharedList = @Model.associatedSharedRepository.FindUsers(@Model.productsIndex[i].productId.ProductId);
+                                                                        <a class="btn btn-outline-success me-2 mb-2" type="button" asp-controller="Order" asp-action="Create" asp-route-productId="@Model.productsIndexSouth[i].productId.ProductId" asp-route-customerId="@ViewBag.user.Id">Buy Now</a>
+                                                                        var sharedList = @Model.associatedSharedRepository.FindUsers(@Model.productsIndexSouth[i].productId.ProductId);
                                                                         bool check = false;
                                                                         foreach (var item in sharedList)
                                                                         {
@@ -136,7 +136,7 @@
                                                                         }
                                                                         else
                                                                         {
-                                                                            <a class="btn btn-outline-success me-2 mb-2" type="button" asp-controller="Order" asp-action="Share" asp-route-productId="@Model.productsIndex[i].productId.ProductId" asp-route-customerId="@ViewBag.user.Id"><i class="fas fa-cart-plus me-2"></i>Add to your store</a>
+                                                                            <a class="btn btn-outline-success me-2 mb-2" type="button" asp-controller="Order" asp-action="Share" asp-route-productId="@Model.productsIndexSouth[i].productId.ProductId" asp-route-customerId="@ViewBag.user.Id"><i class="fas fa-cart-plus me-2"></i>Add to your store</a>
 
 
                                                                         }
