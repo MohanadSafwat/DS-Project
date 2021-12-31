@@ -32,7 +32,12 @@
 
             <div class="form-group">
                 <label asp-for="Input.Address"></label>
-                <input asp-for="Input.Address" class="form-control" />
+                @*<input asp-for="Input.Address" class="form-control" />*@
+                <select class="custom-select" asp-for="Input.Address" id="address" style="display: block">
+                    <option selected value="North">North</option>
+                    <option value="South">South</option>
+                    
+                </select>
                 <span asp-validation-for="Input.Address" class="text-danger"></span>
             </div>
 
