@@ -10,16 +10,28 @@ namespace MarketPlace.Models.Repository
     public class OrderDbRepository:IOrderRepository<Order>
     {
         ApplicationDbContext db;
-
-        public OrderDbRepository(ApplicationDbContext _db)
+        ApplicationDb2Context db2;
+        public OrderDbRepository(ApplicationDbContext _db,ApplicationDb2Context _db2)
         {
             db = _db;
+            db2 = _db2;
         }
 
         public void Add(Order entity)
         {
             db.Orders.Add(entity);
             db.SaveChanges();
+        }
+
+        public void AddOrderItemSouth(OrderItemSouth entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddOrderSouth(OrderSouth entity)
+        {
+            db2.OrdersSouth.Add(entity);
+            db2.SaveChanges();
         }
 
         public void Delete(int id)

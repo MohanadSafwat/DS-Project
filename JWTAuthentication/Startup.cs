@@ -32,8 +32,13 @@ namespace JWTAuthentication
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
             services.AddScoped<IProductRepository<Product>, ProductDbRepository>();
             services.AddTransient<IProductRepository<Product>, ProductDbRepository>();
+            services.AddScoped<IAssociatedRepository<AssociatedSellSouth, ProductSellerReadDto>, SouthAssociatedSellRepository>();
+            services.AddScoped<IAssociatedRepository<AssociatedBoughtSouth, ProductBoughtReadDto>, SouthAssociatedBoughtRepository>();
+            services.AddScoped<IAssociatedRepository<AssociatedSharedSouth, ProductSharedReadDto>, SouthAssociatedSharedRepository>();
+
             services.AddScoped<IAssociatedRepository<AssociatedSell, ProductSellerReadDto>, AssociatedSellRepository>();
             services.AddScoped<IAssociatedRepository<AssociatedBought, ProductBoughtReadDto>, AssociatedBoughtRepository>();
             services.AddScoped<IAssociatedRepository<AssociatedShared, ProductSharedReadDto>, AssociatedSharedRepository>();

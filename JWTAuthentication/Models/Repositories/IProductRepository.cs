@@ -4,15 +4,15 @@ namespace MarketPlace.Models.Repositories
 {
     public interface IProductRepository<TEnity>
     {
-        List<TEnity> List();
+        List<TEnity> List(string Location);
 
 
-        TEnity Find(int id);
-        void Add(TEnity entity);
-        void Edit(int id,TEnity entity);
-        void Delete(int id);
+        TEnity Find(int id,string Location);
+        void Add(TEnity entity,string Location);
+        void Edit(int id,TEnity entity,string Location);
+        void Delete(int id,string Location);
 
-        int IsExist(TEnity entity);
+        int IsExist(TEnity entity,string Location);
 
         
 
