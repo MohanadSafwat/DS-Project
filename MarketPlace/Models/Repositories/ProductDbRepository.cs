@@ -52,21 +52,21 @@ namespace MarketPlace.Models.Repositories
 
         public void Edit(int id, Product entity, string Location)
         {
-            /*var editedProduct = Find(id);
+            var editedProduct = Find(id,Location);
             editedProduct.ProductDescription = entity.ProductDescription;
             editedProduct.ProductName = entity.ProductName;
             editedProduct.ProductPrice = entity.ProductPrice;
             editedProduct.ProductBrand = entity.ProductBrand;
-            editedProduct.ProductImageUrls = entity.ProductImageUrls;*/
+            editedProduct.ProductImageUrls = entity.ProductImageUrls;
             if (Location == "North")
             {
-                db.Products.Update(entity);
-                db.SaveChanges();
+/*                db.Products.Update(entity);
+*/                db.SaveChanges();
             }
             else
             {
-                db2.Products.Update(entity);
-                db2.SaveChanges();
+/*                db2.Products.Update(entity);
+*/                db2.SaveChanges();
             }
         }
 
