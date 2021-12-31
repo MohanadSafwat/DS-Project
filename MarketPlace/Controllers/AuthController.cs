@@ -93,9 +93,10 @@ namespace MarketPlace.Controllers
             };
             if (ViewBag.user != null)
             {
+                ViewBag.userLocation = "North";
 
-               
-                    model.associatedShared = associatedSharedRepository.FindProducts(ViewBag.id);
+
+                model.associatedShared = associatedSharedRepository.FindProducts(ViewBag.id);
                 
               
                     model.associatedSell = associatedSellRepository.FindProducts(ViewBag.id);
@@ -112,7 +113,8 @@ namespace MarketPlace.Controllers
 
                 if (ViewBag.user != null)
                 {
-                    ViewBag.user = await _userManager2.FindByIdAsync(_userManager2.GetUserId(HttpContext.User));
+
+                    ViewBag.userLocation = "South";
                     model.associatedSharedSouth = southAssociatedSharedRepository.FindProducts(ViewBag.id);
 
 

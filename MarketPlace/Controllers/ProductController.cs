@@ -354,6 +354,7 @@ namespace MarketPlace.Controllers
                 Location = "North";
                 ViewBag.user = userDataNorth;
                 vmodel = new ProductViewModel { productDeatails = associatedSellRepository.Find(productId) };
+                return View(vmodel);
 
 
             }
@@ -364,10 +365,13 @@ namespace MarketPlace.Controllers
                 Location = "South";
                 ViewBag.user = userDataSouth;
                  vmodel = new ProductViewModel { productDeatailsSouth = southAssociatedSellRepository.Find(productId) };
-
+                return View(vmodel);
 
             }
+            vmodel = new ProductViewModel { productDeatails = associatedSellRepository.Find(productId) };
+
             return View(vmodel);
+
         }
         public async Task<IActionResult> Delete(int id,string sellerId)
         {

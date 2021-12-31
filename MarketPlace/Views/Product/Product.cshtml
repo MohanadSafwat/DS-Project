@@ -52,11 +52,27 @@
 
                         string[] imagesUrl = Model.productDeatails.productId.ProductImageUrls.Split('`');
                         <div class="col-12 mb-3">
-                            <div class="img-large border" id="productMainImage"></div>
+                            <div class="img-large border" style="background-image: url('../images/@imagesUrl[0]')"></div>
                         </div>
                         <div class="col-12">
-                            <div class="row" id="productRestOfImagesContainer">
-                                             
+                            <div class="row">
+                                @if (imagesUrl.Length > 2)
+                                {
+                                    var count = 0;
+                                    for (int i = 1; count < 4; i++)
+                                    {
+                                        count++;
+                                        if (count > imagesUrl.Length - 3)
+                                        {
+                                            count = 4;
+                                        }
+                                        <div class="col-sm-2 col-3">
+                                            <div class="img-small border" style="background-image: url('../images/@imagesUrl[i]')" data-src="../images/@imagesUrl[i]"></div>
+                                        </div>
+
+                                    }
+                                }
+
                             </div>
                         </div>
 
@@ -70,15 +86,15 @@
                 <div class="col-lg-5 col-md-9">
                     <div class="col-12 product-name large">
                         @Model.productDeatails.productId.ProductName
-                        <small>By <a href="#" id="productBrand"></a></small>
-                        <small>Sold By <a asp-action="Store"  id="productSeller"> asp-route-sellerId=@Model.productDeatails.SellerId.Id asp-controller="Product"> </a></small>
+                        <small>By <a href="#">@Model.productDeatails.productId.ProductBrand</a></small>
+                        <small>Sold By <a asp-action="Store" asp-route-sellerId=@Model.productDeatails.SellerId.Id asp-controller="Product">@Model.productDeatails.SellerId.FirstName @Model.productDeatails.SellerId.LastName </a></small>
 
                     </div>
                     <div class="col-12 px-0">
                         <hr>
                     </div>
-                    <div class="col-12" id="productDescription" >
-
+                    <div class="col-12">
+                        @Model.productDeatails.productId.ProductDescription
                     </div>
                 </div>
                 <!-- Product Info -->
@@ -87,8 +103,8 @@
                     <div class="col-12 sidebar h-100">
                         <div class="row">
                             <div class="col-12">
-                                <span class="detail-price" id="priceContent">
-
+                                <span class="detail-price">
+                                    EGP @Model.productDeatails.productId.ProductPrice
                                 </span>
 
                             </div>
@@ -146,4 +162,4 @@
     <!-- Main Content -->
 </div>
 
-<script src="~/js/productPage.js" ></script>
+<script src="~/js/productPage.js"></script>
