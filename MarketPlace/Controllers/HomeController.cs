@@ -64,6 +64,7 @@ namespace MarketPlace.Controllers
             //ViewBag.id =  _userManager.GetUserId(HttpContext.User);
 
             ViewBag.user  = await _userManager.FindByIdAsync(_userManager.GetUserId(HttpContext.User)) ;
+           
             var model = new ProductViewModel
             {
            
@@ -96,10 +97,11 @@ namespace MarketPlace.Controllers
                     return View(model);
                 }
                 else {
+                    ViewBag.userLocation = "South";
                     model = new ProductViewModel
                     {
-                        productsIndex = associatedSellRepository.List(),
-                        associatedSharedRepository = associatedSharedRepository
+                        productsIndexSouth = southAssociatedSellRepository.List(),
+                        southAssociatedSharedRepository = southAssociatedSharedRepository
                     };
                     return View(model);
                  }
