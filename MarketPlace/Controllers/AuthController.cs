@@ -73,10 +73,13 @@ namespace MarketPlace.Controllers
         {
             try
             {
-                var user = await _userManager.GetUserAsync(User);
+                dynamic user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                    user = await _userManager2.GetUserAsync(User);
                 System.Diagnostics.Debug.WriteLine(model.Amount);
                 user.Amount += model.Amount;
                 _db.SaveChanges();
+                _db2.SaveChanges();
                 return Redirect("/Auth/Dashboard");
             }
             catch { return Redirect("/Auth/Dashboard"); }

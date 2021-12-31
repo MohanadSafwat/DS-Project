@@ -15,8 +15,7 @@ namespace JWTAuthentication.Authentication
 
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
-        [Display(Name = "Address")]
-        public string Address { get; set; }
+        
 
     }
 }

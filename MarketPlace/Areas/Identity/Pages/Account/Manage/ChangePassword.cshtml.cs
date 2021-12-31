@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using JWTAuthentication.Authentication;
 using MarketPlace.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 namespace MarketPlace.Areas.Identity.Pages.Account.Manage
 {
     public class ChangePasswordModel : PageModel
@@ -15,15 +14,20 @@ namespace MarketPlace.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly ILogger<ChangePasswordModel> _logger;
-
+        private readonly UserManager<User2> _userManager2;
+        private readonly SignInManager<User2> _signInManager2;
         public ChangePasswordModel(
             UserManager<User> userManager,
-            SignInManager<User> signInManager,
+            SignInManager<User> signInManager, 
+            UserManager<User2> userManager2,
+            SignInManager<User2> signInManager2,
             ILogger<ChangePasswordModel> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _userManager2 = userManager2;
+            _signInManager2 = signInManager2;
         }
 
         [BindProperty]
@@ -53,13 +57,22 @@ namespace MarketPlace.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            
+            dynamic user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                user = await _userManager2.GetUserAsync(User);
+                if (user == null)
+                    return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var hasPassword = await _userManager.HasPasswordAsync(user);
+            dynamic hasPassword;
+            try { hasPassword = await _userManager.HasPasswordAsync(user);
+            }
+            catch(Exception e)
+            {
+                hasPassword = await _userManager2.HasPasswordAsync(user);
+            }
             if (!hasPassword)
             {
                 return RedirectToPage("./SetPassword");
@@ -75,13 +88,23 @@ namespace MarketPlace.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
-            var user = await _userManager.GetUserAsync(User);
+            dynamic user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                user = await _userManager2.GetUserAsync(User);
+                if (user == null)
+                    return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var changePasswordResult = await _userManager.ChangePasswordAsync(user, Input.OldPassword, Input.NewPassword);
+            dynamic changePasswordResult;
+            try
+            {
+                changePasswordResult = await _userManager.ChangePasswordAsync(user, Input.OldPassword, Input.NewPassword);
+            }
+            catch (Exception e)
+            {
+                changePasswordResult = await _userManager2.ChangePasswordAsync(user, Input.OldPassword, Input.NewPassword);
+            }
             if (!changePasswordResult.Succeeded)
             {
                 foreach (var error in changePasswordResult.Errors)
@@ -91,7 +114,7 @@ namespace MarketPlace.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
-            await _signInManager.RefreshSignInAsync(user);
+            //await _signInManager.RefreshSignInAsync(user);
             _logger.LogInformation("User changed their password successfully.");
             StatusMessage = "Your password has been changed.";
 

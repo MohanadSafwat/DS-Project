@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.CSharp.RuntimeBinder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -40,10 +41,33 @@ namespace JWTAuthentication.Controllers
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            var user = await userManager.FindByNameAsync(model.Email);
-            if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
+
+            dynamic user;
+            user = await userManager.FindByEmailAsync(model.Email);
+            if (user == null)
             {
-                var userRoles = await userManager.GetRolesAsync(user);
+                user = await userManager2.FindByEmailAsync(model.Email);
+                if (user == null)
+                    return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User Not exists!" });
+
+            }
+            bool check;
+            try
+            {
+                check = await userManager.CheckPasswordAsync(user, model.Password);
+            }
+            catch (Exception e)
+            {
+                check = await userManager2.CheckPasswordAsync(user, model.Password);
+            }
+
+            if (check)
+            {
+                dynamic userRoles;
+                try { userRoles = await userManager.GetRolesAsync(user); }
+                
+                catch (Exception e) { userRoles= await userManager2.GetRolesAsync(user); }
+                   
 
                 var authClaims = new List<Claim>
                 {
@@ -73,6 +97,10 @@ namespace JWTAuthentication.Controllers
                 });
             }
             return Unauthorized();
+
+            //else return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User Not exists!" });
+
+
         }
 
         [HttpPost]
@@ -131,11 +159,6 @@ namespace JWTAuthentication.Controllers
 
             }
 
-
-
-
-
-
             return Ok(new Response { Status = "Success", Message = "User created successfully!" });
         }
 
@@ -184,7 +207,7 @@ namespace JWTAuthentication.Controllers
             if (userExists == null && userExists2 == null)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Email Not exists!" });
 
-            
+
             if (userExists != null) return Ok(userExists);
             else return Ok(userExists2);
 
@@ -204,7 +227,8 @@ namespace JWTAuthentication.Controllers
                 var code = await userManager.GenerateEmailConfirmationTokenAsync(userExists);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                 return Ok(code);
-            } else
+            }
+            else
             {
                 userManager2.RegisterTokenProvider("MyTokenProvider", new Token2<User2>());
                 var code = await userManager2.GenerateEmailConfirmationTokenAsync(userExists2);
@@ -261,19 +285,63 @@ namespace JWTAuthentication.Controllers
         {
             user.Address = addr;
         }
+        void setFirstName(User2 user, String name)
+        {
+            user.FirstName = name;
+        }
+        void setLastName(User2 user, String name)
+        {
+            user.LastName = name;
+        }
+        void setAddress(User2 user, String addr)
+        {
+            user.Address = addr;
+        }
 
         [HttpPut]
         [Route("updateProfile/{email}")]
         public async Task<IActionResult> UpdateProfile(string email, [FromBody] UpdateModel model)
         {
-            var userExists = await userManager.FindByEmailAsync(email);
+            dynamic userExists;
+            userExists = await userManager.FindByEmailAsync(email);
             if (userExists == null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User Not exists!" });
+            {
+                userExists = await userManager2.FindByEmailAsync(email);
+                if (userExists == null)
+                    return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User Not exists!" });
 
-            var phoneNumber = await userManager.GetPhoneNumberAsync(userExists);
+            }
+            dynamic phoneNumber;
+            try
+            {
+                phoneNumber = await userManager.GetPhoneNumberAsync(userExists);
+            }
+            catch (RuntimeBinderException e)
+            {
+                phoneNumber = await userManager2.GetPhoneNumberAsync(userExists);
+            }
+
+            //if (phoneNumber == null)
+
+
+            /* 
+             if (userExists.Address == "North"|| userExists.Address == "north") phoneNumber = await userManager.GetPhoneNumberAsync(userExists);
+             else phoneNumber = await userManager2.GetPhoneNumberAsync(userExists);
+ */
             if (model.PhoneNumber != phoneNumber)
             {
-                var setPhoneResult = await userManager.SetPhoneNumberAsync(userExists, model.PhoneNumber);
+
+                dynamic setPhoneResult;
+                try
+                {
+                    setPhoneResult = await userManager.SetPhoneNumberAsync(userExists, model.PhoneNumber);
+                }
+                catch (RuntimeBinderException e)
+                {
+                    setPhoneResult = await userManager2.SetPhoneNumberAsync(userExists, model.PhoneNumber);
+                }
+                //var setPhoneResult = await userManager.SetPhoneNumberAsync(userExists, model.PhoneNumber);
+
                 if (!setPhoneResult.Succeeded)
                 {
 
@@ -285,19 +353,22 @@ namespace JWTAuthentication.Controllers
             {
                 setFirstName(userExists, model.FirstName);
                 _db.SaveChanges();
+                _db2.SaveChanges();
             }
             if (model.LastName != userExists.LastName && model.LastName.Length != 0)
             {
                 setLastName(userExists, model.LastName);
                 _db.SaveChanges();
+                _db2.SaveChanges();
             }
-            if (model.Address != userExists.Address && model.Address.Length != 0)
+            /*if (model.Address != userExists.Address && model.Address.Length != 0)
             {
                 setAddress(userExists, model.Address);
                 _db.SaveChanges();
-            }
+                _db2.SaveChanges();
+            }*/
 
-            await _signInManager.RefreshSignInAsync(userExists);
+            //await _signInManager.RefreshSignInAsync(userExists);
 
             return Ok(new Response { Status = "Success", Message = "User updated successfully!" });
         }
@@ -306,18 +377,32 @@ namespace JWTAuthentication.Controllers
         [Route("resetPassword/{email}")]
         public async Task<IActionResult> ResetPassword(string email, [FromBody] ChangePasswordModel model)
         {
-            var userExists = await userManager.FindByEmailAsync(email);
+            dynamic userExists;
+            userExists = await userManager.FindByEmailAsync(email);
             if (userExists == null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User Not exists!" });
+            {
+                userExists = await userManager2.FindByEmailAsync(email);
+                if (userExists == null)
+                    return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User Not exists!" });
 
-            var changePasswordResult = await userManager.ChangePasswordAsync(userExists, model.OldPassword, model.NewPassword);
+            }
+            dynamic changePasswordResult;
+            try
+            {
+                changePasswordResult = await userManager.ChangePasswordAsync(userExists, model.OldPassword, model.NewPassword);
+            }
+            catch (RuntimeBinderException e)
+            {
+                changePasswordResult = await userManager2.ChangePasswordAsync(userExists, model.OldPassword, model.NewPassword);
+            }
+
             if (!changePasswordResult.Succeeded)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Error in changing password" });
 
             }
 
-            await _signInManager.RefreshSignInAsync(userExists);
+            //await _signInManager.RefreshSignInAsync(userExists);
 
 
             return Ok(new Response { Status = "Success", Message = "Password updated successfully!" });
@@ -327,14 +412,21 @@ namespace JWTAuthentication.Controllers
         [Route("addMoney/{email}")]
         public async Task<IActionResult> AddMoney(string email, [FromQuery] int money)
         {
-            var userExists = await userManager.FindByEmailAsync(email);
+            dynamic userExists;
+            userExists = await userManager.FindByEmailAsync(email);
             if (userExists == null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User Not exists!" });
+            {
+                userExists = await userManager2.FindByEmailAsync(email);
+                if (userExists == null)
+                    return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User Not exists!" });
 
+            }
             userExists.Amount += money;
             _db.SaveChanges();
+            _db2.SaveChanges();
 
-            await _signInManager.RefreshSignInAsync(userExists);
+            // await _signInManager.RefreshSignInAsync(userExists);
+
 
             return Ok(new Response { Status = "Success", Message = "Money added successfully!" });
         }
