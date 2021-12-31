@@ -165,32 +165,66 @@ namespace MarketPlace.Controllers
 
 
 
-        public async Task<IActionResult> Edit(int id, string sellerId)
+        public async Task<IActionResult> Edit(int id)
         {
-            var Location = "";
+            ViewBag.user = await userManager.FindByIdAsync(userManager.GetUserId(HttpContext.User));
+            
 
-            Task<User> SellerNorth = UserReturnNorth(sellerId);
-            User userDataNorth = await SellerNorth;
-            if (userDataNorth != null)
-                Location = "North";
-
-            Task<User2> SellerSouth = UserReturnSouth(sellerId);
-            User userDataSouth = await SellerNorth;
-            if (userDataSouth != null)
-                Location = "South";
-
-            var product = productRepository.Find(id, Location);
-            var model = new ProductViewModel
+            if (ViewBag.user != null)
             {
-                ProductBrand = product.ProductBrand,
-                ProductDescription = product.ProductDescription,
-                ProductName = product.ProductName,
-                ProductId = product.ProductId,
-                ProductImagesUrl = product.ProductImageUrls,
-                ProductPrice = product.ProductPrice,
+                ViewBag.id =  userManager.GetUserId(HttpContext.User);
 
-            };
-            return View(model);
+                ViewBag.userLocation = "North";
+                var product = productRepository.Find(id, "North");
+                var model = new ProductViewModel
+                {
+                    ProductBrand = product.ProductBrand,
+                    ProductDescription = product.ProductDescription,
+                    ProductName = product.ProductName,
+                    ProductId = product.ProductId,
+                    ProductImagesUrl = product.ProductImageUrls,
+                    ProductPrice = product.ProductPrice,
+                    SellerId = ViewBag.id.ToString()
+
+                };
+                return View(model);
+
+
+            }
+            else
+            {
+                ViewBag.user = await userManager2.FindByIdAsync(userManager2.GetUserId(HttpContext.User));
+
+                if (ViewBag.user != null)
+                {
+                    ViewBag.id =  userManager.GetUserId(HttpContext.User);
+
+                    ViewBag.userLocation = "South";
+                    var product = productRepository.Find(id, "South");
+
+
+                    var model = new ProductViewModel
+                    {
+                        ProductBrand = product.ProductBrand,
+                        ProductDescription = product.ProductDescription,
+                        ProductName = product.ProductName,
+                        ProductId = product.ProductId,
+                        ProductImagesUrl = product.ProductImageUrls,
+                        ProductPrice = product.ProductPrice,
+                        SellerId = ViewBag.id.ToString()
+
+                    };
+                    return View(model);
+
+                }
+                else { return View(); }
+            }
+
+          
+
+            
+
+          
         }
 
         [HttpPost]

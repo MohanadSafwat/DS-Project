@@ -62,7 +62,6 @@ namespace MarketPlace.Models.Repositories
         {
             var AssociatedSharedSouth = Find(ProductId);
             db.AssociatedSharedSouthUnSold.Remove(AssociatedSharedSouth);
-            db.AssociatedSharedSouthSold.Remove(AssociatedSharedSouth);
             db.SaveChanges();
         }
 
@@ -84,7 +83,7 @@ namespace MarketPlace.Models.Repositories
         }
         public List<AssociatedSharedSouth> Search(string term)
         {
-            var result = db.AssociatedSharedSouthSold.Include(p => p.productId).Include(s => s.SharedId).Where(p => p.productId.ProductName.Contains(term)
+            var result = db.AssociatedSharedSouthUnSold.Include(p => p.productId).Include(s => s.SharedId).Where(p => p.productId.ProductName.Contains(term)
                || p.productId.ProductBrand.Contains(term) || p.productId.ProductDescription.Contains(term) || p.SharedId.FirstName.Contains(term)
                    || p.SharedId.LastName.Contains(term)).ToList();
             return result;
@@ -92,14 +91,7 @@ namespace MarketPlace.Models.Repositories
         public AssociatedSharedSouth Find(int ProductId)
         {
             var product = db.AssociatedSharedSouthUnSold.Include(p => p.productId).Include(s => s.SharedId).SingleOrDefault(p => p.productId.ProductId == ProductId);
-            if (product != null)
-                return product;
-            else
-            {
-                var product2 = db.AssociatedSharedSouthSold.Include(p => p.productId).Include(s => s.SharedId).SingleOrDefault(p => p.productId.ProductId == ProductId);
-                return product2;
-
-            }
+            return product;          
         }
 
         public List<AssociatedSharedSouth> List()
@@ -152,7 +144,7 @@ namespace MarketPlace.Models.Repositories
                 sharedFirstName = x.SharedId.FirstName,
                 sharedLastName = x.SharedId.LastName,
                 sharedEmail = x.SharedId.Email
-            }).Where(s => (s.sharedId == sharedId) ).ToList();
+            }).Where(s => (s.sharedId == sharedId) && !s.Sold ).ToList();
             if (result != null)
                 return result;
             else
@@ -161,14 +153,14 @@ namespace MarketPlace.Models.Repositories
         public List<ProductSharedReadDto> FindSoldProductsDtos(string sharedId)
         {
 
-            var result = db.AssociatedSharedSouthSold.Select(x => new ProductSharedReadDto
+            var result = db.AssociatedSharedSouthUnSold.Select(x => new ProductSharedReadDto
             {
                 sharedId = x.SharedId.Id,
                 product = x.productId,
                 sharedFirstName = x.SharedId.FirstName,
                 sharedLastName = x.SharedId.LastName,
                 sharedEmail = x.SharedId.Email
-            }).Where(s => (s.sharedId == sharedId)).ToList();
+            }).Where(s => (s.sharedId == sharedId) && s.Sold).ToList();
             if (result != null)
                 return result;
             else
@@ -225,21 +217,7 @@ namespace MarketPlace.Models.Repositories
                 sharedLastName = x.SharedId.LastName,
                 sharedEmail = x.SharedId.Email
             }).SingleOrDefault(p => p.product.ProductId == ProductId);
-            if (product != null)
-                return product;
-            else
-            {
-                var product2 = db.AssociatedSharedSouthSold.Select(x => new ProductSharedReadDto
-            {
-                sharedId = x.SharedId.Id,
-                product = x.productId,
-                sharedFirstName = x.SharedId.FirstName,
-                sharedLastName = x.SharedId.LastName,
-                sharedEmail = x.SharedId.Email
-            }).SingleOrDefault(p => p.product.ProductId == ProductId);
-                return product2;
-
-            }
+            return product;
             
         }
 
@@ -277,7 +255,7 @@ namespace MarketPlace.Models.Repositories
 
         public bool IsUserShareThis(string accountId, int productId)
         {
-            if ((db.AssociatedSharedSouthUnSold.Where(p => p.productId.ProductId == productId).Where(s => s.SharedId.Id == accountId) != null) ||( db.AssociatedSharedSouthSold.Where(p => p.productId.ProductId == productId).Where(s => s.SharedId.Id == accountId))!= null)
+            if ((db.AssociatedSharedSouthUnSold.Where(p => p.productId.ProductId == productId).Where(s => s.SharedId.Id == accountId) != null) ||( db.AssociatedSharedSouthUnSold.Where(p => p.productId.ProductId == productId).Where(s => s.SharedId.Id == accountId))!= null)
                 return true;
             else
                 return false;

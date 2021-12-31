@@ -60,12 +60,12 @@ namespace MarketPlace.Models.Repositories
             editedProduct.ProductImageUrls = entity.ProductImageUrls;*/
             if (Location == "North")
             {
-                db.Update(entity);
+                db.Products.Update(entity);
                 db.SaveChanges();
             }
             else
             {
-                db2.Update(entity);
+                db2.Products.Update(entity);
                 db2.SaveChanges();
             }
         }
