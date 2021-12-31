@@ -20,8 +20,8 @@ namespace JWTAuthentication.Authentication
         }
 
         public DbSet<User2> User { get; set; }
-         public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderItem> OrderItems { get; set; }
+         public DbSet<OrderSouth> OrdersSouth { get; set; }
+        public DbSet<OrderItemSouth> OrderItemsSouth { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<AssociatedBoughtSouth> AssociatedBoughtSouth { get; set; }
         public DbSet<AssociatedSellSouth> AssociatedSellSouthSold { get; set; }
