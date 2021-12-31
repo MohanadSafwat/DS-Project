@@ -1,4 +1,5 @@
-﻿using MarketPlace.Models;
+﻿using JWTAuthentication.Authentication;
+using MarketPlace.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,16 +10,28 @@ namespace MarketPlace.Models.Repository
     public class OrderDbRepository:IOrderRepository<Order>
     {
         AppDBContext db;
-
-        public OrderDbRepository(AppDBContext _db)
+        AppDB2Context db2;
+        public OrderDbRepository(AppDBContext _db,AppDB2Context _db2)
         {
             db = _db;
+            db2 = _db2;
         }
 
         public void Add(Order entity)
         {
             db.Orders.Add(entity);
             db.SaveChanges();
+        }
+
+        public void AddOrderItemSouth(OrderItemSouth entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddOrderSouth(OrderSouth entity)
+        {
+            db2.OrdersSouth.Add(entity);
+            db2.SaveChanges();
         }
 
         public void Delete(int id)

@@ -6,19 +6,19 @@ using System.Linq;
 
 namespace MarketPlace.Models.Repositories
 {
-    public class AssociatedSharedRepository : IAssociatedRepository<AssociatedShared, ProductSharedReadDto>
+    public class SouthAssociatedSharedRepository : IAssociatedRepository<AssociatedSharedSouth, ProductSharedReadDto>
     {
-        AppDBContext db;
+        AppDB2Context db;
 
-        public AssociatedSharedRepository(AppDBContext _db)
+        public SouthAssociatedSharedRepository(AppDB2Context _db)
         {
             db = _db;
         }
 
-        public List<AssociatedShared> FindProducts(string sellerId)
+        public List<AssociatedSharedSouth> FindProducts(string sellerId)
         {
-            var resultUnSold = db.AssociatedSharedUnSold.Include(p => p.productId).Include(s => s.SharedId).Where(s => s.SharedId.Id == sellerId).ToList();
-            var resultSold = new List<AssociatedShared>();
+            var resultUnSold = db.AssociatedSharedSouthUnSold.Include(p => p.productId).Include(s => s.SharedId).Where(s => s.SharedId.Id == sellerId).ToList();
+            var resultSold = new List<AssociatedSharedSouth>();
 
             if (resultUnSold == null)
             {
@@ -32,10 +32,10 @@ namespace MarketPlace.Models.Repositories
             return resultUnSold.Concat(resultSold).ToList();
 
         }
-        public List<AssociatedShared> FindUsers(int productId)
+        public List<AssociatedSharedSouth> FindUsers(int productId)
         {
-            var resultUnSold = db.AssociatedSharedUnSold.Include(p => p.productId).Include(s => s.SharedId).Where(p => p.productId.ProductId == productId).ToList();
-            var resultSold = new List<AssociatedShared>();
+            var resultUnSold = db.AssociatedSharedSouthUnSold.Include(p => p.productId).Include(s => s.SharedId).Where(p => p.productId.ProductId == productId).ToList();
+            var resultSold = new List<AssociatedSharedSouth>();
 
             if (resultUnSold == null)
             {
@@ -49,29 +49,29 @@ namespace MarketPlace.Models.Repositories
             return resultUnSold.Concat(resultSold).ToList();
 
         }
-        public void Add(AssociatedShared entity)
+        public void Add(AssociatedSharedSouth entity)
         {
-            db.AssociatedSharedUnSold.Add(entity);
+            db.AssociatedSharedSouthUnSold.Add(entity);
             db.SaveChanges();
         }
-        public int IsExist(AssociatedShared entity)
+        public int IsExist(AssociatedSharedSouth entity)
         {
             return 0;
         }
         public void Delete(int ProductId)
         {
-            var associatedShared = Find(ProductId);
-            db.AssociatedSharedUnSold.Remove(associatedShared);
+            var AssociatedSharedSouth = Find(ProductId);
+            db.AssociatedSharedSouthUnSold.Remove(AssociatedSharedSouth);
             db.SaveChanges();
         }
 
-        public void Edit(AssociatedShared entity)
+        public void Edit(AssociatedSharedSouth entity)
         {
 
             db.Update(entity);
             db.SaveChanges();
         }
-        public void EditList(List<AssociatedShared> entityList)
+        public void EditList(List<AssociatedSharedSouth> entityList)
         {
 
             foreach (var entity in entityList)
@@ -81,23 +81,23 @@ namespace MarketPlace.Models.Repositories
             }
 
         }
-        public List<AssociatedShared> Search(string term)
+        public List<AssociatedSharedSouth> Search(string term)
         {
-            var result = db.AssociatedSharedUnSold.Include(p => p.productId).Include(s => s.SharedId).Where(p => p.productId.ProductName.Contains(term)
+            var result = db.AssociatedSharedSouthUnSold.Include(p => p.productId).Include(s => s.SharedId).Where(p => p.productId.ProductName.Contains(term)
                || p.productId.ProductBrand.Contains(term) || p.productId.ProductDescription.Contains(term) || p.SharedId.FirstName.Contains(term)
                    || p.SharedId.LastName.Contains(term)).ToList();
             return result;
         }
-        public AssociatedShared Find(int ProductId)
+        public AssociatedSharedSouth Find(int ProductId)
         {
-            var product = db.AssociatedSharedUnSold.Include(p => p.productId).Include(s => s.SharedId).SingleOrDefault(p => p.productId.ProductId == ProductId);
-            return product;
+            var product = db.AssociatedSharedSouthUnSold.Include(p => p.productId).Include(s => s.SharedId).SingleOrDefault(p => p.productId.ProductId == ProductId);
+            return product;          
         }
 
-        public List<AssociatedShared> List()
+        public List<AssociatedSharedSouth> List()
         {
-            var resultUnSold = db.AssociatedSharedUnSold.Include(s => s.SharedId).Include(p => p.productId).ToList();
-            var resultSold = new List<AssociatedShared>();
+            var resultUnSold = db.AssociatedSharedSouthUnSold.Include(s => s.SharedId).Include(p => p.productId).ToList();
+            var resultSold = new List<AssociatedSharedSouth>();
             if (resultUnSold == null)
             {
                 return resultSold;
@@ -111,7 +111,7 @@ namespace MarketPlace.Models.Repositories
         }
         public List<ProductSharedReadDto> FindProductsDtos(string sharedId)
         {
-            var resultUnSold = db.AssociatedSharedUnSold.Select(x => new ProductSharedReadDto
+   var resultUnSold = db.AssociatedSharedSouthUnSold.Select(x => new ProductSharedReadDto
             {
                 sharedId = x.SharedId.Id,
                 product = x.productId,
@@ -132,19 +132,19 @@ namespace MarketPlace.Models.Repositories
             }
 
             return resultUnSold.Concat(resultSold).ToList();
-
+           
         }
         public List<ProductSharedReadDto> FindUnSoldProductsDtos(string sharedId)
         {
 
-            var result = db.AssociatedSharedUnSold.Select(x => new ProductSharedReadDto
+            var result = db.AssociatedSharedSouthUnSold.Select(x => new ProductSharedReadDto
             {
                 sharedId = x.SharedId.Id,
                 product = x.productId,
                 sharedFirstName = x.SharedId.FirstName,
                 sharedLastName = x.SharedId.LastName,
                 sharedEmail = x.SharedId.Email
-            }).Where(s => (s.sharedId == sharedId)).ToList();
+            }).Where(s => (s.sharedId == sharedId) && !s.Sold ).ToList();
             if (result != null)
                 return result;
             else
@@ -153,14 +153,14 @@ namespace MarketPlace.Models.Repositories
         public List<ProductSharedReadDto> FindSoldProductsDtos(string sharedId)
         {
 
-            var result = db.AssociatedSharedUnSold.Select(x => new ProductSharedReadDto
+            var result = db.AssociatedSharedSouthUnSold.Select(x => new ProductSharedReadDto
             {
                 sharedId = x.SharedId.Id,
                 product = x.productId,
                 sharedFirstName = x.SharedId.FirstName,
                 sharedLastName = x.SharedId.LastName,
                 sharedEmail = x.SharedId.Email
-            }).Where(s => (s.sharedId == sharedId)).ToList();
+            }).Where(s => (s.sharedId == sharedId) && s.Sold).ToList();
             if (result != null)
                 return result;
             else
@@ -168,7 +168,7 @@ namespace MarketPlace.Models.Repositories
         }
         public List<ProductSharedReadDto> FindUsersDtos(int productId)
         {
-            var resultUnSold = db.AssociatedSharedUnSold.Select(x => new ProductSharedReadDto
+ var resultUnSold = db.AssociatedSharedSouthUnSold.Select(x => new ProductSharedReadDto
             {
                 sharedId = x.SharedId.Id,
                 product = x.productId,
@@ -188,14 +188,14 @@ namespace MarketPlace.Models.Repositories
             }
 
             return resultUnSold.Concat(resultSold).ToList();
-
+           
         }
 
 
 
         public List<ProductSharedReadDto> SearchDtos(string term)
         {
-            var result = db.AssociatedSharedUnSold.Select(x => new ProductSharedReadDto
+            var result = db.AssociatedSharedSouthUnSold.Select(x => new ProductSharedReadDto
             {
                 sharedId = x.SharedId.Id,
                 product = x.productId,
@@ -209,7 +209,7 @@ namespace MarketPlace.Models.Repositories
         }
         public ProductSharedReadDto FindProductByIdDtos(int ProductId)
         {
-            var product = db.AssociatedSharedUnSold.Select(x => new ProductSharedReadDto
+             var product = db.AssociatedSharedSouthUnSold.Select(x => new ProductSharedReadDto
             {
                 sharedId = x.SharedId.Id,
                 product = x.productId,
@@ -217,27 +217,13 @@ namespace MarketPlace.Models.Repositories
                 sharedLastName = x.SharedId.LastName,
                 sharedEmail = x.SharedId.Email
             }).SingleOrDefault(p => p.product.ProductId == ProductId);
-            if (product != null)
-                return product;
-            else
-            {
-                var product2 = db.AssociatedSharedUnSold.Select(x => new ProductSharedReadDto
-                {
-                    sharedId = x.SharedId.Id,
-                    product = x.productId,
-                    sharedFirstName = x.SharedId.FirstName,
-                    sharedLastName = x.SharedId.LastName,
-                    sharedEmail = x.SharedId.Email
-                }).SingleOrDefault(p => p.product.ProductId == ProductId);
-                return product2;
-
-            }
-
+            return product;
+            
         }
 
         public List<ProductSharedReadDto> ListDtos()
         {
-            var resultUnSold = db.AssociatedSharedUnSold.Select(x => new ProductSharedReadDto
+              var resultUnSold = db.AssociatedSharedSouthUnSold.Select(x => new ProductSharedReadDto
             {
                 sharedId = x.SharedId.Id,
                 product = x.productId,
@@ -259,7 +245,7 @@ namespace MarketPlace.Models.Repositories
 
             return resultUnSold.Concat(resultSold).ToList();
 
-
+          
         }
 
         public bool IsUserBuyThis(string accountId, int productId)
@@ -269,7 +255,7 @@ namespace MarketPlace.Models.Repositories
 
         public bool IsUserShareThis(string accountId, int productId)
         {
-            if ((db.AssociatedSharedUnSold.Where(p => p.productId.ProductId == productId).Where(s => s.SharedId.Id == accountId) != null) || (db.AssociatedSharedUnSold.Where(p => p.productId.ProductId == productId).Where(s => s.SharedId.Id == accountId)) != null)
+            if ((db.AssociatedSharedSouthUnSold.Where(p => p.productId.ProductId == productId).Where(s => s.SharedId.Id == accountId) != null) ||( db.AssociatedSharedSouthUnSold.Where(p => p.productId.ProductId == productId).Where(s => s.SharedId.Id == accountId))!= null)
                 return true;
             else
                 return false;

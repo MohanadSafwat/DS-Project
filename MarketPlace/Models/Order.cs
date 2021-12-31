@@ -1,8 +1,9 @@
-﻿using MarketPlace.Areas.Identity.Data;
+﻿using JWTAuthentication.Authentication;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MarketPlace.Areas.Identity.Data;
 
 namespace MarketPlace.Models
 {

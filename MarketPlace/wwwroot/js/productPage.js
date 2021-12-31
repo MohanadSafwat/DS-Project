@@ -1,4 +1,4 @@
-
+/*
 async function getProduct() {
     var productPageUrl = new URL(window.location.href);
     var productId = productPageUrl.searchParams.get("productId");
@@ -14,7 +14,7 @@ async function getProduct() {
 }
 async function renderProduct() {
     let product = await getProduct();
-   /* let html = '';
+    let html = '';
     users.forEach(user => {
         let htmlSegment = `<div class="user">
                             <img src="${user.profileURL}" >
@@ -23,7 +23,7 @@ async function renderProduct() {
                         </div>`;
 
         html += htmlSegment;
-    });*/
+    });
     var productImagesUrl = product.productId["productImageUrls"].split('`');
 
     document.getElementById("priceContent").innerHTML = "EGP " + product.productId["productPrice"];
@@ -66,8 +66,8 @@ async function renderProduct() {
 
 
 
-   /* let container = document.querySelector('.container');
-    container.innerHTML = html;*/
+    let container = document.querySelector('.container');
+    container.innerHTML = html;
 }
 
-renderProduct();
+renderProduct();*/

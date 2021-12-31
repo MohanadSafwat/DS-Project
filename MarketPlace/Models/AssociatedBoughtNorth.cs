@@ -1,4 +1,5 @@
-﻿/*using MarketPlace.Areas.Identity.Data;
+﻿using MarketPlace.Areas.Identity.Data;
+using JWTAuthentication.Authentication;
 using System.ComponentModel.DataAnnotations;
 
 namespace MarketPlace.Models
@@ -11,4 +12,3 @@ namespace MarketPlace.Models
         public User Buyer { get; set; }
     }
 }
-*/

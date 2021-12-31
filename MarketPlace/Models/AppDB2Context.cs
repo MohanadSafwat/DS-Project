@@ -1,16 +1,12 @@
-﻿using MarketPlace.Models;
-using MarketPlace.Areas.Identity.Data;
+﻿using MarketPlace.Areas.Identity.Data;
+using MarketPlace.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using JWTAuthentication.Authentication;
 
-namespace MarketPlace.Models
+namespace JWTAuthentication.Authentication
 {
-    public class AppDB2Context :IdentityDbContext<User2>
+    public class AppDB2Context : IdentityDbContext<User2>
     {
         public AppDB2Context(DbContextOptions<AppDB2Context> options) : base(options)
         {
@@ -21,18 +17,19 @@ namespace MarketPlace.Models
             base.OnModelCreating(builder);
             builder.Entity<User2>().HasAlternateKey(x => x.Uid).HasName("Uid");
 
+
         }
 
-
         public DbSet<User2> User { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<OrderSouth> OrdersSouth { get; set; }
+        public DbSet<OrderItemSouth> OrderItemsSouth { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<AssociatedBought> AssociatedBought { get; set; }
-        public DbSet<AssociatedSell> AssociatedSell { get; set; }
-        public DbSet<AssociatedShared> AssociatedShared { get; set; }
-        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<AssociatedBoughtSouth> AssociatedBoughtSouth { get; set; }
+        public DbSet<AssociatedSellSouth> AssociatedSellSouthSold { get; set; }
+        public DbSet<AssociatedSellSouth> AssociatedSellSouthUnSold { get; set; }
 
+        public DbSet<AssociatedSharedSouth> AssociatedSharedSouthSold { get; set; }
+        public DbSet<AssociatedSharedSouth> AssociatedSharedSouthUnSold { get; set; }
 
     }
 }

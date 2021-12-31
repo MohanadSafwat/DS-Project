@@ -133,55 +133,108 @@
                     </div>
                 </div>
                 <div class="row">
-
-                    @foreach (var item in @Model.associatedSell)
+                    @if (ViewBag.userLocation == "North")
                     {
-                        <!-- Product -->
-                        @if (!item.Sold)
+
+                        @foreach (var item in @Model.associatedSell)
                         {
-                            unSoldItemCounter++;
-                            <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
-                                <div class="col-12 bg-white text-center h-100 product-item">
-                                    <div class="row h-100">
-                                        <div class="col-12 p-0 mb-3">
-                                            @if (item.productId.ProductImageUrls != null)
-                                            {
-                                                string[] imagesUrl = item.productId.ProductImageUrls.Split('`');
+                            <!-- Product -->
+                            @if (!item.Sold)
+                            {
+                                unSoldItemCounter++;
+                                <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
+                                    <div class="col-12 bg-white text-center h-100 product-item">
+                                        <div class="row h-100">
+                                            <div class="col-12 p-0 mb-3">
+                                                @if (item.productId.ProductImageUrls != null)
+                                                {
+                                                    string[] imagesUrl = item.productId.ProductImageUrls.Split('`');
 
 
-                                                <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId>
-                                                    <img src="~/images/@imagesUrl[0]" class="img-fluid">
+                                                    <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId>
+                                                        <img src="~/images/@imagesUrl[0]" class="img-fluid">
+                                                    </a>
+
+                                                }
+
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId class="product-name">@item.productId.ProductName</a>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <span class="product-price"> EGP @item.productId.ProductPrice </span>
+                                            </div>
+                                            <div class="col-12 mb-3 align-self-end">
+                                                <a asp-route-id=@item.productId.ProductId asp-action="Edit" asp-controller="Product" class="btn btn-outline-warning me-2 mb-2" type="button">
+                                                    Edit
                                                 </a>
-
-                                            }
-
-                                        </div>
-                                        <div class="col-12 mb-3">
-                                            <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId class="product-name">@item.productId.ProductName</a>
-                                        </div>
-                                        <div class="col-12 mb-3">
-                                            <span class="product-price"> EGP @item.productId.ProductPrice </span>
-                                        </div>
-                                        <div class="col-12 mb-3 align-self-end">
-                                            <a asp-route-id=@item.productId.ProductId asp-action="Edit" asp-controller="Product" class="btn btn-outline-warning me-2 mb-2" type="button">
-                                                Edit
-                                            </a>
-                                            <a class="btn btn-outline-danger me-2 mb-2" asp-action="Delete" asp-controller="Product" asp-route-id=@item.productId.ProductId type="button">
-                                                Remove
-                                            </a>
+                                                <a class="btn btn-outline-danger me-2 mb-2" asp-action="Delete" asp-controller="Product" asp-route-id=@item.productId.ProductId type="button">
+                                                    Remove
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            }
+
+                            <!-- Product -->
                         }
-
-                        <!-- Product -->
+                        @if (unSoldItemCounter == 0)
+                        {
+                            <p> There is no items</p>
+                        }
                     }
-                    @if (unSoldItemCounter == 0)
+                    @if (ViewBag.userLocation == "South")
                     {
-                        <p> There is no items</p>
-                    }
 
+                        @foreach (var item in @Model.associatedSellSouth)
+                        {
+                            <!-- Product -->
+                            @if (!item.Sold)
+                            {
+                                unSoldItemCounter++;
+                                <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
+                                    <div class="col-12 bg-white text-center h-100 product-item">
+                                        <div class="row h-100">
+                                            <div class="col-12 p-0 mb-3">
+                                                @if (item.productId.ProductImageUrls != null)
+                                                {
+                                                    string[] imagesUrl = item.productId.ProductImageUrls.Split('`');
+
+
+                                                    <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId>
+                                                        <img src="~/images/@imagesUrl[0]" class="img-fluid">
+                                                    </a>
+
+                                                }
+
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId class="product-name">@item.productId.ProductName</a>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <span class="product-price"> EGP @item.productId.ProductPrice </span>
+                                            </div>
+                                            <div class="col-12 mb-3 align-self-end">
+                                                <a asp-route-id=@item.productId.ProductId asp-action="Edit" asp-controller="Product" class="btn btn-outline-warning me-2 mb-2" type="button">
+                                                    Edit
+                                                </a>
+                                                <a class="btn btn-outline-danger me-2 mb-2" asp-action="Delete" asp-controller="Product" asp-route-id=@item.productId.ProductId type="button">
+                                                    Remove
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            <!-- Product -->
+                        }
+                        @if (unSoldItemCounter == 0)
+                        {
+                            <p> There is no items</p>
+                        }
+                    }
 
                 </div>
             </div>
@@ -196,43 +249,91 @@
                     <p>Sold</p>
                 </div>
                 <div class="row">
-                    @foreach (var item in @Model.associatedSell)
+                    @if (ViewBag.userLocation == "North")
                     {
-                        <!-- Product -->
-                        @if (item.Sold)
+
+                        @foreach (var item in @Model.associatedSell)
                         {
-                            soldItemCounter++;
-                            <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
-                                <div class="col-12 bg-white text-center h-100 product-item">
-                                    <div class="row h-100">
-                                        <div class="col-12 p-0 mb-3">
-                                            @if (item.productId.ProductImageUrls != null)
-                                            {
-                                                string[] imagesUrl = item.productId.ProductImageUrls.Split('`');
+                            <!-- Product -->
+                            @if (item.Sold)
+                            {
+                                soldItemCounter++;
+                                <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
+                                    <div class="col-12 bg-white text-center h-100 product-item">
+                                        <div class="row h-100">
+                                            <div class="col-12 p-0 mb-3">
+                                                @if (item.productId.ProductImageUrls != null)
+                                                {
+                                                    string[] imagesUrl = item.productId.ProductImageUrls.Split('`');
 
 
-                                                <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId>
-                                                    <img src="~/images/@imagesUrl[0]" class="img-fluid">
-                                                </a>
+                                                    <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId>
+                                                        <img src="~/images/@imagesUrl[0]" class="img-fluid">
+                                                    </a>
 
-                                            }
+                                                }
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId class="product-name">@item.productId.ProductName</a>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <span class="product-price"> EGP @item.productId.ProductPrice </span>
+                                            </div>
+
                                         </div>
-                                        <div class="col-12 mb-3">
-                                            <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId class="product-name">@item.productId.ProductName</a>
-                                        </div>
-                                        <div class="col-12 mb-3">
-                                            <span class="product-price"> EGP @item.productId.ProductPrice </span>
-                                        </div>
-
                                     </div>
                                 </div>
-                            </div>
+                            }
+                            <!-- Product -->
                         }
-                        <!-- Product -->
+                        @if (soldItemCounter == 0)
+                        {
+                            <p> There is no items</p>
+                        }
+
                     }
-                    @if (soldItemCounter == 0)
+                    @if (ViewBag.userLocation == "South")
                     {
-                        <p> There is no items</p>
+
+                        @foreach (var item in @Model.associatedSellSouth)
+                        {
+                            <!-- Product -->
+                            @if (item.Sold)
+                            {
+                                soldItemCounter++;
+                                <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
+                                    <div class="col-12 bg-white text-center h-100 product-item">
+                                        <div class="row h-100">
+                                            <div class="col-12 p-0 mb-3">
+                                                @if (item.productId.ProductImageUrls != null)
+                                                {
+                                                    string[] imagesUrl = item.productId.ProductImageUrls.Split('`');
+
+
+                                                    <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId>
+                                                        <img src="~/images/@imagesUrl[0]" class="img-fluid">
+                                                    </a>
+
+                                                }
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId class="product-name">@item.productId.ProductName</a>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <span class="product-price"> EGP @item.productId.ProductPrice </span>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            <!-- Product -->
+                        }
+                        @if (soldItemCounter == 0)
+                        {
+                            <p> There is no items</p>
+                        }
+
                     }
                 </div>
             </div>
@@ -247,41 +348,88 @@
                     </div>
                 </div>
                 <div class="row">
-                    @foreach (var item in @Model.associatedBought)
+
+                    @if (ViewBag.userLocation == "North")
                     {
-                        <!-- Product -->
-                        boughtItemCounter++;
-                        <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
-                            <div class="col-12 bg-white text-center h-100 product-item">
-                                <div class="row h-100">
-                                    <div class="col-12 p-0 mb-3">
-                                        @if (item.product.ProductImageUrls != null)
-                                        {
-                                            string[] imagesUrl = item.product.ProductImageUrls.Split('`');
+
+                        @foreach (var item in @Model.associatedBought)
+                        {
+                            <!-- Product -->
+                            boughtItemCounter++;
+                            <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
+                                <div class="col-12 bg-white text-center h-100 product-item">
+                                    <div class="row h-100">
+                                        <div class="col-12 p-0 mb-3">
+                                            @if (item.product.ProductImageUrls != null)
+                                            {
+                                                string[] imagesUrl = item.product.ProductImageUrls.Split('`');
 
 
-                                            <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.product.ProductId>
-                                                <img src="~/images/@imagesUrl[0]" class="img-fluid">
-                                            </a>
+                                                <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.product.ProductId>
+                                                    <img src="~/images/@imagesUrl[0]" class="img-fluid">
+                                                </a>
 
-                                        }
-                                    </div>
-                                    <div class="col-12 mb-3">
-                                        <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.product.ProductId class="product-name">@item.product.ProductName</a>
-                                    </div>
-                                    <div class="col-12 mb-3">
-                                        <span class="product-price"> EGP @item.product.ProductPrice </span>
-                                    </div>
-                                    <div class="col-12 mb-3 align-self-end">
+                                            }
+                                        </div>
+                                        <div class="col-12 mb-3">
+                                            <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.product.ProductId class="product-name">@item.product.ProductName</a>
+                                        </div>
+                                        <div class="col-12 mb-3">
+                                            <span class="product-price"> EGP @item.product.ProductPrice </span>
+                                        </div>
+                                        <div class="col-12 mb-3 align-self-end">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <!-- Product -->
+                            <!-- Product -->
+                        }
+                        @if (boughtItemCounter == 0)
+                        {
+                            <p> There is no bought items</p>
+                        }
+
                     }
-                    @if (boughtItemCounter == 0)
+                    @if (ViewBag.userLocation == "South")
                     {
-                        <p> There is no bought items</p>
+
+                        @foreach (var item in @Model.associatedBoughtSouth)
+                        {
+                            <!-- Product -->
+                            boughtItemCounter++;
+                            <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
+                                <div class="col-12 bg-white text-center h-100 product-item">
+                                    <div class="row h-100">
+                                        <div class="col-12 p-0 mb-3">
+                                            @if (item.product.ProductImageUrls != null)
+                                            {
+                                                string[] imagesUrl = item.product.ProductImageUrls.Split('`');
+
+
+                                                <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.product.ProductId>
+                                                    <img src="~/images/@imagesUrl[0]" class="img-fluid">
+                                                </a>
+
+                                            }
+                                        </div>
+                                        <div class="col-12 mb-3">
+                                            <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.product.ProductId class="product-name">@item.product.ProductName</a>
+                                        </div>
+                                        <div class="col-12 mb-3">
+                                            <span class="product-price"> EGP @item.product.ProductPrice </span>
+                                        </div>
+                                        <div class="col-12 mb-3 align-self-end">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Product -->
+                        }
+                        @if (boughtItemCounter == 0)
+                        {
+                            <p> There is no bought items</p>
+                        }
+
                     }
                 </div>
             </div>
@@ -298,89 +446,192 @@
                     <p>Unsold</p>
                 </div>
                 <div class="row">
-                    @foreach (var item in @Model.associatedShared)
+                    @if (ViewBag.userLocation == "North")
                     {
-                        <!-- Product -->
-                        @if (!item.Sold)
+                        @foreach (var item in @Model.associatedShared)
                         {
-                            unSoldSharedItemCounter++;
-                            <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
-                                <div class="col-12 bg-white text-center h-100 product-item">
-                                    <div class="row h-100">
-                                        <div class="col-12 p-0 mb-3">
-                                            @if (item.productId.ProductImageUrls != null)
-                                            {
-                                                string[] imagesUrl = item.productId.ProductImageUrls.Split('`');
+                            <!-- Product -->
+                            @if (!item.Sold)
+                            {
+                                unSoldSharedItemCounter++;
+                                <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
+                                    <div class="col-12 bg-white text-center h-100 product-item">
+                                        <div class="row h-100">
+                                            <div class="col-12 p-0 mb-3">
+                                                @if (item.productId.ProductImageUrls != null)
+                                                {
+                                                    string[] imagesUrl = item.productId.ProductImageUrls.Split('`');
 
 
-                                                <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId>
-                                                    <img src="~/images/@imagesUrl[0]" class="img-fluid">
-                                                </a>
+                                                    <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId>
+                                                        <img src="~/images/@imagesUrl[0]" class="img-fluid">
+                                                    </a>
 
-                                            }
-                                        </div>
-                                        <div class="col-12 mb-3">
-                                            <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId class="product-name">@item.productId.ProductName</a>
-                                        </div>
-                                        <div class="col-12 mb-3">
-                                            <span class="product-price"> EGP @item.productId.ProductPrice </span>
-                                        </div>
-                                        <div class="col-12 mb-3 align-self-end">
+                                                }
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId class="product-name">@item.productId.ProductName</a>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <span class="product-price"> EGP @item.productId.ProductPrice </span>
+                                            </div>
+                                            <div class="col-12 mb-3 align-self-end">
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                            </div>
-                            <!-- Product -->
-                        }}
-                    @if (unSoldSharedItemCounter == 0)
+                                </div>
+                                <!-- Product -->
+                            }
+
+                        }
+                        @if (unSoldSharedItemCounter == 0)
+                        {
+                            <p> There is no shared items</p>
+                        }
+
+                    }
+                    @if (ViewBag.userLocation == "South")
                     {
-                        <p> There is no shared items</p>
+                        @foreach (var item in @Model.associatedSharedSouth)
+                        {
+                            <!-- Product -->
+                            @if (!item.Sold)
+                            {
+                                unSoldSharedItemCounter++;
+                                <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
+                                    <div class="col-12 bg-white text-center h-100 product-item">
+                                        <div class="row h-100">
+                                            <div class="col-12 p-0 mb-3">
+                                                @if (item.productId.ProductImageUrls != null)
+                                                {
+                                                    string[] imagesUrl = item.productId.ProductImageUrls.Split('`');
+
+
+                                                    <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId>
+                                                        <img src="~/images/@imagesUrl[0]" class="img-fluid">
+                                                    </a>
+
+                                                }
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId class="product-name">@item.productId.ProductName</a>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <span class="product-price"> EGP @item.productId.ProductPrice </span>
+                                            </div>
+                                            <div class="col-12 mb-3 align-self-end">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <!-- Product -->
+                            }
+
+                        }
+                        @if (unSoldSharedItemCounter == 0)
+                        {
+                            <p> There is no shared items</p>
+                        }
+
                     }
                 </div>
                 <div class="col-12 mt-3 text-center text-uppercase">
                     <p>Sold</p>
                 </div>
                 <div class="row">
-                    @foreach (var item in @Model.associatedShared)
+                    @if (ViewBag.userLocation == "North")
                     {
-                        <!-- Product -->
-                        @if (item.Sold)
+                        @foreach (var item in @Model.associatedShared)
                         {
+                            <!-- Product -->
+                            @if (item.Sold)
+                            {
 
-                            soldSharedItemCounter++;
-                            <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
-                                <div class="col-12 bg-white text-center h-100 product-item">
-                                    <div class="row h-100">
-                                        <div class="col-12 p-0 mb-3">
-                                            @if (item.productId.ProductImageUrls != null)
-                                            {
-                                                string[] imagesUrl = item.productId.ProductImageUrls.Split('`');
+                                soldSharedItemCounter++;
+                                <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
+                                    <div class="col-12 bg-white text-center h-100 product-item">
+                                        <div class="row h-100">
+                                            <div class="col-12 p-0 mb-3">
+                                                @if (item.productId.ProductImageUrls != null)
+                                                {
+                                                    string[] imagesUrl = item.productId.ProductImageUrls.Split('`');
 
 
-                                                <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId>
-                                                    <img src="~/images/@imagesUrl[0]" class="img-fluid">
-                                                </a>
+                                                    <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId>
+                                                        <img src="~/images/@imagesUrl[0]" class="img-fluid">
+                                                    </a>
 
-                                            }
-                                        </div>
-                                        <div class="col-12 mb-3">
-                                            <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId class="product-name">@item.productId.ProductName</a>
-                                        </div>
-                                        <div class="col-12 mb-3">
-                                            <span class="product-price"> EGP @item.productId.ProductPrice </span>
-                                        </div>
-                                        <div class="col-12 mb-3 align-self-end">
+                                                }
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId class="product-name">@item.productId.ProductName</a>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <span class="product-price"> EGP @item.productId.ProductPrice </span>
+                                            </div>
+                                            <div class="col-12 mb-3 align-self-end">
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                            </div>
-                            <!-- Product -->
-                        }}
-                    @if (soldSharedItemCounter == 0)
+                                </div>
+                                <!-- Product -->
+                            }
+
+                        }
+                        @if (soldSharedItemCounter == 0)
+                        {
+                            <p> There is no shared items</p>
+                        }
+
+                    }
+                    @if (ViewBag.userLocation == "South")
                     {
-                        <p > There is no shared items</p>
+                        @foreach (var item in @Model.associatedSharedSouth)
+                        {
+                            <!-- Product -->
+                            @if (item.Sold)
+                            {
+
+                                soldSharedItemCounter++;
+                                <div class="col-xl-2 col-lg-3 col-sm-6 my-3">
+                                    <div class="col-12 bg-white text-center h-100 product-item">
+                                        <div class="row h-100">
+                                            <div class="col-12 p-0 mb-3">
+                                                @if (item.productId.ProductImageUrls != null)
+                                                {
+                                                    string[] imagesUrl = item.productId.ProductImageUrls.Split('`');
+
+
+                                                    <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId>
+                                                        <img src="~/images/@imagesUrl[0]" class="img-fluid">
+                                                    </a>
+
+                                                }
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <a asp-controller="Product" asp-action="Product" asp-route-productId=@item.productId.ProductId class="product-name">@item.productId.ProductName</a>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <span class="product-price"> EGP @item.productId.ProductPrice </span>
+                                            </div>
+                                            <div class="col-12 mb-3 align-self-end">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <!-- Product -->
+                            }
+
+                        }
+                        @if (soldSharedItemCounter == 0)
+                        {
+                            <p> There is no shared items</p>
+                        }
+
                     }
                 </div>
             </div>
@@ -390,6 +641,6 @@
 </div>
 
 @section Scripts{
-    <script async src="https://cpwebassets.codepen.io/assets/embed/ei.js"></script>
+<script async src="https://cpwebassets.codepen.io/assets/embed/ei.js"></script>
 
 }

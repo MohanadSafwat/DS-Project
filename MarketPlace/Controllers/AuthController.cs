@@ -1,7 +1,9 @@
 ﻿using AspNetCore.Reporting;
 using Dapper;
 using JWTAuthentication.Authentication;
+using JWTAuthentication.Models;
 using MarketPlace.Areas.Identity.Data;
+using MarketPlace.Dtos;
 using MarketPlace.Models;
 using MarketPlace.Models.Repositories;
 using MarketPlace.ViewModels;
@@ -24,9 +26,12 @@ namespace MarketPlace.Controllers
         private readonly UserManager<User2> _userManager2; 
         private readonly AppDBContext _db;
         private readonly AppDB2Context _db2;
-        private readonly IAssociatedRepository<AssociatedSell> associatedSellRepository;
-        private readonly IAssociatedRepository<AssociatedShared> associatedSharedRepository;
-        private readonly IAssociatedRepository<AssociatedBought> associatedBoughtRepository;
+        private readonly IAssociatedRepository<AssociatedSell, ProductSellerReadDto> associatedSellRepository;
+        private readonly IAssociatedRepository<AssociatedShared,ProductSharedReadDto> associatedSharedRepository;
+        private readonly IAssociatedRepository<AssociatedBought,ProductBoughtReadDto> associatedBoughtRepository;
+        private readonly IAssociatedRepository<AssociatedSellSouth, ProductSellerReadDto> southAssociatedSellRepository;
+        private readonly IAssociatedRepository<AssociatedSharedSouth, ProductSharedReadDto> southAssociatedSharedRepository;
+        private readonly IAssociatedRepository<AssociatedBoughtSouth, ProductBoughtReadDto> southAssociatedBoughtRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IProductRepository<Product> _productRepository;
 
@@ -34,7 +39,7 @@ namespace MarketPlace.Controllers
         
 
 
-        public AuthController(IOptions<AppDbConnection> config,IProductRepository<Product> productRepository,IWebHostEnvironment webHostEnvironment, UserManager<User> userManager, AppDBContext db,  UserManager<User2> userManager2, AppDB2Context db2, IAssociatedRepository<AssociatedSell> associatedSellRepository, IAssociatedRepository<AssociatedShared> associatedSharedRepository, IAssociatedRepository<AssociatedBought> associatedBoughtRepository)
+        public AuthController(IOptions<AppDbConnection> config,IProductRepository<Product> productRepository,IWebHostEnvironment webHostEnvironment, UserManager<User> userManager, AppDBContext db,  UserManager<User2> userManager2, AppDB2Context db2, IAssociatedRepository<AssociatedSell,ProductSellerReadDto> associatedSellRepository, IAssociatedRepository<AssociatedShared,ProductSharedReadDto> associatedSharedRepository, IAssociatedRepository<AssociatedBought,ProductBoughtReadDto> associatedBoughtRepository, IAssociatedRepository<AssociatedSellSouth, ProductSellerReadDto> southAssociatedSellRepository, IAssociatedRepository<AssociatedSharedSouth, ProductSharedReadDto> southAssociatedSharedRepository, IAssociatedRepository<AssociatedBoughtSouth, ProductBoughtReadDto> southAssociatedBoughtRepository)
         {
             _userManager = userManager;
             _db = db;
@@ -44,6 +49,9 @@ namespace MarketPlace.Controllers
             this.associatedSellRepository = associatedSellRepository;
             this.associatedSharedRepository = associatedSharedRepository;
             this.associatedBoughtRepository = associatedBoughtRepository;
+            this.southAssociatedSellRepository = southAssociatedSellRepository;
+            this.southAssociatedSharedRepository = southAssociatedSharedRepository;
+            this.southAssociatedBoughtRepository = southAssociatedBoughtRepository;
             this._webHostEnvironment = webHostEnvironment;
             this._productRepository = productRepository;
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
@@ -80,29 +88,56 @@ namespace MarketPlace.Controllers
         {
 
             ViewBag.user = await _userManager.FindByIdAsync(_userManager.GetUserId(HttpContext.User));
-            if (ViewBag.user == null)
-                ViewBag.user = await _userManager2.FindByIdAsync(_userManager2.GetUserId(HttpContext.User));
             ViewBag.id = _userManager.GetUserId(HttpContext.User);
             ViewBag.fullUser = HttpContext.User;
-
-            var sell = associatedSellRepository.FindProducts(ViewBag.id);
-            var shared = associatedSharedRepository.FindProducts(ViewBag.id);
-            var model = new ProductViewModel{};
-          
-            if (associatedSharedRepository.FindProducts(ViewBag.id) != null)
+            var model = new ProductViewModel
             {
+
+            };
+            if (ViewBag.user != null)
+            {
+                ViewBag.userLocation = "North";
+
+
                 model.associatedShared = associatedSharedRepository.FindProducts(ViewBag.id);
+                
+              
+                    model.associatedSell = associatedSellRepository.FindProducts(ViewBag.id);
+           
+                    model.associatedBought = associatedBoughtRepository.FindProducts(ViewBag.id);
+                
+
+                return View(model);
+
             }
-            if (associatedSellRepository.FindProducts(ViewBag.id) != null)
+            else
             {
-                model.associatedSell = associatedSellRepository.FindProducts(ViewBag.id);
-            }
-            if (associatedBoughtRepository.FindProducts(ViewBag.id) != null)
-            {
-                model.associatedBought = associatedBoughtRepository.FindProducts(ViewBag.id);
+                ViewBag.user = await _userManager2.FindByIdAsync(_userManager2.GetUserId(HttpContext.User));
+
+                if (ViewBag.user != null)
+                {
+
+                    ViewBag.userLocation = "South";
+                    model.associatedSharedSouth = southAssociatedSharedRepository.FindProducts(ViewBag.id);
+
+
+                    model.associatedSellSouth = southAssociatedSellRepository.FindProducts(ViewBag.id);
+
+                    model.associatedBoughtSouth = southAssociatedBoughtRepository.FindProducts(ViewBag.id);
+
+
+                    return View(model);
+                }
+                else
+                {
+                    return View();
+                }
             }
 
-            return View(model);
+      
+
+          
+         
         }
 
         public async Task< IActionResult> ProductReport()

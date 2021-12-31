@@ -6,88 +6,88 @@ using System.Linq;
 
 namespace MarketPlace.Models.Repositories
 {
-    public class AssociatedBoughtRepository : IAssociatedRepository<AssociatedBought, ProductBoughtReadDto>
+    public class SouthAssociatedBoughtRepository : IAssociatedRepository<AssociatedBoughtSouth, ProductBoughtReadDto>
     {
-        AppDBContext db;
+        AppDB2Context db;
 
-        public AssociatedBoughtRepository(AppDBContext _db)
+        public SouthAssociatedBoughtRepository(AppDB2Context _db)
         {
             db = _db;
         }
-        public List<AssociatedBought> FindUsers(int productId)
+        public List<AssociatedBoughtSouth> FindUsers(int productId)
         {
 
-            var result = db.AssociatedBought.Include(p => p.product).Include(s => s.Buyer).Where(p => p.product.ProductId == productId).ToList();
+            var result = db.AssociatedBoughtSouth.Include(p => p.product).Include(s => s.Buyer).Where(p => p.product.ProductId == productId).ToList();
             if (result != null)
                 return result;
             else
-                return new List<AssociatedBought>();
+                return new List<AssociatedBoughtSouth>();
         }
-        public void EditList(List<AssociatedBought> entityList)
+        public void EditList(List<AssociatedBoughtSouth> entityList)
         {
 
             db.Update(entityList);
             db.SaveChanges();
         }
-        public List<AssociatedBought> FindProducts(string buyerId)
+        public List<AssociatedBoughtSouth> FindProducts(string buyerId)
         {
-            var result = db.AssociatedBought.Include(p => p.product).Include(s => s.Buyer).Where(s => s.Buyer.Id == buyerId).ToList();
+            var result = db.AssociatedBoughtSouth.Include(p => p.product).Include(s => s.Buyer).Where(s => s.Buyer.Id == buyerId).ToList();
             if (result != null)
                 return result;
             else
             {
-                List<AssociatedBought> list = new List<AssociatedBought>();
+                List<AssociatedBoughtSouth> list = new List<AssociatedBoughtSouth>();
                 list.Clear();
                 return list;
 
             }
 
-            /*            return db.AssociatedBought.Include(p => p.product).Include(s => s.Buyer).Where(s => s.Buyer.Id == buyerId).ToList();
+            /*            return db.AssociatedBoughtSouth.Include(p => p.product).Include(s => s.Buyer).Where(s => s.Buyer.Id == buyerId).ToList();
             */
         }
-        public List<AssociatedBought> Search(string term)
+        public List<AssociatedBoughtSouth> Search(string term)
         {
-            var result = db.AssociatedBought.Include(p => p.product).Include(s => s.Buyer).Where(p => p.product.ProductName.Contains(term)
+            var result = db.AssociatedBoughtSouth.Include(p => p.product).Include(s => s.Buyer).Where(p => p.product.ProductName.Contains(term)
                || p.product.ProductBrand.Contains(term) || p.product.ProductDescription.Contains(term) || p.Buyer.FirstName.Contains(term)
                    || p.Buyer.LastName.Contains(term)).ToList();
             return result;
         }
-        public void Add(AssociatedBought entity)
+        public void Add(AssociatedBoughtSouth entity)
         {
-            db.AssociatedBought.Add(entity);
+            db.AssociatedBoughtSouth.Add(entity);
             db.SaveChanges();
         }
-        public int IsExist(AssociatedBought entity)
+        public int IsExist(AssociatedBoughtSouth entity)
         {
             return 0;
         }
         public void Delete(int ProductId)
         {
-            var AssociatedBought = Find(ProductId);
-            db.AssociatedBought.Remove(AssociatedBought);
+            var AssociatedBoughtSouth = Find(ProductId);
+            db.AssociatedBoughtSouth.Remove(AssociatedBoughtSouth);
             db.SaveChanges();
         }
 
-        public void Edit(AssociatedBought entity)
+        public void Edit(AssociatedBoughtSouth entity)
         {
 
             db.Update(entity);
             db.SaveChanges();
         }
 
-        public AssociatedBought Find(int ProductId)
+        public AssociatedBoughtSouth Find(int ProductId)
         {
-            return db.AssociatedBought.Include(p => p.product).Include(s => s.Buyer).SingleOrDefault(p => p.product.ProductId == ProductId);
+            return db.AssociatedBoughtSouth.Include(p => p.product).Include(s => s.Buyer).SingleOrDefault(p => p.product.ProductId == ProductId);
         }
 
-        public List<AssociatedBought> List()
+        public List<AssociatedBoughtSouth> List()
         {
-            return db.AssociatedBought.Include(s => s.Buyer).Include(p => p.product).ToList();
+            return db.AssociatedBoughtSouth.Include(s => s.Buyer).Include(p => p.product).ToList();
         }
         public List<ProductBoughtReadDto> FindUsersDtos(int productId)
         {
 
-            var result = db.AssociatedBought.Select(x => new ProductBoughtReadDto
+            var result = db.AssociatedBoughtSouth.Select(x => new ProductBoughtReadDto
             {
                 BuyerId = x.Buyer.Id,
                 product = x.product,
@@ -103,7 +103,7 @@ namespace MarketPlace.Models.Repositories
 
         public List<ProductBoughtReadDto> FindProductsDtos(string buyerId)
         {
-            var result = db.AssociatedBought.Select(x => new ProductBoughtReadDto
+            var result = db.AssociatedBoughtSouth.Select(x => new ProductBoughtReadDto
             {
                 BuyerId = x.Buyer.Id,
                 product = x.product,
@@ -124,7 +124,7 @@ namespace MarketPlace.Models.Repositories
         }
         public List<ProductBoughtReadDto> FindSoldProductsDtos(string buyerId)
         {
-            var result = db.AssociatedBought.Select(x => new ProductBoughtReadDto
+            var result = db.AssociatedBoughtSouth.Select(x => new ProductBoughtReadDto
             {
                 BuyerId = x.Buyer.Id,
                 product = x.product,
@@ -145,7 +145,7 @@ namespace MarketPlace.Models.Repositories
         }
         public List<ProductBoughtReadDto> FindUnSoldProductsDtos(string buyerId)
         {
-            var result = db.AssociatedBought.Select(x => new ProductBoughtReadDto
+            var result = db.AssociatedBoughtSouth.Select(x => new ProductBoughtReadDto
             {
                 BuyerId = x.Buyer.Id,
                 product = x.product,
@@ -166,7 +166,7 @@ namespace MarketPlace.Models.Repositories
         }
         public List<ProductBoughtReadDto> SearchDtos(string term)
         {
-            var result = db.AssociatedBought.Select(x => new ProductBoughtReadDto
+            var result = db.AssociatedBoughtSouth.Select(x => new ProductBoughtReadDto
             {
                 BuyerId = x.Buyer.Id,
                 product = x.product,
@@ -181,7 +181,7 @@ namespace MarketPlace.Models.Repositories
 
         public ProductBoughtReadDto FindProductByIdDtos(int ProductId)
         {
-            return db.AssociatedBought.Select(x => new ProductBoughtReadDto
+            return db.AssociatedBoughtSouth.Select(x => new ProductBoughtReadDto
             {
                 BuyerId = x.Buyer.Id,
                 product = x.product,
@@ -192,7 +192,7 @@ namespace MarketPlace.Models.Repositories
         }
         public List<ProductBoughtReadDto> ListDtos()
         {
-            return db.AssociatedBought.Select(x => new ProductBoughtReadDto
+            return db.AssociatedBoughtSouth.Select(x => new ProductBoughtReadDto
             {
                 BuyerId = x.Buyer.Id,
                 product = x.product,
@@ -204,7 +204,7 @@ namespace MarketPlace.Models.Repositories
 
         public bool IsUserBuyThis(string accountId, int productId)
         {
-            if (db.AssociatedBought.Where(p => p.product.ProductId == productId).Where(s => s.Buyer.Id == accountId) != null)
+            if (db.AssociatedBoughtSouth.Where(p => p.product.ProductId == productId).Where(s => s.Buyer.Id == accountId) != null)
                 return true;
             else
                 return false;

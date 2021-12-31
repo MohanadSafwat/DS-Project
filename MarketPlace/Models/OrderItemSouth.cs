@@ -1,14 +1,14 @@
-﻿using System;
+using JWTAuthentication.Authentication;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MarketPlace.Areas.Identity.Data;
 
 namespace MarketPlace.Models
 {
-    public class OrderItem
+    public class OrderItemSouth
     {
-        public User seller { get; set; }
+        public User2 seller { get; set; }
         public Product Product { get; set; }
         public int Id { get; set; }
     }

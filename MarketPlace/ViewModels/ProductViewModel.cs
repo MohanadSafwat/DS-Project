@@ -1,4 +1,5 @@
 ﻿using MarketPlace.Areas.Identity.Data;
+using MarketPlace.Dtos;
 using MarketPlace.Models;
 using MarketPlace.Models.Repositories;
 using Microsoft.AspNetCore.Http;
@@ -40,11 +41,19 @@ namespace MarketPlace.ViewModels
 
         public List<AssociatedSell> associatedSell { get; set; }
         public List<AssociatedShared> associatedShared { get; set; }
+        public List<AssociatedSellSouth> associatedSellSouth { get; set; }
+        public List<AssociatedSharedSouth> associatedSharedSouth { get; set; }
         public List<AssociatedSell> productsIndex { get; set; }
+        public List<AssociatedSellSouth> productsIndexSouth { get; set; }
+        public List<AssociatedBoughtSouth> associatedBoughtSouth { get; set; }
+
         public List<AssociatedSell> SearchedItems { get; set; }
         public List<AssociatedBought> associatedBought { get; set; }
-        public IAssociatedRepository<AssociatedShared> associatedSharedRepository { get; set; }
+        public IAssociatedRepository<AssociatedShared, ProductSharedReadDto> associatedSharedRepository { get; set; }
+        public IAssociatedRepository<AssociatedSharedSouth, ProductSharedReadDto> southAssociatedSharedRepository { get; set; }
+
         public AssociatedSell productDeatails { get; set; }
+        public AssociatedSellSouth productDeatailsSouth { get; set; }
 
         public int Amount { get; set; }
         public string searchTerm { get; set; }

@@ -1,23 +1,18 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace MarketPlace.Models.Repositories
 {
     public interface IProductRepository<TEnity>
     {
+        List<TEnity> List(string Location);
 
 
-        Task<IEnumerable<Product>> GetProducts();
+        TEnity Find(int id,string Location);
+        void Add(TEnity entity,string Location);
+        void Edit(int id,TEnity entity,string Location);
+        void Delete(int id,string Location);
 
-        List<TEnity> List();
-
-
-        TEnity Find(int id);
-        void Add(TEnity entity);
-        void Edit(int id,TEnity entity);
-        void Delete(int id);
-
-        int IsExist(TEnity entity);
+        int IsExist(TEnity entity,string Location);
 
         
 

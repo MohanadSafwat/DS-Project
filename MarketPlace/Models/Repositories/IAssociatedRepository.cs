@@ -1,25 +1,29 @@
-﻿using System.Collections.Generic;
+﻿using MarketPlace.Dtos;
+using System;
+using System.Collections.Generic;
 
 namespace MarketPlace.Models.Repositories
 {
-    public interface IAssociatedRepository<TEnity>
+    public interface IAssociatedRepository<TEntity, TDtos>
     {
-        List<TEnity> List();
-
-
-        TEnity Find(int ProductId);
-        void Add(TEnity entity);
-        void Edit(TEnity entity);
+        List<TDtos> ListDtos();
+        TDtos FindProductByIdDtos(int ProductId);
+        List<TDtos> FindProductsDtos(string accountId);
+        List<TDtos> FindUnSoldProductsDtos(string accountId);
+        List<TDtos> FindSoldProductsDtos(string accountId);
+        List<TDtos> FindUsersDtos(int productId);
+         List<TDtos> SearchDtos(string term);
+        List<TEntity> List();
+        TEntity Find(int ProductId);
+        void Add(TEntity entity);
+        bool IsUserBuyThis(string accountId,int productId);
+        bool IsUserShareThis(string accountId ,int productId);
+        void Edit(TEntity entity);
         void Delete(int ProductId);
-        List<TEnity> FindProducts(string sellerId);
-        List<TEnity> FindUsers(int productId);
-        public void EditList(List<TEnity> entityList);
-        
-        int IsExist(TEnity entity);
-
-        public List<TEnity> Search(string term);
-
-        
-
+        List<TEntity> FindProducts(string accountId);
+        List<TEntity> FindUsers(int productId);
+         void EditList(List<TEntity> entityList);
+        int IsExist(TEntity entity);
+         List<TEntity> Search(string term);
     }
 }

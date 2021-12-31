@@ -1,4 +1,6 @@
-﻿using MarketPlace.Areas.Identity.Data;
+﻿using JWTAuthentication.Authentication;
+using MarketPlace.Areas.Identity.Data;
+using MarketPlace.Dtos;
 using MarketPlace.Models;
 using MarketPlace.Models.Repositories;
 using MarketPlace.ViewModels;
@@ -19,35 +21,65 @@ namespace MarketPlace.Controllers
         [Obsolete]
         private readonly IHostingEnvironment hosting;
         private readonly UserManager<User> userManager;
-        private readonly IAssociatedRepository<AssociatedSell> associatedSellRepository;
-        private readonly IAssociatedRepository<AssociatedShared> associatedSharedRepository;
-        private readonly IAssociatedRepository<AssociatedBought> associatedBoughtRepository;
+        private readonly UserManager<User2> userManager2;
+
+        private readonly IAssociatedRepository<AssociatedSell, ProductSellerReadDto> associatedSellRepository;
+        private readonly IAssociatedRepository<AssociatedShared, ProductSharedReadDto> associatedSharedRepository;
+        private readonly IAssociatedRepository<AssociatedBought, ProductBoughtReadDto> associatedBoughtRepository;
+
+        private readonly IAssociatedRepository<AssociatedSellSouth, ProductSellerReadDto> southAssociatedSellRepository;
+        private readonly IAssociatedRepository<AssociatedSharedSouth, ProductSharedReadDto> southAssociatedSharedRepository;
+        private readonly IAssociatedRepository<AssociatedBoughtSouth, ProductBoughtReadDto> southAssociatedBoughtRepository;
         private AppDBContext db;
         [Obsolete]
         public ProductController(IProductRepository<Product> productRepository,
             IHostingEnvironment hosting,
             UserManager<User> userManager,
-            IAssociatedRepository<AssociatedSell> associatedSellRepository,
-            IAssociatedRepository<AssociatedShared> associatedSharedRepository,
-            IAssociatedRepository<AssociatedBought> associatedBoughtRepositor
+            UserManager<User2> userManager2,
+
+            IAssociatedRepository<AssociatedSell, ProductSellerReadDto> associatedSellRepository,
+            IAssociatedRepository<AssociatedShared, ProductSharedReadDto> associatedSharedRepository,
+            IAssociatedRepository<AssociatedBought, ProductBoughtReadDto> associatedBoughtRepository,
+
+            IAssociatedRepository<AssociatedSellSouth, ProductSellerReadDto> southAssociatedSellRepository,
+            IAssociatedRepository<AssociatedSharedSouth, ProductSharedReadDto> southAssociatedSharedRepository,
+            IAssociatedRepository<AssociatedBoughtSouth, ProductBoughtReadDto> southAssociatedBoughtRepository
 
             )
         {
             this.productRepository = productRepository;
             this.hosting = hosting;
             this.userManager = userManager;
+            this.userManager2 = userManager2;
             this.associatedSellRepository = associatedSellRepository;
             this.associatedSharedRepository = associatedSharedRepository;
-            this.associatedBoughtRepository = associatedBoughtRepositor;//this updated
+            this.associatedBoughtRepository = associatedBoughtRepository;
+
+            this.southAssociatedSellRepository = southAssociatedSellRepository;
+            this.southAssociatedSharedRepository = southAssociatedSharedRepository;
+            this.southAssociatedBoughtRepository = southAssociatedBoughtRepository;
         }
-        public async Task<User> UserReturn(string id)
+
+        public async Task<User> UserReturnNorth(string id)
         {
             return await userManager.FindByIdAsync(id);
+        }
 
+        public async Task<User2> UserReturnSouth(string id)
+        {
+            return await userManager2.FindByIdAsync(id);
         }
         public IActionResult Create()
         {
-            ViewBag.id = userManager.GetUserId(HttpContext.User);
+            var id = userManager.GetUserId(HttpContext.User);
+            if (id != null)
+                ViewBag.id = id;
+            else {
+                var id2 = userManager2.GetUserId(HttpContext.User);
+                if (id2 != null)
+                    ViewBag.id = id2;
+            }
+
 
             return View();
         }
@@ -62,8 +94,6 @@ namespace MarketPlace.Controllers
                 string fileNames = string.Empty;
                 if (model.Files != null)
                 {
-                    /*                    var file = model.Files;
-                    */
                     foreach (var file in model.Files)
                     {
                         string upload = Path.Combine(hosting.WebRootPath, "images");
@@ -83,65 +113,156 @@ namespace MarketPlace.Controllers
                     ProductImageUrls = fileNames,
                 };
 
-                productRepository.Add(product);
 
-                int id = product.ProductId;
+                Task<User> SellerNorth = UserReturnNorth(model.SellerId);
+                User userDataNorth = await SellerNorth;
 
-                Task<User> Seller = UserReturn(model.SellerId);
-                User userData = await Seller;
-
-                AssociatedSell associatedSell = new AssociatedSell
+                if (userDataNorth != null)
                 {
-                    productId = product,
-                    SellerId = userData,
-                    Sold = false
-                };
+                    productRepository.Add(product, "North");
 
-                associatedSellRepository.Add(associatedSell);
+                    int id = product.ProductId;
+                    AssociatedSell associatedSell = new AssociatedSell
+                    {
+                        productId = product,
+                        SellerId = userDataNorth,
+                        Sold = false
+                    };
+                    associatedSellRepository.Add(associatedSell);
+                    return Redirect("/Auth/Dashboard");
+                }
+
+                else if (userDataNorth == null)
+                {
+                    Task<User2> SellerSouth = UserReturnSouth(model.SellerId);
+                    User2 userDataSouth = await SellerSouth;
+
+                    if (userDataSouth != null)
+                    {
+                        productRepository.Add(product, "South");
+
+                        int id = product.ProductId;
+                        AssociatedSellSouth associatedSell = new AssociatedSellSouth
+                        {
+                            productId = product,
+                            SellerId = userDataSouth,
+                            Sold = false
+                        };
+                        southAssociatedSellRepository.Add(associatedSell);
+
+                    }
+                }
+
 
                 return Redirect("/Auth/Dashboard");
 
 
             }
             catch { return View(); }
+
+
         }
 
 
 
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var product = productRepository.Find(id);
-            var model = new ProductViewModel
-            {
-                ProductBrand = product.ProductBrand,
-                ProductDescription = product.ProductDescription,
-                ProductName = product.ProductName,
-                ProductId = product.ProductId,
-                ProductImagesUrl = product.ProductImageUrls,
-                ProductPrice = product.ProductPrice,
+            ViewBag.user = await userManager.FindByIdAsync(userManager.GetUserId(HttpContext.User));
+            
 
-            };
-            return View(model);
+            if (ViewBag.user != null)
+            {
+                ViewBag.id =  userManager.GetUserId(HttpContext.User);
+
+                ViewBag.userLocation = "North";
+                var product = productRepository.Find(id, "North");
+                var model = new ProductViewModel
+                {
+                    ProductBrand = product.ProductBrand,
+                    ProductDescription = product.ProductDescription,
+                    ProductName = product.ProductName,
+                    ProductId = product.ProductId,
+                    ProductImagesUrl = product.ProductImageUrls,
+                    ProductPrice = product.ProductPrice,
+                    SellerId = ViewBag.id.ToString()
+
+                };
+                return View(model);
+
+
+            }
+            else
+            {
+                ViewBag.user = await userManager2.FindByIdAsync(userManager2.GetUserId(HttpContext.User));
+
+                if (ViewBag.user != null)
+                {
+                    ViewBag.id =  userManager.GetUserId(HttpContext.User);
+
+                    ViewBag.userLocation = "South";
+                    var product = productRepository.Find(id, "South");
+
+
+                    var model = new ProductViewModel
+                    {
+                        ProductBrand = product.ProductBrand,
+                        ProductDescription = product.ProductDescription,
+                        ProductName = product.ProductName,
+                        ProductId = product.ProductId,
+                        ProductImagesUrl = product.ProductImageUrls,
+                        ProductPrice = product.ProductPrice,
+                        SellerId = ViewBag.id.ToString()
+
+                    };
+                    return View(model);
+
+                }
+                else { return View(); }
+            }
+
+          
+
+            
+
+          
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Obsolete]
-        public IActionResult Edit(ProductViewModel model)
+        public async Task<IActionResult> Edit(ProductViewModel model)
         {
+            var Location = "";
+
+            Task<User> SellerNorth = UserReturnNorth(model.SellerId);
+            User userDataNorth = await SellerNorth;
+            if (userDataNorth != null)
+                Location = "North";
+
+            Task<User2> SellerSouth = UserReturnSouth(model.SellerId);
+            User2 userDataSouth = await SellerSouth;
+            if (userDataSouth != null)
+                Location = "South";
+
+            var product = productRepository.Find(model.ProductId, Location);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+
             try
             {
                 string fileNames = string.Empty;
                 if (model.Files != null)
                 {
-/*                    var file = model.Files;
-*/                    foreach (var file in model.Files)
+                    foreach (var file in model.Files)
                     {
                         string upload = Path.Combine(hosting.WebRootPath, "images");
-                    fileNames += file.FileName;
-                    fileNames += '`';
-                    string fullPath = Path.Combine(upload, file.FileName);
-                    file.CopyTo(new FileStream(fullPath, FileMode.Create));
+                        fileNames += file.FileName;
+                        fileNames += '`';
+                        string fullPath = Path.Combine(upload, file.FileName);
+                        file.CopyTo(new FileStream(fullPath, FileMode.Create));
                     }
                 }
 
@@ -149,7 +270,7 @@ namespace MarketPlace.Controllers
                 {
                     fileNames = model.ProductImagesUrl;
                 }
-                Product product = new Product
+                Product newProduct = new Product
                 {
                     ProductId = model.ProductId,
                     ProductBrand = model.ProductBrand,
@@ -158,10 +279,10 @@ namespace MarketPlace.Controllers
                     ProductPrice = model.ProductPrice,
                     ProductImageUrls = fileNames
                 };
-                
-               
 
-                productRepository.Edit(model.ProductId, product);
+
+
+                productRepository.Edit(model.ProductId, newProduct, Location);
 
 
                 return Redirect("/Auth/Dashboard");
@@ -171,18 +292,44 @@ namespace MarketPlace.Controllers
             catch { return View(); }
         }
 
+    
+
+
 
         public async Task<IActionResult> Search(ProductViewModel model)
         {
-            string id = userManager.GetUserId(HttpContext.User);
 
-            Task<User> Seller = UserReturn(id);
-            User userData = await Seller;
+        string id = this.userManager.GetUserId(HttpContext.User);
 
-            ViewBag.user = userData;
+            var Location = "";
 
-            var vmodel = new ProductViewModel { SearchedItems = associatedSellRepository.Search(model.searchTerm),associatedSharedRepository=associatedSharedRepository };
-            return View(vmodel);
+            Task<User> SellerNorth = UserReturnNorth(id);
+            User userDataNorth = await SellerNorth;
+            if (userDataNorth != null)
+                Location = "North";
+
+            Task<User2> SellerSouth = UserReturnSouth(id);
+            User2 userDataSouth = await SellerSouth;
+            if (userDataSouth != null)
+                Location = "South";
+
+            if (Location == "North")
+            {
+                var result = associatedSellRepository.SearchDtos(model.searchTerm);
+              
+                return View(result);
+            }
+            else if (Location == "South")
+            {
+                var result = southAssociatedSellRepository.SearchDtos(model.searchTerm);
+            
+                return View(result);
+            }
+            else
+            {
+                return NotFound();
+            }
+           
         }
         public async Task<IActionResult> Store(string sellerId)
         {
@@ -191,22 +338,39 @@ namespace MarketPlace.Controllers
             ViewBag.id = userManager.GetUserId(HttpContext.User);
             ViewBag.fullUser = HttpContext.User;
 
-            Task<User> Seller = UserReturn(sellerId);
-            ViewBag.seller = await Seller;
+            var Location = "";
 
-            
+            Task<User> SellerNorth = UserReturnNorth(sellerId);
+            User userDataNorth = await SellerNorth;
+            if (userDataNorth != null)
+                Location = "North";
+
+            Task<User2> SellerSouth = UserReturnSouth(sellerId);
+            User2 userDataSouth = await SellerSouth;
+            if (userDataSouth != null)
+                Location = "South";
+
+
             var vmodel = new ProductViewModel { };
-
-            if (associatedSharedRepository.FindProducts(sellerId) != null)
+            if (Location == "North")
             {
+
                 vmodel.associatedShared = associatedSharedRepository.FindProducts(sellerId);
-            }
-            if (associatedSellRepository.FindProducts(sellerId) != null)
-            {
-                vmodel.associatedSell = associatedSellRepository.FindProducts(sellerId);
-            }
 
-            vmodel.associatedSharedRepository = associatedSharedRepository;
+                vmodel.associatedSell = associatedSellRepository.FindProducts(sellerId);
+
+
+                vmodel.associatedSharedRepository = associatedSharedRepository;
+            }
+            else if (Location == "South")
+            {
+                vmodel.associatedSharedSouth = southAssociatedSharedRepository.FindProducts(sellerId);
+
+                vmodel.associatedSellSouth = southAssociatedSellRepository.FindProducts(sellerId);
+
+
+                vmodel.associatedSharedRepository = associatedSharedRepository;
+            }
             return View(vmodel);
         }
 
@@ -214,43 +378,116 @@ namespace MarketPlace.Controllers
         {
             string id = userManager.GetUserId(HttpContext.User);
 
-            Task<User> Seller = UserReturn(id);
-            User userData = await Seller;
+            var Location = "";
+            var vmodel = new ProductViewModel { };
 
-            ViewBag.user = userData;
+            Task<User> SellerNorth = UserReturnNorth(id);
+            User userDataNorth = await SellerNorth;
+            if (userDataNorth != null)
+            {
+                Location = "North";
+                ViewBag.user = userDataNorth;
+                vmodel = new ProductViewModel { productDeatails = associatedSellRepository.Find(productId) };
+                return View(vmodel);
 
-            var vmodel = new ProductViewModel { productDeatails = associatedSellRepository.Find(productId) };
+
+            }
+            Task<User2> SellerSouth = UserReturnSouth(id);
+            User2 userDataSouth = await SellerSouth;
+            if (userDataSouth != null)
+            {
+                Location = "South";
+                ViewBag.user = userDataSouth;
+                 vmodel = new ProductViewModel { productDeatailsSouth = southAssociatedSellRepository.Find(productId) };
+                return View(vmodel);
+
+            }
+            vmodel = new ProductViewModel { productDeatails = associatedSellRepository.Find(productId) };
+
             return View(vmodel);
-        }
-        public IActionResult Delete(int id)
-        {
-            var product = productRepository.Find(id);
-            var associatedProduct = associatedSellRepository.Find(id);
 
+        }
+        public async Task<IActionResult> Delete(int id,string sellerId)
+        {
+
+            var Location = "";
+            Task<User> SellerNorth = UserReturnNorth(sellerId);
+            User userDataNorth = await SellerNorth;
             var model = new ProductViewModel
             {
 
-                ProductBrand = product.ProductBrand,
-                SellerId = associatedProduct.SellerId.ToString(),
-                ProductDescription = product.ProductDescription,
-                ProductName = product.ProductName,
-                ProductId = product.ProductId,
-                ProductImagesUrl = product.ProductImageUrls,
-                ProductPrice = product.ProductPrice,
+               
 
             };
+            if (userDataNorth != null)
+            {
+                Location = "North";
+                var product = productRepository.Find(id, Location);
+
+                var associatedProduct = associatedSellRepository.Find(id);
+                 model = new ProductViewModel
+                {
+
+                    ProductBrand = product.ProductBrand,
+                    SellerId = associatedProduct.SellerId.ToString(),
+                    ProductDescription = product.ProductDescription,
+                    ProductName = product.ProductName,
+                    ProductId = product.ProductId,
+                    ProductImagesUrl = product.ProductImageUrls,
+                    ProductPrice = product.ProductPrice,
+
+                };
+
+            }
+            Task<User2> SellerSouth = UserReturnSouth(sellerId);
+            User2 userDataSouth = await SellerSouth;
+            if (userDataSouth != null)
+            {
+                Location = "South";
+                var associatedProduct = southAssociatedSellRepository.Find(id);
+                var product = productRepository.Find(id, Location);
+
+                 model = new ProductViewModel
+                {
+
+                    ProductBrand = product.ProductBrand,
+                    SellerId = associatedProduct.SellerId.ToString(),
+                    ProductDescription = product.ProductDescription,
+                    ProductName = product.ProductName,
+                    ProductId = product.ProductId,
+                    ProductImagesUrl = product.ProductImageUrls,
+                    ProductPrice = product.ProductPrice,
+
+                };
+
+            }
+
+       
             return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
 
-        public IActionResult Delete(int id, ProductViewModel model)
+        public async Task<IActionResult> Delete(int id, ProductViewModel model)
         {
             try
             {
-                associatedSellRepository.Delete(model.ProductId);
-                productRepository.Delete(model.ProductId);
+                Task<User> SellerNorth = UserReturnNorth(model.SellerId);
+                User userDataNorth = await SellerNorth;
+                if (userDataNorth != null)
+                {
+                    associatedSellRepository.Delete(model.ProductId);
+                    productRepository.Delete(model.ProductId,"North");
+                }
+                    Task<User2> SellerSouth = UserReturnSouth(model.SellerId);
+                User2 userDataSouth = await SellerSouth;
+                if (userDataSouth != null)
+                {
+                    southAssociatedSellRepository.Delete(model.ProductId);
+                    productRepository.Delete(model.ProductId, "South");
+                }
+               
                 return Redirect("/Auth/Dashboard");
 
 

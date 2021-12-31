@@ -1,5 +1,7 @@
 using JWTAuthentication.Authentication;
+using JWTAuthentication.Models;
 using MarketPlace.Areas.Identity.Data;
+using MarketPlace.Dtos;
 using MarketPlace.Models;
 using MarketPlace.Models.Repositories;
 using MarketPlace.Models.Repository;
@@ -39,9 +41,12 @@ namespace MarketPlace
             services.AddDbContext<AppDB2Context>(option => option.UseSqlServer(Configuration.GetConnectionString("SqlCon2")));
             services.AddScoped<IProductRepository<Product>, ProductDbRepository>();
             services.AddTransient<IProductRepository<Product>, ProductDbRepository>();
-            services.AddScoped<IAssociatedRepository<AssociatedSell>, AssociatedSellRepository>();
-            services.AddScoped<IAssociatedRepository<AssociatedBought>, AssociatedBoughtRepository>();
-            services.AddScoped<IAssociatedRepository<AssociatedShared>, AssociatedSharedRepository>();
+            services.AddScoped<IAssociatedRepository<AssociatedSell, ProductSellerReadDto>, AssociatedSellRepository>();
+            services.AddScoped<IAssociatedRepository<AssociatedBought, ProductBoughtReadDto>, AssociatedBoughtRepository>();
+            services.AddScoped<IAssociatedRepository<AssociatedShared, ProductSharedReadDto>, AssociatedSharedRepository>();
+            services.AddScoped<IAssociatedRepository<AssociatedSellSouth, ProductSellerReadDto>, SouthAssociatedSellRepository>();
+            services.AddScoped<IAssociatedRepository<AssociatedBoughtSouth, ProductBoughtReadDto>, SouthAssociatedBoughtRepository>();
+            services.AddScoped<IAssociatedRepository<AssociatedSharedSouth, ProductSharedReadDto>, SouthAssociatedSharedRepository>();
             services.AddScoped<IOrderRepository<Order>, OrderDbRepository>();
             services.AddScoped<IOrderRepository<OrderItem>, OrderItemDbRepository>();
             services.Configure<AppDbConnection>(options =>

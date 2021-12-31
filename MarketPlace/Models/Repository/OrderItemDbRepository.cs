@@ -1,23 +1,37 @@
-﻿using System;
+﻿using JWTAuthentication.Authentication;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MarketPlace.Areas.Identity.Data;
 
 namespace MarketPlace.Models.Repository
 {
     public class OrderItemDbRepository : IOrderRepository<OrderItem>
     {
         AppDBContext db;
+        AppDB2Context db2;
 
-        public OrderItemDbRepository(AppDBContext _db)
+        public OrderItemDbRepository(AppDBContext _db,AppDB2Context _db2)
         {
             db = _db;
+            db2 = _db2;
         }
 
         public void Add(OrderItem entity)
         {
             db.OrderItems.Add(entity);
             db.SaveChanges();
+        }
+        public void AddOrderItemSouth(OrderItemSouth entity)
+        {
+            db2.OrderItemsSouth.Add(entity);
+            db2.SaveChanges();
+        }
+
+        public void AddOrderSouth(OrderSouth entity)
+        {
+            throw new NotImplementedException();
         }
 
         public void Delete(int id)
