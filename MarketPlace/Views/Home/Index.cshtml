@@ -119,7 +119,7 @@
                                                                     if (ViewBag.user.Id != @Model.productsIndexSouth[i].SellerId.Id)
                                                                     {
                                                                         <a class="btn btn-outline-success me-2 mb-2" type="button" asp-controller="Order" asp-action="Create" asp-route-productId="@Model.productsIndexSouth[i].productId.ProductId" asp-route-customerId="@ViewBag.user.Id">Buy Now</a>
-                                                                        var sharedList = @Model.associatedSharedRepository.FindUsers(@Model.productsIndexSouth[i].productId.ProductId);
+                                                                        var sharedList = @Model.southAssociatedSharedRepository.FindUsers(@Model.productsIndexSouth[i].productId.ProductId);
                                                                         bool check = false;
                                                                         foreach (var item in sharedList)
                                                                         {
