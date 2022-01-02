@@ -131,7 +131,7 @@ namespace MarketPlace.Models.Repositories
                 BuyerFirstName = x.Buyer.FirstName,
                 BuyerLastName = x.Buyer.LastName,
                 BuyerEmail = x.Buyer.Email
-            }).Where(b => b.BuyerId == buyerId && b.Sold).ToList();
+            }).Where(b => b.BuyerId == buyerId).ToList();
             if (result != null)
                 return result;
             else
@@ -204,7 +204,8 @@ namespace MarketPlace.Models.Repositories
 
         public bool IsUserBuyThis(string accountId, int productId)
         {
-            if (db.AssociatedBought.Where(p => p.product.ProductId == productId).Where(s => s.Buyer.Id == accountId) != null)
+            var list =db.AssociatedBought.Where(p => p.product.ProductId == productId).Where(s => s.Buyer.Id == accountId).ToList() ;
+            if (list.Count != 0)
                 return true;
             else
                 return false;

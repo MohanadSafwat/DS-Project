@@ -204,7 +204,8 @@ namespace MarketPlace.Models.Repositories
 
         public bool IsUserBuyThis(string accountId, int productId)
         {
-            if (db.AssociatedBoughtSouth.Where(p => p.product.ProductId == productId).Where(s => s.Buyer.Id == accountId) != null)
+            var list = db.AssociatedBoughtSouth.Where(p => p.product.ProductId == productId).Where(s => s.Buyer.Id == accountId).ToList();
+            if ( list.Count != 0)
                 return true;
             else
                 return false;

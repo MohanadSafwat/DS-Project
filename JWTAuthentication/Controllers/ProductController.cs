@@ -107,7 +107,7 @@ namespace JWTAuthentication.Controllers
         {
             return await userManager2.FindByIdAsync(id);
         }
-        
+
         [HttpPost]
         [Route("createProduct")]
         [Obsolete]
@@ -478,8 +478,7 @@ namespace JWTAuthentication.Controllers
 
         }
 
-        [HttpPut("{Location}/{id}")]
-        [Route("Edit")]
+        [HttpPut("Edit/{Location}/{id}")]
         [Obsolete]
         public ActionResult EditProduct(string Location, int id, [FromForm] ProductViewModel model)
         {
@@ -525,6 +524,46 @@ namespace JWTAuthentication.Controllers
 
 
                 return StatusCode(StatusCodes.Status201Created, new Response { Status = "Edited" });
+
+
+            }
+            catch { return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error" }); }
+        }
+
+
+
+
+        [HttpDelete("Delete/{Location}/{id}")]
+        [Obsolete]
+        public ActionResult DeleteProduct(string Location, int id)
+        {
+            var product = productRepository.Find(id, Location);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            try
+            {
+
+                if (Location == "North")
+                {
+                    associatedSellRepository.Delete(id);
+                                     /*   associatedBoughtRepository.Delete(id);
+                    associatedSharedRepository.Delete(id);*/
+
+                    productRepository.Delete(id, "North");
+                }
+                else if (Location == "South")
+                {
+                    southAssociatedSellRepository.Delete(id);
+                   /* southAssociatedSharedRepository.Delete(id);
+                    southAssociatedBoughtRepository.Delete(id);*/
+                    productRepository.Delete(id, "South");
+
+                }
+
+
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Deleted" });
 
 
             }

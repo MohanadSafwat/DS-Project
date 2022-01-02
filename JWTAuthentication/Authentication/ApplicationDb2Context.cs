@@ -14,8 +14,8 @@ namespace JWTAuthentication.Authentication
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<User2>().HasAlternateKey(x => x.Uid).HasName("Uid");
-            
+            builder.Entity<User>().HasAlternateKey(x => x.Uid).HasName("Uid");
+          
 
         }
 

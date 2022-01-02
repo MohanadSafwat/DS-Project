@@ -17,7 +17,7 @@ namespace MarketPlace.Models.Repositories
         }
         public void Add(AssociatedSellSouth entity)
         {
-            db.AssociatedSellSouthSold.Add(entity);
+            db.AssociatedSellSouthUnSold.Add(entity);
             db.SaveChanges();
         }
         public int IsExist(AssociatedSellSouth entity)
@@ -27,7 +27,6 @@ namespace MarketPlace.Models.Repositories
         public void Delete(int ProductId)
         {
             var AssociatedSellSouth = Find(ProductId);
-            db.AssociatedSellSouthSold.Remove(AssociatedSellSouth);
             db.AssociatedSellSouthUnSold.Remove(AssociatedSellSouth);
             db.SaveChanges();
         }
@@ -55,8 +54,7 @@ namespace MarketPlace.Models.Repositories
         {
 
             var resultUnSold = db.AssociatedSellSouthUnSold.Include(p => p.productId).Include(s => s.SellerId).Where(p => p.productId.ProductId == productId).ToList();
-            var resultSold = db.AssociatedSellSouthUnSold.Include(p => p.productId).Include(s => s.SellerId).Where(p => p.productId.ProductId == productId).ToList();
-
+            var resultSold = new List<AssociatedSellSouth>();
             if (resultUnSold == null)
             {
                 return resultSold;
@@ -72,14 +70,7 @@ namespace MarketPlace.Models.Repositories
         public AssociatedSellSouth Find(int ProductId)
         {
             var product = db.AssociatedSellSouthUnSold.Include(p => p.productId).Include(s => s.SellerId).SingleOrDefault(p => p.productId.ProductId == ProductId);
-            if (product != null)
-                return product;
-            else
-            {
-                var product2 = db.AssociatedSellSouthSold.Include(p => p.productId).Include(s => s.SellerId).SingleOrDefault(p => p.productId.ProductId == ProductId);
-                return product2;
-
-            }
+            return product;
 
 
         }
@@ -87,7 +78,7 @@ namespace MarketPlace.Models.Repositories
         public List<AssociatedSellSouth> FindProducts(string sellerId)
         {
             var resultUnSold = db.AssociatedSellSouthUnSold.Include(p => p.productId).Include(s => s.SellerId).Where(s => s.SellerId.Id == sellerId).ToList();
-            var resultSold = db.AssociatedSellSouthSold.Include(p => p.productId).Include(s => s.SellerId).Where(s => s.SellerId.Id == sellerId).ToList();
+            var resultSold = new List<AssociatedSellSouth>();
 
             if (resultUnSold == null)
             {
@@ -104,7 +95,7 @@ namespace MarketPlace.Models.Repositories
         public List<AssociatedSellSouth> List()
         {
             var resultUnSold = db.AssociatedSellSouthUnSold.Include(s => s.SellerId).Include(p => p.productId).ToList();
-            var resultSold = db.AssociatedSellSouthSold.Include(s => s.SellerId).Include(p => p.productId).ToList();
+            var resultSold = new List<AssociatedSellSouth>();
 
             if (resultUnSold == null)
             {
@@ -146,14 +137,8 @@ namespace MarketPlace.Models.Repositories
                 sellerLastName = x.SellerId.LastName,
                 sellerEmail = x.SellerId.Email
             }).Where(p => p.product.ProductId == productId).ToList();
-            var resultSold = db.AssociatedSellSouthSold.Select(x => new ProductSellerReadDto
-            {
-                sellerId = x.SellerId.Id,
-                product = x.productId,
-                sellerFirstName = x.SellerId.FirstName,
-                sellerLastName = x.SellerId.LastName,
-                sellerEmail = x.SellerId.Email
-            }).Where(p => p.product.ProductId == productId).ToList();
+            var resultSold = new List<ProductSellerReadDto>();
+
             if (resultUnSold == null)
             {
                 return resultSold;
@@ -176,21 +161,8 @@ namespace MarketPlace.Models.Repositories
                 sellerLastName = x.SellerId.LastName,
                 sellerEmail = x.SellerId.Email
             }).SingleOrDefault(p => p.product.ProductId == ProductId);
-            if (product != null)
-                return product;
-            else
-            {
-                var product2 = db.AssociatedSellSouthSold.Select(x => new ProductSellerReadDto
-                {
-                    sellerId = x.SellerId.Id,
-                    product = x.productId,
-                    sellerFirstName = x.SellerId.FirstName,
-                    sellerLastName = x.SellerId.LastName,
-                    sellerEmail = x.SellerId.Email
-                }).SingleOrDefault(p => p.product.ProductId == ProductId);
-                return product2;
+            return product;
 
-            }
 
         }
 
@@ -205,14 +177,7 @@ namespace MarketPlace.Models.Repositories
                 sellerLastName = x.SellerId.LastName,
                 sellerEmail = x.SellerId.Email
             }).ToList();
-            var resultSold = db.AssociatedSellSouthSold.Where(s => s.SellerId.Id == sellerId).Select(x => new ProductSellerReadDto
-            {
-                sellerId = x.SellerId.Id,
-                product = x.productId,
-                sellerFirstName = x.SellerId.FirstName,
-                sellerLastName = x.SellerId.LastName,
-                sellerEmail = x.SellerId.Email
-            }).ToList();
+            var resultSold = new List<ProductSellerReadDto>();
 
             if (resultUnSold == null)
             {
@@ -230,7 +195,7 @@ namespace MarketPlace.Models.Repositories
 
         public List<ProductSellerReadDto> FindUnSoldProductsDtos(string sellerId)
         {
-            return db.AssociatedSellSouthUnSold.Where(s => s.SellerId.Id == sellerId).Select(x => new ProductSellerReadDto
+            return db.AssociatedSellSouthUnSold.Where(s => s.SellerId.Id == sellerId && (!s.Sold)).Select(x => new ProductSellerReadDto
             {
                 sellerId = x.SellerId.Id,
                 product = x.productId,
@@ -241,7 +206,7 @@ namespace MarketPlace.Models.Repositories
         }
         public List<ProductSellerReadDto> FindSoldProductsDtos(string sellerId)
         {
-            return db.AssociatedSellSouthSold.Where(s => s.SellerId.Id == sellerId).Select(x => new ProductSellerReadDto
+            return db.AssociatedSellSouthUnSold.Where(s => (s.SellerId.Id == sellerId) && (s.Sold)).Select(x => new ProductSellerReadDto
             {
                 sellerId = x.SellerId.Id,
                 product = x.productId,
@@ -264,17 +229,8 @@ namespace MarketPlace.Models.Repositories
 
 
             }).ToList();
-            var resultSold = db.AssociatedSellSouthSold.Select(x => new ProductSellerReadDto
-            {
-                sellerId = x.SellerId.Id,
-                product = x.productId,
-                sellerFirstName = x.SellerId.FirstName,
-                sellerLastName = x.SellerId.LastName,
-                sellerEmail = x.SellerId.Email,
-                Sold = x.Sold
+            var resultSold = new List<ProductSellerReadDto>();
 
-
-            }).ToList();
 
             if (resultUnSold == null)
             {
@@ -296,7 +252,11 @@ namespace MarketPlace.Models.Repositories
 
         public bool IsUserShareThis(string accountId, int productId)
         {
-            throw new NotImplementedException();
+            var list = db.AssociatedSharedSouthUnSold.Include(s => s.SharedId).Include(p => p.productId).Where(p => p.productId.ProductId == productId).Where(s => s.SharedId.Id == accountId).ToList();
+            if ((list.Count != 0))
+                return true;
+            else
+                return false;
         }
     }
 }

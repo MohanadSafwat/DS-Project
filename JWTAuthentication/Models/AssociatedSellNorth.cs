@@ -2,6 +2,7 @@
 
 namespace MarketPlace.Models
 {
+    
     public class AssociatedSell
     {
         public int id { get; set; }
