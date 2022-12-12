@@ -93,6 +93,9 @@ namespace JWTAuthentication.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasAlternateKey("Uid")
+                        .HasName("Uid");
+
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
 

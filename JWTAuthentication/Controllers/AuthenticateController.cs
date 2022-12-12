@@ -1,4 +1,5 @@
 ﻿using JWTAuthentication.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,13 +39,20 @@ namespace JWTAuthentication.Controllers
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             var user = await userManager.FindByNameAsync(model.Email);
+
             if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
             {
                 var userRoles = await userManager.GetRolesAsync(user);
 
                 var authClaims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, user.UserName),
+                   // new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim("firstName", user.FirstName),
+                    new Claim("lastName", user.LastName),
+                    new Claim("amount", user.Amount.ToString()),
+                    new Claim("card", user.Card),
+                    new Claim(ClaimTypes.StreetAddress, user.Address),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
 
@@ -65,7 +74,8 @@ namespace JWTAuthentication.Controllers
                 return Ok(new
                 {
                     token = new JwtSecurityTokenHandler().WriteToken(token),
-                    expiration = token.ValidTo
+                    expiration = token.ValidTo,
+                    Status = 200
                 });
             }
             return Unauthorized();
@@ -73,7 +83,7 @@ namespace JWTAuthentication.Controllers
 
         [HttpPost]
         [Route("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterModel model)
+        public async Task<IActionResult> Register([FromForm] RegisterModel model)
         {
             var userExists = await userManager.FindByNameAsync(model.Email);
             if (userExists != null)
@@ -134,6 +144,7 @@ namespace JWTAuthentication.Controllers
 
         [HttpGet]
         [Route("getUser/{email}")]
+
         public async Task<IActionResult> GetUser(string email)
         {
             var userExists = await userManager.FindByEmailAsync(email);
@@ -143,6 +154,54 @@ namespace JWTAuthentication.Controllers
             return Ok(userExists);
         }
 
+
+        [HttpGet]
+        [Route("getUser")]
+        [Authorize]
+        public async Task<IActionResult> GetUser()
+        {
+            var currentUser = GetCurrentUser();
+              
+
+            return Ok(currentUser);
+        }
+
+        private User GetCurrentUser()
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+
+            if (identity != null)
+            {
+                var userClaims = identity.Claims;
+                /*return Ok(new
+                {
+                    token = new User
+                    {
+                        FirstName = userClaims.FirstOrDefault(o => o.Type == "firstName")?.Value,
+                        LastName = userClaims.FirstOrDefault(o => o.Type == "lastName")?.Value,
+                        Amount = Convert.ToInt32(userClaims.FirstOrDefault(o => o.Type == "amount")?.Value),
+                        Card = userClaims.FirstOrDefault(o => o.Type == "card")?.Value,
+                        Email = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Email)?.Value,
+                        Address = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.StreetAddress)?.Value,
+                        *//*Surname = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Surname)?.Value,
+                        Role = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Role)?.Value*//*
+                    },
+                "status:"200"
+                });*/
+                return new User
+                {
+                    FirstName = userClaims.FirstOrDefault(o => o.Type == "firstName")?.Value,
+                    LastName = userClaims.FirstOrDefault(o => o.Type == "lastName")?.Value,
+                    Amount = Convert.ToInt32(userClaims.FirstOrDefault(o => o.Type == "amount")?.Value),
+                    Card = userClaims.FirstOrDefault(o => o.Type == "card")?.Value,
+                    Email  = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Email)?.Value,
+                    Address = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.StreetAddress)?.Value,
+                    /*Surname = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Surname)?.Value,
+                    Role = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Role)?.Value*/
+                };
+            }
+            return null;
+        }
         [HttpGet]
         [Route("getCode/{email}")]
         public async Task<IActionResult> GetCode(string email)

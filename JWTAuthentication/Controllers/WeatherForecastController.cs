@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace JWTAuthentication.Controllers
 {
-    [Authorize(Roles = UserRoles.Admin)]
+    
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
